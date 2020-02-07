@@ -4,56 +4,87 @@ import Cookie from 'js-cookie';
 const token = Cookie.get('X-QuickDine-Access-Token');
 
 const axios = Axios.create({
-  baseURL: 'https://quickdineapi.herokuapp.com',
+  baseURL: 'https://quickdineapi.herokuapp.com/api',
   timeout: 3000,
   headers: { 'X-QuickDine-Access-Token': token }
 });
 
-exports.apiGet = (path, params, headers = null) => {
+const apiGet = (path, params = null, headers = null) => {
 
-    return new Promise((resolve, reject) => {
-        axios.get(path, {
-            params: params,
-            headers: headers,
-        })
-        .then(res => resolve(res.data))
-        .catch(reject);
+  return new Promise((resolve, reject) => {
+
+    path = checkStorePath(path);
+
+    axios.get(path, {
+        params: params,
+        headers: headers,
     })
+    .then(res => resolve(res.data))
+    .catch(reject);
+  })
 
 }
 
-exports.apiPost = (path, body, headers = null) => {
+const apiPost = (path, body = null, headers = null) => {
 
-    return new Promise((resolve, reject) => {
-        axios.post(path, body, {
-            headers: headers,
-        })
-        .then(res => resolve(res.data))
-        .catch(reject);
-    })
+  path = checkStorePath(path);
+
+  return new Promise((resolve, reject) => {
+      axios.post(path, body, {
+          headers: headers,
+      })
+      .then(res => resolve(res.data))
+      .catch(reject);
+  })
 
 }
 
-exports.apiPut = (path, body, headers = null) => {
+const apiPut = (path, body = null, headers = null) => {
 
-    return new Promise((resolve, reject) => {
-        axios.put(path, body, {
-            headers: headers,
-        })
-        .then(res => resolve(res.data))
-        .catch(reject);
-    })
-    
+  path = checkStorePath(path);
+
+  return new Promise((resolve, reject) => {
+      axios.put(path, body, {
+          headers: headers,
+      })
+      .then(res => resolve(res.data))
+      .catch(reject);
+  })
+
 }
 
-exports.apiDelete = (path, headers = null) => {
+const apiDelete = (path, headers = null) => {
 
-    return new Promise((resolve, reject) => {
-        axios.get(path, {
-            headers: headers,
-        })
-        .then(res => resolve(res.data))
-        .catch(reject);
-    })
-    
+  path = checkStorePath(path);
+
+  return new Promise((resolve, reject) => {
+      axios.get(path, {
+          headers: headers,
+      })
+      .then(res => resolve(res.data))
+      .catch(reject);
+  })
+
+}
+
+const checkStorePath = path => {
+
+  path = checkStorePath(path);
+
+  if(path.includes('@store')) {
+
+    const storeId = Cookie.get('storeId');
+
+    path.replace('@store', `/stores/${storeId}`);
+
+  }
+
+  return path;
+}
+
+export default {
+  apiGet,
+  apiPost,
+  apiPut,
+  apiDelete,
 }

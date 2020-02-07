@@ -1,82 +1,104 @@
 import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardFooter, CardHeader, Col, Row, Collapse, Fade } from 'reactstrap';
+import { Badge, Card, CardBody, CardFooter, CardHeader, Col, Row, Collapse, FadePagination, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 import { AppSwitch } from '@coreui/react'
+import ApiClient from '../../ApiClient';
 
 class Products extends Component {
+
   constructor(props) {
+
     super(props);
 
-    this.toggle = this.toggle.bind(this);
-    this.toggleFade = this.toggleFade.bind(this);
+    this.listProducts = this.listProducts.bind(this);
+
     this.state = {
-      collapse: true,
-      fadeIn: true,
-      timeout: 300
+      products: Array(18).fill({
+        name: 'Sushi',
+        image: 'https://1k9ch93e3xh2t4pa12vvmx1t-wpengine.netdna-ssl.com/wp-content/uploads/2017/09/Vegan-sushi-donuts_4483.jpg'
+      }),
+      totalItems: 30,
+      currentPage: 1,
     };
+
   }
 
-  toggle() {
-    this.setState({ collapse: !this.state.collapse });
+  componentDidMount() {
+    this.listProducts();
   }
 
-  toggleFade() {
-    this.setState((prevState) => { return { fadeIn: !prevState }});
+  listProducts() {
+
+    ApiClient.apiGet('@store/products')
+    .then(res => {
+
+      const { products, totalItems, currentPage } = res;
+
+      this.setState({
+        products,
+        totalItems,
+        currentPage
+      });
+
+    })
+    .catch(console.log);
+
   }
 
   render() {
+
+    const { products, totalItems, currentPage } = this.state;
+
+    const productsMarkup = products.length > 0 && products.map((x, i) => (
+      <Col xs="12" sm="6" md="2">
+        <Card>
+          <CardBody style={styles.productCard}>
+            <Badge color="danger" style={styles.badge}>Hot Item</Badge>
+            <div style={{height: 'inherit', width: 'inherit', backgroundSize: 'cover', backgroundImage: `url(${x.image})`}}>
+            </div>
+          </CardBody>
+          <CardFooter style={{textAlign: 'center'}}>{x.name}</CardFooter>
+        </Card>
+      </Col>
+    ));
+
+    var paginationMarkup = [];
+
+    for(var i = 1; i <= (totalItems / 18) + 1; i++) {
+      paginationMarkup.push(
+        <PaginationItem active={i == currentPage ? true : false}>
+          <PaginationLink tag="button">{i}</PaginationLink>
+        </PaginationItem>
+      );
+    }
+
     return (
       <div className="animated fadeIn">
         <Row>
-          <Col xs="12" sm="6" md="1" />
-          <Col xs="12" sm="6" md="2">
-            <Card>
-              <CardBody style={{height: '20vh', padding: 0}}>
-                <Badge color="danger" style={{position: 'absolute', top: 10, right: 10,}}>Hot Item</Badge>
-                <div style={{height: 'inherit', width: 'inherit', backgroundSize: 'cover', backgroundImage: "url('https://1k9ch93e3xh2t4pa12vvmx1t-wpengine.netdna-ssl.com/wp-content/uploads/2017/09/Vegan-sushi-donuts_4483.jpg')"}}>
-                </div>
-              </CardBody>
-              <CardFooter style={{textAlign: 'center'}}>Mc Chicken</CardFooter>
-            </Card>
-          </Col>
-          <Col xs="12" sm="6" md="2">
-            <Card>
-              <CardBody style={{height: '20vh', padding: 0}}>
-                <div style={{height: 'inherit', width: 'inherit', backgroundImage: "url('https://static01.nyt.com/images/2019/07/24/business/24recession/24recession-superJumbo.jpg')", backgroundSize: 'cover'}}>
-                </div>
-              </CardBody>
-              <CardFooter style={{textAlign: 'center'}}>Mc Chicken</CardFooter>
-            </Card>
-          </Col>
-          <Col xs="12" sm="6" md="2">
-            <Card>
-              <CardBody style={{height: '20vh', padding: 0}}>
-                <div style={{height: 'inherit', width: 'inherit', backgroundImage: "url('https://static01.nyt.com/images/2019/07/24/business/24recession/24recession-superJumbo.jpg')", backgroundSize: 'cover'}}>
-                </div>
-              </CardBody>
-              <CardFooter style={{textAlign: 'center'}}>Mc Chicken</CardFooter>
-            </Card>
-          </Col>
-          <Col xs="12" sm="6" md="2">
-            <Card>
-              <CardBody style={{height: '20vh', padding: 0}}>
-                <div style={{height: 'inherit', width: 'inherit', backgroundImage: "url('https://static01.nyt.com/images/2019/07/24/business/24recession/24recession-superJumbo.jpg')", backgroundSize: 'cover'}}>
-                </div>
-              </CardBody>
-              <CardFooter style={{textAlign: 'center'}}>Mc Chicken</CardFooter>
-            </Card>
-          </Col>
-          <Col xs="12" sm="6" md="2">
-            <Card>
-              <CardBody style={{height: '20vh', padding: 0}}>
-                <div style={{height: 'inherit', width: 'inherit', backgroundImage: "url('https://static01.nyt.com/images/2019/07/24/business/24recession/24recession-superJumbo.jpg')", backgroundSize: 'cover'}}>
-                </div>
-              </CardBody>
-              <CardFooter style={{textAlign: 'center'}}>Mc Chicken</CardFooter>
-            </Card>
-          </Col>
+          {productsMarkup}
         </Row>
+        <Pagination style={{position: 'fixed', bottom: 55, right: 15}}>
+          <PaginationItem>
+            <PaginationLink previous tag="button"></PaginationLink>
+          </PaginationItem>
+          {paginationMarkup}
+          <PaginationItem>
+            <PaginationLink next tag="button"></PaginationLink>
+          </PaginationItem>
+        </Pagination>
       </div>
     );
+  }
+}
+
+const styles = {
+  badge: {
+    position: 'absolute',
+    top: 10,
+    right: 10
+  },
+  productCard: {
+    height: '20vh',
+    padding: 0
   }
 }
 
