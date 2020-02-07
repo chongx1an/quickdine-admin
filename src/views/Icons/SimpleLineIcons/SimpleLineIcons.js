@@ -17,10 +17,6 @@ class SimpleLineIcons extends Component {
               </Col>
 
               <Col xs="6" sm="4" md="3">
-                <i className="cil-fastfood icons font-2xl d-block mt-4"></i>icon-food
-              </Col>
-
-              <Col xs="6" sm="4" md="3">
                 <i className="icon-people icons font-2xl d-block mt-4"></i>icon-people
               </Col>
 

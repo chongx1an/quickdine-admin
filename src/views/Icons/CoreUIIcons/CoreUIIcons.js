@@ -416,6 +416,10 @@ class CoreUIIcons extends Component {
                 <i className="cui-yen icons font-2xl d-block mt-4"></i>
                 <div>yen</div>
               </Col>
+              <Col xs="6" sm="4" md="3" xl="2">
+                <i className="cil-fastfood icons font-2xl d-block mt-4"></i>
+                <div>fastfood</div>
+              </Col>
             </Row>
           </CardBody>
         </Card>
