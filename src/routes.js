@@ -14,7 +14,7 @@ const Paginations = React.lazy(() => import('./views/Base/Paginations'));
 const Popovers = React.lazy(() => import('./views/Base/Popovers'));
 const ProgressBar = React.lazy(() => import('./views/Base/ProgressBar'));
 const Switches = React.lazy(() => import('./views/Base/Switches'));
-const Tables = React.lazy(() => import('./views/Base/Tables'));
+// const Tables = React.lazy(() => import('./views/Base/Tables'));
 const Tabs = React.lazy(() => import('./views/Base/Tabs'));
 const Tooltips = React.lazy(() => import('./views/Base/Tooltips'));
 const BrandButtons = React.lazy(() => import('./views/Buttons/BrandButtons'));
@@ -38,6 +38,8 @@ const User = React.lazy(() => import('./views/Users/User'));
 
 const Orders = React.lazy(() => import('./views/Orders/Orders'));
 const Products = React.lazy(() => import('./views/Products/Products'));
+const Tables = React.lazy(() => import('./views/Tables/Tables'));
+const TableOrders = React.lazy(() => import('./views/Tables/TableOrders/TableOrders'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -45,7 +47,8 @@ const routes = [
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/orders', name: 'Orders', component: Orders },
   { path: '/products', name: 'Products', component: Products },
-  { path: '/theme/typography', name: 'Typography', component: Typography },
+  { path: '/tables/:table_id', name: 'Orders', component: TableOrders },
+  { path: '/tables', name: 'Tables', component: Tables },
 ];
 
 export default routes;
