@@ -17,7 +17,7 @@ export default {
     {
       name: 'Products',
       url: '/products',
-      icon: 'icon-food',
+      icon: 'cui-fastfood',
     },
     {
       name: 'Tables',
