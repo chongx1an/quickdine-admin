@@ -30,11 +30,11 @@ const apiPost = (path, body = null, headers = null) => {
   path = checkStorePath(path);
 
   return new Promise((resolve, reject) => {
-      axios.post(path, body, {
-          headers: headers,
-      })
-      .then(res => resolve(res.data))
-      .catch(reject);
+    axios.post(path, body, {
+        headers: headers,
+    })
+    .then(res => resolve(res.data))
+    .catch(reject);
   })
 
 }
@@ -44,11 +44,11 @@ const apiPut = (path, body = null, headers = null) => {
   path = checkStorePath(path);
 
   return new Promise((resolve, reject) => {
-      axios.put(path, body, {
-          headers: headers,
-      })
-      .then(res => resolve(res.data))
-      .catch(reject);
+    axios.put(path, body, {
+        headers: headers,
+    })
+    .then(res => resolve(res.data))
+    .catch(reject);
   })
 
 }
@@ -58,11 +58,11 @@ const apiDelete = (path, headers = null) => {
   path = checkStorePath(path);
 
   return new Promise((resolve, reject) => {
-      axios.get(path, {
-          headers: headers,
-      })
-      .then(res => resolve(res.data))
-      .catch(reject);
+    axios.get(path, {
+        headers: headers,
+    })
+    .then(res => resolve(res.data))
+    .catch(reject);
   })
 
 }

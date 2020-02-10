@@ -14,7 +14,8 @@ class Products extends Component {
     this.state = {
       products: Array(18).fill({
         name: 'Sushi',
-        image: 'https://1k9ch93e3xh2t4pa12vvmx1t-wpengine.netdna-ssl.com/wp-content/uploads/2017/09/Vegan-sushi-donuts_4483.jpg'
+        image: 'https://1k9ch93e3xh2t4pa12vvmx1t-wpengine.netdna-ssl.com/wp-content/uploads/2017/09/Vegan-sushi-donuts_4483.jpg',
+        price: 5
       }),
       totalItems: 30,
       currentPage: 1,
@@ -56,7 +57,10 @@ class Products extends Component {
             <div style={{height: 'inherit', width: 'inherit', backgroundSize: 'cover', backgroundImage: `url(${x.image})`}}>
             </div>
           </CardBody>
-          <CardFooter style={{textAlign: 'center'}}>{x.name}</CardFooter>
+          <CardFooter style={{textAlign: 'center'}}>
+            <b><p>{x.name}</p></b>
+            <p>{'RM ' + x.price}</p>
+          </CardFooter>
         </Card>
       </Col>
     ));
