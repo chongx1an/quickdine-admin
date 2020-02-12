@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardFooter, CardHeader, Col, Row, Collapse, FadePagination, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
+import { Button, Badge, Card, CardBody, CardFooter, CardHeader, Col, Row, Collapse, FadePagination, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 import { AppSwitch } from '@coreui/react'
 import ApiClient from '../../ApiClient';
 
@@ -30,18 +30,18 @@ class Products extends Component {
   listProducts() {
 
     ApiClient.apiGet('@store/products')
-    .then(res => {
+      .then(res => {
 
-      const { products, totalItems, currentPage } = res;
+        const { products, totalItems, currentPage } = res;
 
-      this.setState({
-        products,
-        totalItems,
-        currentPage
-      });
+        this.setState({
+          products,
+          totalItems,
+          currentPage
+        });
 
-    })
-    .catch(console.log);
+      })
+      .catch(console.log);
 
   }
 
@@ -54,10 +54,10 @@ class Products extends Component {
         <Card>
           <CardBody style={styles.productCard}>
             <Badge color="danger" style={styles.badge}>Hot Item</Badge>
-            <div style={{height: 'inherit', width: 'inherit', backgroundSize: 'cover', backgroundImage: `url(${x.image})`}}>
+            <div style={{ height: 'inherit', width: 'inherit', backgroundSize: 'cover', backgroundImage: `url(${x.image})` }}>
             </div>
           </CardBody>
-          <CardFooter style={{textAlign: 'center'}}>
+          <CardFooter style={{ textAlign: 'center' }}>
             <b><p>{x.name}</p></b>
             <p>{'RM ' + x.price}</p>
           </CardFooter>
@@ -67,7 +67,7 @@ class Products extends Component {
 
     var paginationMarkup = [];
 
-    for(var i = 1; i <= (totalItems / 18) + 1; i++) {
+    for (var i = 1; i <= (totalItems / 18) + 1; i++) {
       paginationMarkup.push(
         <PaginationItem active={i == currentPage ? true : false}>
           <PaginationLink tag="button">{i}</PaginationLink>
@@ -75,20 +75,30 @@ class Products extends Component {
       );
     }
 
+    const createProductPage = '#/products/create';
+
     return (
       <div className="animated fadeIn">
-        <Row>
-          {productsMarkup}
-        </Row>
-        <Pagination style={{position: 'fixed', bottom: 55, right: 15}}>
-          <PaginationItem>
-            <PaginationLink previous tag="button"></PaginationLink>
-          </PaginationItem>
-          {paginationMarkup}
-          <PaginationItem>
-            <PaginationLink next tag="button"></PaginationLink>
-          </PaginationItem>
-        </Pagination>
+        <Col>
+          <Row>
+            <a href={createProductPage}>
+              <Button color="primary" >Add product</Button>
+            </a>
+          </Row>
+          <Row>
+            {productsMarkup}
+          </Row>
+          <Pagination style={{ position: 'fixed', bottom: 55, right: 15 }}>
+            <PaginationItem>
+              <PaginationLink previous tag="button"></PaginationLink>
+            </PaginationItem>
+            {paginationMarkup}
+            <PaginationItem>
+              <PaginationLink next tag="button"></PaginationLink>
+            </PaginationItem>
+          </Pagination>
+
+        </Col>
       </div>
     );
   }

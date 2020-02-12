@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
+import { Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table, Button } from 'reactstrap';
 import ApiClient from '../../ApiClient';
 
 
 class Orders extends Component {
 
-   constructor(props) {
+  constructor(props) {
 
     super(props);
 
@@ -21,7 +21,7 @@ class Orders extends Component {
 
   generateData() {
     var products = [];
-    for(var i = 0; i < 20; i++) {
+    for (var i = 0; i < 20; i++) {
       var product = {
         number: i + 1,
         table_number: Math.floor(Math.random() * 20) + 1,
@@ -41,18 +41,18 @@ class Orders extends Component {
   listOrders() {
 
     ApiClient.apiGet('@store/orders')
-    .then(res => {
+      .then(res => {
 
-      const { orders, totalItems, currentPage } = res;
+        const { orders, totalItems, currentPage } = res;
 
-      this.setState({
-        orders,
-        totalItems,
-        currentPage
-      });
+        this.setState({
+          orders,
+          totalItems,
+          currentPage
+        });
 
-    })
-    .catch(console.log);
+      })
+      .catch(console.log);
 
   }
 
