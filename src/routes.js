@@ -41,6 +41,7 @@ const Products = React.lazy(() => import('./views/Products/Products'));
 const CreateProduct = React.lazy(() => import('./views/Products/CreateProduct/CreateProduct'));
 const Tables = React.lazy(() => import('./views/Tables/Tables'));
 const TableOrders = React.lazy(() => import('./views/Tables/TableOrders/TableOrders'));
+const Customers = React.lazy(() => import('./views/Customers/Customers'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -52,6 +53,8 @@ const routes = [
 
   { path: '/tables/:table_id', name: 'Orders', component: TableOrders },
   { path: '/tables', name: 'Tables', component: Tables },
+
+  { path: '/customers', name: 'Customers', component: Customers },
 ];
 
 export default routes;

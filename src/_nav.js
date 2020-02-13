@@ -24,5 +24,10 @@ export default {
       url: '/tables',
       icon: 'icon-pencil',
     },
+    {
+      name: 'Customers',
+      url: '/customers',
+      icon: 'icon-people',
+    },
   ],
 };

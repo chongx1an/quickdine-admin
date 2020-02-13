@@ -1,26 +1,38 @@
 import React, { Component } from 'react';
 import { Badge, Card, CardBody, CardFooter, CardHeader, Col, Row, Collapse, Fade } from 'reactstrap';
-
+import ApiClient from '../../ApiClient';
 
 class Tables extends Component {
   constructor(props) {
     super(props);
 
     this.listTables = this.listTables.bind(this);
-    this.generateRandomData = this.generateRandomData.bind(this);
 
     this.state = {
       tables: this.generateRandomData(),
+      totalItems: 50,
+      currentPage: 1
     }
   }
 
   componentDidMount() {
-    this.listTables();
-    this.generateRandomData();
+    // this.listTables();
   }
 
   listTables() {
-    // TODO: list tables
+    ApiClient.apiGet('@store/tables')
+      .then(res => {
+
+        const { tables, totalItems, currentPage } = res;
+
+        this.setState({
+          tables,
+          totalItems,
+          currentPage
+        });
+
+      })
+      .catch(console.log);
   }
 
   generateRandomData() {
@@ -41,27 +53,29 @@ class Tables extends Component {
 
   render() {
 
+    const { tables, totalItems, currentPage } = this.state;
+
     const viewTableOrders = '#/tables/1';
 
-    const table_text = {
+    const text = {
       textAlign: 'center',
       alignItems: 'center',
     }
 
-    const table_link = {
+    const link = {
       textDecoration: 'none',
       color: 'grey',
     }
 
-    const build_tables = this.state.tables.map((value, index) => {
+    const buildTables = tables && tables.map((value, index) => {
       return <Col key={index} xs="12" sm="6" md="2">
-        <a href={viewTableOrders} style={table_link}>
+        <a href={viewTableOrders} style={link}>
           <Card>
             <CardBody style={{
               height: '20vh',
               backgroundColor: value.is_occupied ? 'lightGrey' : 'white',
             }}>
-              <div style={table_text}>
+              <div style={text}>
                 <h4>Table</h4>
                 <h1>{value.number}</h1>
               </div>
@@ -79,7 +93,7 @@ class Tables extends Component {
     return (
       <div className="animated fadeIn" >
         <Row>
-          {build_tables}
+          {buildTables}
         </Row>
       </div>
     )
