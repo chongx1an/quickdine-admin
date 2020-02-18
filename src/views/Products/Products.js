@@ -12,15 +12,39 @@ class Products extends Component {
     this.listProducts = this.listProducts.bind(this);
 
     this.state = {
-      products: Array(18).fill({
-        name: 'Sushi',
-        image: 'https://1k9ch93e3xh2t4pa12vvmx1t-wpengine.netdna-ssl.com/wp-content/uploads/2017/09/Vegan-sushi-donuts_4483.jpg',
-        price: 5
-      }),
+      products: this.generateProducts(),
       totalItems: 30,
       currentPage: 1,
     };
 
+  }
+
+  generateProducts() {
+    var products = [];
+    var names = [
+      "Big breakfast",
+      "Small breakfast",
+      "Lunch Set A",
+      "Breakfast Set B",
+    ];
+    var images = [
+      "https://tinyurl.com/rfqgjsb",
+      "https://tinyurl.com/wg537ey",
+      "https://tinyurl.com/rrscpnw",
+      "https://tinyurl.com/qk72g7x",
+    ];
+
+    for (let i = 0; i < 20; i++) {
+      var table = {
+        name: names[Math.floor(Math.random() * names.length)],
+        image: images[Math.floor(Math.random() * images.length)],
+        price: Math.floor(Math.random() * 30 + 10),
+      }
+
+      products.push(table);
+    }
+
+    return products;
   }
 
   componentDidMount() {
@@ -80,9 +104,9 @@ class Products extends Component {
     return (
       <div className="animated fadeIn">
         <Col>
-          <Row>
+          <Row style={{ justifyContent: 'flex-end', marginBottom: "3vh", marginRight: "0.2vw" }}>
             <a href={createProductPage}>
-              <Button color="primary" >Add product</Button>
+              <Button color="primary">Add product</Button>
             </a>
           </Row>
           <Row>

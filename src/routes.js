@@ -47,13 +47,19 @@ const Customers = React.lazy(() => import('./views/Customers/Customers'));
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
+
+  // Orders
   { path: '/orders', name: 'Orders', component: Orders },
-  { path: '/products/new', name: 'Add Product', component: CreateProduct },
+
+  // Products
+  { path: '/products/create', name: 'Add Product', component: CreateProduct },
   { path: '/products', name: 'Products', component: Products },
 
+  // Tables
   { path: '/tables/:table_id', name: 'Orders', component: TableOrders },
   { path: '/tables', name: 'Tables', component: Tables },
 
+  // Customers
   { path: '/customers', name: 'Customers', component: Customers },
 ];
 
