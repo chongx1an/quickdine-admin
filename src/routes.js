@@ -36,11 +36,20 @@ const Widgets = React.lazy(() => import('./views/Widgets/Widgets'));
 const Users = React.lazy(() => import('./views/Users/Users'));
 const User = React.lazy(() => import('./views/Users/User'));
 
+// Orders
 const Orders = React.lazy(() => import('./views/Orders/Orders'));
+
+// Products
 const Products = React.lazy(() => import('./views/Products/Products'));
 const CreateProduct = React.lazy(() => import('./views/Products/CreateProduct/CreateProduct'));
+
+// Tables
 const Tables = React.lazy(() => import('./views/Tables/Tables'));
+const CreateTable = React.lazy(() => import('./views/Tables/CreateTable/CreateTable'));
+const UpdateTable = React.lazy(() => import('./views/Tables/UpdateTable/UpdateTable'));
 const TableOrders = React.lazy(() => import('./views/Tables/TableOrders/TableOrders'));
+
+// Customers
 const Customers = React.lazy(() => import('./views/Customers/Customers'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -56,6 +65,8 @@ const routes = [
   { path: '/products', name: 'Products', component: Products },
 
   // Tables
+  { path: '/tables/create', name: 'Add Table', component: CreateTable },
+  { path: '/tables/update', name: 'Edit Table', component: UpdateTable },
   { path: '/tables/:table_id', name: 'Orders', component: TableOrders },
   { path: '/tables', name: 'Tables', component: Tables },
 

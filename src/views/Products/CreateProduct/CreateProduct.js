@@ -70,8 +70,13 @@ export default props => {
     <div style={container}>
       {
         variants.length == 0
-          ? <Button onClick={addVariant}>Add variants</Button>
-          : <>
+          ?
+          <>
+            <p>Add variants if this product comes in multiple versions, like different sizes or types.</p>
+            <Button onClick={addVariant}>Add variants</Button>
+          </>
+          :
+          <>
             <Row xs="12" md="9">
               <Col md="3"><strong>Option Type</strong></Col>
               <Col md="5"><strong>Option Value</strong></Col>
