@@ -38,6 +38,12 @@ export default props => {
 
   }
 
+  const removeVariant = (variant) => {
+
+    setVariants(variants.filter((x) => x != variant));
+
+  }
+
   const createProduct = () => {
 
     ApiClient.apiPost('@store/products', this.state.params)
@@ -79,6 +85,30 @@ export default props => {
     </Row>
   ));
 
+  const addVariantMarkup = (
+    <div style={container}>
+      {
+        variants.length == 0
+          ?
+          <>
+            <p>Add variants if this product comes in multiple versions, like different sizes or types.</p>
+            <Button onClick={addVariant}>Add variants</Button>
+          </>
+          :
+          <>
+            <Row xs="12" md="9">
+              <Col md="3"><strong>Option Type</strong></Col>
+              <Col md="5"><strong>Option Value</strong></Col>
+              <Col md="3"><strong>Option Price (RM)</strong></Col>
+              <Col md="1"></Col>
+            </Row>
+            {variantsMarkup}
+            <Button onClick={addVariant}>Add more option type</Button>
+          </>
+      }
+    </div>
+  )
+
   return (
     <div className="animated fadeIn">
       <Card>
@@ -91,16 +121,26 @@ export default props => {
             <FormGroup>
               <div style={container}>
                 <Row md="3">
-                  <Col><strong>Title *</strong></Col>
-                  <Col><strong>Type *</strong></Col>
+                  <Col md="4"><strong>Title *</strong></Col>
+                  <Col md="4"><strong>Type *</strong></Col>
+                  {
+                    variants.length == 0 &&
+                    <Col md="4"><strong>Price (RM) *</strong></Col>
+                  }
                 </Row>
                 <Row md="3">
-                  <Col>
-                    <Input type="text" id="text-input" name="text-input" placeholder="Give this product a name" />
+                  <Col md="4">
+                    <Input type="text" id="text-input" name="text-input" placeholder="McChicken" />
                   </Col>
-                  <Col>
-                    <Input type="text" id="text-input" name="text-input" placeholder="Give this product a type" />
+                  <Col md="4">
+                    <Input type="text" id="text-input" name="text-input" placeholder="Food" />
                   </Col>
+                  {
+                    variants.length == 0 &&
+                    <Col md="4">
+                      <Input type="text" id="text-input" name="text-input" placeholder="15.00" />
+                    </Col>
+                  }
                 </Row>
               </div>
             </FormGroup>

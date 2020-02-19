@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardFooter, CardHeader, Col, Row, Collapse, Fade } from 'reactstrap';
+import { Badge, Card, CardBody, CardFooter, DropdownItem, Col, Row, Button, DropdownToggle, DropdownMenu, UncontrolledDropdown } from 'reactstrap';
 import ApiClient from '../../ApiClient';
 
 class Tables extends Component {
@@ -40,6 +40,7 @@ class Tables extends Component {
 
     for (let i = 0; i < 20; i++) {
       var table = {
+        id: i,
         number: i + 1,
         is_occupied: Math.floor(Math.random() * 2 + 1) % 2 ? true : false,
       }
@@ -55,48 +56,70 @@ class Tables extends Component {
 
     const { tables, totalItems, currentPage } = this.state;
 
-    const viewTableOrders = '#/tables/1';
+    const viewTableOrdersPage = (id) => '#/tables/' + id;
 
-    const text = {
-      textAlign: 'center',
-      alignItems: 'center',
-    }
+    const viewUpdateTablePage = "#/tables/update";
 
-    const link = {
-      textDecoration: 'none',
-      color: 'grey',
-    }
+    const viewCreateTablePage = "#/tables/create";
 
-    const buildTables = tables && tables.map((value, index) => {
+    const tablesMarkup = tables && tables.map((value, index) => {
       return <Col key={index} xs="12" sm="6" md="2">
-        <a href={viewTableOrders} style={link}>
-          <Card>
-            <CardBody style={{
-              height: '20vh',
-              backgroundColor: value.is_occupied ? 'lightGrey' : 'white',
-            }}>
-              <div style={text}>
-                <h4>Table</h4>
-                <h1>{value.number}</h1>
-              </div>
-            </CardBody>
-            <CardFooter style={{
-              textAlign: 'center',
-              fontWeight: 'bold',
-              color: value.is_occupied ? "red" : "green"
-            }}>{value.is_occupied ? "Occupied" : "Open"}</CardFooter>
-          </Card>
-        </a>
+        <UncontrolledDropdown>
+          <DropdownToggle nav style={styles.toggle}>
+            <Card>
+              <CardBody style={{
+                height: '20vh',
+                backgroundColor: value.is_occupied ? 'lightGrey' : 'white',
+              }}>
+                <div style={styles.text}>
+                  <h4>Table</h4>
+                  <h1>{value.number}</h1>
+                </div>
+              </CardBody>
+              <CardFooter style={{
+                textAlign: 'center',
+                fontWeight: 'bold',
+                color: value.is_occupied ? "red" : "green"
+              }}>{value.is_occupied ? "Occupied" : "Open"}</CardFooter>
+            </Card>
+          </DropdownToggle>
+          <DropdownMenu right>
+            <DropdownItem href={viewTableOrdersPage(value.id)}><i className="fa fa-info"></i>View table orders</DropdownItem>
+            <DropdownItem href={viewUpdateTablePage}><i className="fa fa-edit"></i>Edit table</DropdownItem>
+          </DropdownMenu>
+        </UncontrolledDropdown>
       </Col >
     })
 
     return (
       <div className="animated fadeIn" >
+        <Row style={styles.button}>
+          <Button href={viewCreateTablePage} color="primary">Add table</Button>
+        </Row>
         <Row>
-          {buildTables}
+          {tablesMarkup}
         </Row>
       </div>
     )
+  }
+}
+
+const styles = {
+  text: {
+    textAlign: 'center',
+    alignItems: 'center',
+    color: 'grey'
+  },
+
+  toggle: {
+    margin: 0,
+    padding: 0
+  },
+
+  button: {
+    justifyContent: 'flex-end',
+    marginBottom: "3vh",
+    marginRight: "0.2vw"
   }
 }
 
