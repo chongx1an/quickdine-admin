@@ -41,17 +41,26 @@ const Products = React.lazy(() => import('./views/Products/Products'));
 const CreateProduct = React.lazy(() => import('./views/Products/CreateProduct/CreateProduct'));
 const Tables = React.lazy(() => import('./views/Tables/Tables'));
 const TableOrders = React.lazy(() => import('./views/Tables/TableOrders/TableOrders'));
+const Customers = React.lazy(() => import('./views/Customers/Customers'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
+
+  // Orders
   { path: '/orders', name: 'Orders', component: Orders },
-  { path: '/products/new', name: 'Add Product', component: CreateProduct },
+
+  // Products
+  { path: '/products/create', name: 'Add Product', component: CreateProduct },
   { path: '/products', name: 'Products', component: Products },
 
+  // Tables
   { path: '/tables/:table_id', name: 'Orders', component: TableOrders },
   { path: '/tables', name: 'Tables', component: Tables },
+
+  // Customers
+  { path: '/customers', name: 'Customers', component: Customers },
 ];
 
 export default routes;
