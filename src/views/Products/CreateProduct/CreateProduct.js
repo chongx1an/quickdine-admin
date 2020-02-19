@@ -1,6 +1,7 @@
 import React, { Component, useState } from 'react';
 import { Form, FormGroup, Input, Button, Card, CardBody, CardFooter, CardHeader, Col, Row } from 'reactstrap';
 import ApiClient from '../../../ApiClient';
+import './styles.css'
 
 
 export default props => {
@@ -9,17 +10,45 @@ export default props => {
 
   const addVariant = () => {
 
-    if (variants.length >= 1) {
+    setVariants([...variants, { type: 'Size', options: [] }]);
 
-      var lastElement = variants[variants.length - 1];
+  }
 
-      setVariants([...variants, lastElement + 1]);
+  const editVariantType = (e, index) => {
 
-    } else {
+    setVariants(variants.map((x, i) => {
 
-      setVariants([...variants, 0]);
+      if(i === index) {
+        x.type = e.target.value;
+      }
 
-    }
+      return x;
+
+    }));
+
+  }
+
+  const removeVariantType = variant => {
+
+    variants.length > 0 && setVariants(variants.filter((x) => x !== variant));
+
+  }
+
+  const addVariantOption = (e, type) => {
+
+    e.key === 'Enter' && setVariants(variants.map(x => {
+
+      x.type === type && x.options.push({
+        name: e.target.value,
+        price: 0.00,
+        image_url: ''
+      });
+
+      e.target.value = '';
+
+      return x;
+
+    }));
 
   }
 
@@ -48,18 +77,22 @@ export default props => {
   }
 
   const variantsMarkup = variants.map((variant, index) => (
-    <Row xs="12" md="9" style={{ marginTop: "1vh", marginBottom: "1vh" }}>
-      <Col md="3">
-        <Input type="text" id={variant} key={index} placeholder="Size" />
+    <Row key={index} xs="12" md="9" style={{ marginTop: "1vh", marginBottom: "1vh" }}>
+      <Col>
+        <Input type="text" placeholder="Size" value={variant.type} onChange={e => editVariantType(e, index)} />
       </Col>
-      <Col md="5">
-        <Input type="text" id={variant} key={index} placeholder="Large" />
+      <Col>
+        <Row style={{border: '1px solid #E4E7EA', borderRadius: 5, justifyContent: 'flex-start'}}>
+          {variant.options && variant.options.map((option, index) => (
+            <Col md={3} key={index} style={{padding: 10}}>
+              <Button style={styles.variantBadge}>{option.name}</Button>
+            </Col>
+          ))}
+          <Input type='text' onKeyDown={e => addVariantOption(e, variant.type)} className='variant-option-input' />
+        </Row>
       </Col>
-      <Col md="3">
-        <Input type="text" id={variant} key={index} placeholder="10.00" />
-      </Col>
-      <Col md="1">
-        <Button onClick={() => removeVariant(variant)} color="danger">
+      <Col>
+        <Button onClick={() => removeVariantType(variant)} color="danger">
           Delete
         </Button>
       </Col>
@@ -94,7 +127,7 @@ export default props => {
     <div className="animated fadeIn">
       <Card>
         <CardHeader>
-          <strong>Add Product</strong>
+          <strong>Product</strong>
         </CardHeader>
 
         <CardBody>
@@ -133,7 +166,7 @@ export default props => {
                 </Row>
                 <Row xs="12" md="9">
                   <Col>
-                    <Input type="textarea" name="textarea-input" id="textarea-input" rows="9" placeholder="Content..." />
+                    <Input type="textarea" name="textarea-input" id="textarea-input" rows="9" placeholder="Type something" />
                   </Col>
                 </Row>
               </div>
@@ -158,12 +191,24 @@ export default props => {
 
       <Card>
         <CardHeader>
-          <strong>Add Variants</strong>
+          <strong>Variants</strong>
         </CardHeader>
 
         <CardBody>
           <FormGroup col>
-            {addVariantMarkup}
+            <div style={container}>
+              <Row xs="12" md="9">
+                <Col><strong>Option Type</strong></Col>
+                <Col><strong>Option Value</strong></Col>
+                <Col></Col>
+              </Row>
+              {variantsMarkup}
+              {/* <Button onClick={addVariantType}>
+                Add more option type
+              </Button> */}
+              <br/>
+              <p style={{color: '#6A84F0', cursor: 'pointer'}} onClick={addVariant}>Add more option type</p>
+            </div>
           </FormGroup>
         </CardBody>
 
@@ -175,4 +220,12 @@ export default props => {
 
     </div>
   );
+}
+
+const styles = {
+  variantBadge: {
+    backgroundColor: '#E7F7F1',
+    borderColor: '#BDE8D9',
+    color: '#14B7B9'
+  }
 }
