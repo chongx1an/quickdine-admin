@@ -5,23 +5,27 @@ import ApiClient from '../../../ApiClient';
 
 export default props => {
 
-  const [variants, setVariants] = useState([0]);
+  const [variants, setVariants] = useState([]);
 
   const addVariant = () => {
 
-    var lastElement = variants[variants.length - 1];
+    if (variants.length >= 1) {
 
-    setVariants([...variants, lastElement + 1]);
+      var lastElement = variants[variants.length - 1];
+
+      setVariants([...variants, lastElement + 1]);
+
+    } else {
+
+      setVariants([...variants, 0]);
+
+    }
 
   }
 
   const removeVariant = (variant) => {
 
-    if (variants.length > 1) {
-
-      setVariants(variants.filter((x) => x != variant));
-
-    }
+    setVariants(variants.filter((x) => x != variant));
 
   }
 
@@ -45,19 +49,41 @@ export default props => {
 
   const variantsMarkup = variants.map((variant, index) => (
     <Row xs="12" md="9" style={{ marginTop: "1vh", marginBottom: "1vh" }}>
-      <Col>
+      <Col md="3">
         <Input type="text" id={variant} key={index} placeholder="Size" />
       </Col>
-      <Col>
+      <Col md="5">
         <Input type="text" id={variant} key={index} placeholder="Large" />
       </Col>
-      <Col>
+      <Col md="3">
+        <Input type="text" id={variant} key={index} placeholder="10.00" />
+      </Col>
+      <Col md="1">
         <Button onClick={() => removeVariant(variant)} color="danger">
           Delete
         </Button>
       </Col>
     </Row>
   ));
+
+  const addVariantMarkup = (
+    <div style={container}>
+      {
+        variants.length == 0
+          ? <Button onClick={addVariant}>Add variants</Button>
+          : <>
+            <Row xs="12" md="9">
+              <Col md="3"><strong>Option Type</strong></Col>
+              <Col md="5"><strong>Option Value</strong></Col>
+              <Col md="3"><strong>Option Price (RM)</strong></Col>
+              <Col md="1"></Col>
+            </Row>
+            {variantsMarkup}
+            <Button onClick={addVariant}>Add more option type</Button>
+          </>
+      }
+    </div>
+  )
 
   return (
     <div className="animated fadeIn">
@@ -71,16 +97,26 @@ export default props => {
             <FormGroup>
               <div style={container}>
                 <Row md="3">
-                  <Col><strong>Title *</strong></Col>
-                  <Col><strong>Type *</strong></Col>
+                  <Col md="4"><strong>Title *</strong></Col>
+                  <Col md="4"><strong>Type *</strong></Col>
+                  {
+                    variants.length == 0 &&
+                    <Col md="4"><strong>Price (RM) *</strong></Col>
+                  }
                 </Row>
                 <Row md="3">
-                  <Col>
-                    <Input type="text" id="text-input" name="text-input" placeholder="Give this product a name" />
+                  <Col md="4">
+                    <Input type="text" id="text-input" name="text-input" placeholder="McChicken" />
                   </Col>
-                  <Col>
-                    <Input type="text" id="text-input" name="text-input" placeholder="Give this product a type" />
+                  <Col md="4">
+                    <Input type="text" id="text-input" name="text-input" placeholder="Food" />
                   </Col>
+                  {
+                    variants.length == 0 &&
+                    <Col md="4">
+                      <Input type="text" id="text-input" name="text-input" placeholder="15.00" />
+                    </Col>
+                  }
                 </Row>
               </div>
             </FormGroup>
@@ -122,17 +158,7 @@ export default props => {
 
         <CardBody>
           <FormGroup col>
-            <div style={container}>
-              <Row xs="12" md="9">
-                <Col><strong>Option Type</strong></Col>
-                <Col><strong>Option Value</strong></Col>
-                <Col></Col>
-              </Row>
-              {variantsMarkup}
-              <Button onClick={addVariant}>
-                Add more option type
-              </Button>
-            </div>
+            {addVariantMarkup}
           </FormGroup>
         </CardBody>
 
