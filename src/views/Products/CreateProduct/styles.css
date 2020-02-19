@@ -1,0 +1,7 @@
+.variant-option-input {
+  border: none;
+}
+
+.variant-option-input:focus {
+  box-shadow: none;
+}
