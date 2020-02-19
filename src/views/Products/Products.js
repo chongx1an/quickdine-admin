@@ -36,6 +36,7 @@ class Products extends Component {
 
     for (let i = 0; i < 20; i++) {
       var table = {
+        id: i,
         name: names[Math.floor(Math.random() * names.length)],
         image: images[Math.floor(Math.random() * images.length)],
         price: Math.floor(Math.random() * 30 + 10),
@@ -73,19 +74,25 @@ class Products extends Component {
 
     const { products, totalItems, currentPage } = this.state;
 
-    const productsMarkup = products.length > 0 && products.map((x, i) => (
+    const viewCreateProductPage = '#/products/create';
+
+    const viewUpdateProductPage = (id) => "#/products/" + id;
+
+    const productsMarkup = products.length > 0 && products.map((product, index) => (
       <Col xs="12" sm="6" md="2">
-        <Card>
-          <CardBody style={styles.productCard}>
-            <Badge color="danger" style={styles.badge}>Hot Item</Badge>
-            <div style={{ height: 'inherit', width: 'inherit', backgroundSize: 'cover', backgroundImage: `url(${x.image})` }}>
-            </div>
-          </CardBody>
-          <CardFooter style={{ textAlign: 'center' }}>
-            <b><p>{x.name}</p></b>
-            <p>{'RM ' + x.price}</p>
-          </CardFooter>
-        </Card>
+        <a href={viewUpdateProductPage(product.id)}>
+          <Card>
+            <CardBody style={styles.productCard}>
+              <Badge color="danger" style={styles.badge}>Hot Item</Badge>
+              <div style={{ height: 'inherit', width: 'inherit', backgroundSize: 'cover', backgroundImage: `url(${product.image})` }}>
+              </div>
+            </CardBody>
+            <CardFooter style={{ textAlign: 'center' }}>
+              <b><p>{product.name}</p></b>
+              <p>{'RM ' + product.price}</p>
+            </CardFooter>
+          </Card>
+        </a>
       </Col>
     ));
 
@@ -99,15 +106,11 @@ class Products extends Component {
       );
     }
 
-    const createProductPage = '#/products/create';
-
     return (
       <div className="animated fadeIn">
         <Col>
           <Row style={{ justifyContent: 'flex-end', marginBottom: "3vh", marginRight: "0.2vw" }}>
-            <a href={createProductPage}>
-              <Button color="primary">Add product</Button>
-            </a>
+            <Button href={viewCreateProductPage} color="primary">Add product</Button>
           </Row>
           <Row>
             {productsMarkup}

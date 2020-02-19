@@ -56,9 +56,9 @@ class Tables extends Component {
 
     const { tables, totalItems, currentPage } = this.state;
 
-    const viewTableOrdersPage = (id) => '#/tables/' + id;
+    const viewTableOrdersPage = (id) => "#/tables/" + id + "/orders";
 
-    const viewUpdateTablePage = "#/tables/update";
+    const viewUpdateTablePage = (id) => "#/tables/" + id;
 
     const viewCreateTablePage = "#/tables/create";
 
@@ -85,7 +85,7 @@ class Tables extends Component {
           </DropdownToggle>
           <DropdownMenu right>
             <DropdownItem href={viewTableOrdersPage(value.id)}><i className="fa fa-info"></i>View table orders</DropdownItem>
-            <DropdownItem href={viewUpdateTablePage}><i className="fa fa-edit"></i>Edit table</DropdownItem>
+            <DropdownItem href={viewUpdateTablePage(value.id)}><i className="fa fa-edit"></i>Edit table</DropdownItem>
           </DropdownMenu>
         </UncontrolledDropdown>
       </Col >
