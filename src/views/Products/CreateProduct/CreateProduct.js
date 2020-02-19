@@ -18,7 +18,7 @@ export default props => {
 
     setVariants(variants.map((x, i) => {
 
-      if(i === index) {
+      if (i === index) {
         x.type = e.target.value;
       }
 
@@ -82,9 +82,9 @@ export default props => {
         <Input type="text" placeholder="Size" value={variant.type} onChange={e => editVariantType(e, index)} />
       </Col>
       <Col>
-        <Row style={{border: '1px solid #E4E7EA', borderRadius: 5, justifyContent: 'flex-start'}}>
+        <Row style={{ border: '1px solid #E4E7EA', borderRadius: 5, justifyContent: 'flex-start' }}>
           {variant.options && variant.options.map((option, index) => (
-            <Col md={3} key={index} style={{padding: 10}}>
+            <Col md={3} key={index} style={{ padding: 10 }}>
               <Button style={styles.variantBadge}>{option.name}</Button>
             </Col>
           ))}
@@ -98,30 +98,6 @@ export default props => {
       </Col>
     </Row>
   ));
-
-  const addVariantMarkup = (
-    <div style={container}>
-      {
-        variants.length == 0
-          ?
-          <>
-            <p>Add variants if this product comes in multiple versions, like different sizes or types.</p>
-            <Button onClick={addVariant}>Add variants</Button>
-          </>
-          :
-          <>
-            <Row xs="12" md="9">
-              <Col md="3"><strong>Option Type</strong></Col>
-              <Col md="5"><strong>Option Value</strong></Col>
-              <Col md="3"><strong>Option Price (RM)</strong></Col>
-              <Col md="1"></Col>
-            </Row>
-            {variantsMarkup}
-            <Button onClick={addVariant}>Add more option type</Button>
-          </>
-      }
-    </div>
-  )
 
   return (
     <div className="animated fadeIn">
@@ -203,11 +179,8 @@ export default props => {
                 <Col></Col>
               </Row>
               {variantsMarkup}
-              {/* <Button onClick={addVariantType}>
-                Add more option type
-              </Button> */}
-              <br/>
-              <p style={{color: '#6A84F0', cursor: 'pointer'}} onClick={addVariant}>Add more option type</p>
+              <br />
+              <p style={{ color: '#6A84F0', cursor: 'pointer' }} onClick={addVariant}>Add more option type</p>
             </div>
           </FormGroup>
         </CardBody>
