@@ -7,54 +7,67 @@ import './styles.css'
 export default props => {
 
   const [variants, setVariants] = useState([]);
+  const [combinations, setCombinations] = useState([]);
 
   const addVariant = () => {
 
-    setVariants([...variants, { type: 'Size', options: [] }]);
+    setVariants([...variants, { type: 'Size', options: [], combinations: [] }]);
 
   }
 
   const editVariantType = (e, index) => {
 
-    setVariants(variants.map((x, i) => {
+    var variantsCopy = [...variants];
 
-      if(i === index) {
-        x.type = e.target.value;
-      }
+    variantsCopy[index].type = e.target.value;
 
-      return x;
-
-    }));
+    setVariants(variantsCopy);
 
   }
 
   const removeVariantType = variant => {
 
-    variants.length > 0 && setVariants(variants.filter((x) => x !== variant));
+    variants.length && setVariants(variants.filter((x) => x !== variant));
 
   }
 
-  const addVariantOption = (e, type) => {
+  const addVariantOption = (e, index) => {
 
-    e.key === 'Enter' && setVariants(variants.map(x => {
+    var variantsCopy = [...variants];
 
-      x.type === type && x.options.push({
-        name: e.target.value,
+    variantsCopy[index].options.push(e.target.value);
+
+    variantsCopy[index].combinations.forEach(combination => {
+
+      variantsCopy[index].combinations.push({
+        name: `${combination.name} · ${e.target.value}`,
         price: 0.00,
         image_url: ''
       });
 
-      e.target.value = '';
+    });
 
-      return x;
+    variantsCopy[index].combinations.push({
+      name: e.target.value,
+      price: 0.00,
+      image_url: ''
+    });
 
-    }));
+    setVariants(variantsCopy);
+
+    e.target.value = '';
 
   }
 
-  const removeVariant = (variant) => {
+  const editVariantPrice = (variantIdx, combinationIdx, e) => {
 
-    setVariants(variants.filter((x) => x != variant));
+    var variantsCopy = [...variants];
+
+    console.log(e.target.value)
+
+    variantsCopy[variantIdx].combinations[combinationIdx].price = e.target.value;
+
+    setVariants(variantsCopy);
 
   }
 
@@ -70,25 +83,45 @@ export default props => {
 
   }
 
+  const getBadgeColor = idx => {
+
+    const colors = ['outline-primary', 'outline-success', 'outline-danger', 'outline-warning', 'outline-dark'];
+
+    switch (idx) {
+      case 0:
+        return colors[0]
+      case 1:
+        return colors[1]
+      case 2:
+        return colors[2]
+      case 3:
+        return colors[3]
+      case 4:
+        return colors[4]
+      default:
+        return colors[Math.floor(Math.random() * colors.length)];
+    }
+  }
+
   const container = {
     marginBottom: "3vh",
     marginLeft: "5vh",
     marginRight: "5vh",
   }
 
-  const variantsMarkup = variants.map((variant, index) => (
-    <Row key={index} xs="12" md="9" style={{ marginTop: "1vh", marginBottom: "1vh" }}>
+  const variantsMarkup = variants.length && variants.map((variant, i) => (
+    <Row key={i} xs="12" md="9" style={{ marginTop: "1vh", marginBottom: "1vh" }}>
       <Col>
-        <Input type="text" placeholder="Size" value={variant.type} onChange={e => editVariantType(e, index)} />
+        <Input type="text" placeholder="Type" value={variant.type} onChange={e => editVariantType(e, i)} />
       </Col>
       <Col>
         <Row style={{border: '1px solid #E4E7EA', borderRadius: 5, justifyContent: 'flex-start'}}>
-          {variant.options && variant.options.map((option, index) => (
-            <Col md={3} key={index} style={{padding: 10}}>
-              <Button style={styles.variantBadge}>{option.name}</Button>
+          {variant.options && variant.options.map((option, j) => (
+            <Col md={3} key={j} style={{padding: 10}}>
+              <Button color={getBadgeColor(i)}>{option}</Button>
             </Col>
           ))}
-          <Input type='text' onKeyDown={e => addVariantOption(e, variant.type)} className='variant-option-input' />
+          <Input type='text' onKeyDown={e => e.key === 'Enter' && addVariantOption(e, i)} className='variant-option-input' />
         </Row>
       </Col>
       <Col>
@@ -100,28 +133,69 @@ export default props => {
   ));
 
   const addVariantMarkup = (
-    <div style={container}>
+    <>
       {
-        variants.length == 0
-          ?
-          <>
-            <p>Add variants if this product comes in multiple versions, like different sizes or types.</p>
-            <Button onClick={addVariant}>Add variants</Button>
-          </>
-          :
-          <>
-            <Row xs="12" md="9">
-              <Col md="3"><strong>Option Type</strong></Col>
-              <Col md="5"><strong>Option Value</strong></Col>
-              <Col md="3"><strong>Option Price (RM)</strong></Col>
-              <Col md="1"></Col>
-            </Row>
-            {variantsMarkup}
-            <Button onClick={addVariant}>Add more option type</Button>
-          </>
+        variants.length
+        ?
+        <>
+          <Row>
+            <Col><strong>Option Type</strong></Col>
+            <Col><strong>Option Value</strong></Col>
+            <Col />
+          </Row>
+          {variantsMarkup}
+          <br/>
+          <p style={{color: '#6A84F0', cursor: 'pointer'}} onClick={addVariant}>Add more option type</p>
+        </>
+        :
+        <>
+          <p>Add variants if this product comes in multiple versions, like different sizes or types.</p>
+          <Button onClick={addVariant}>Add variants</Button>
+        </>
       }
-    </div>
+    </>
   )
+
+  const variantCombinationMarkup = (
+    variants.length && variants.map((variant, i) => (
+      variant.combinations.map((combination, j) => (
+        <Row key={j} style={{marginTop: '1vh', marginBottom: '1vh'}}>
+          <Col>
+            <Button color={getBadgeColor(i)}>{combination.name}</Button>
+          </Col>
+          <Col>
+            <Input type='number' step='1' placeholder='price' value={combination.price} onChange={e => editVariantPrice(i, j, e)} />
+          </Col>
+          <Col />
+        </Row>
+      ))
+    ))
+  )
+
+  const editVariantMarkup = (
+    variants.length && <>
+      <Row>
+        <Col><strong>Variant</strong></Col>
+        <Col><strong>Price</strong></Col>
+        <Col />
+      </Row>
+      {variantCombinationMarkup}
+    </>
+  )
+
+
+  // const editVariantMarkup = variants.length && variants.map((variant, i) => (
+  //   variants.combinations.length && variants.combinations.map((combination, j) => (
+  //     <Row key={j}>
+  //       <Col>
+  //         <p>{combination.name}</p>
+  //       </Col>
+  //       <Col>
+  //         <p>{combination.price}</p>
+  //       </Col>
+  //     </Row>
+  //   ))
+  // ));
 
   return (
     <div className="animated fadeIn">
@@ -133,12 +207,12 @@ export default props => {
         <CardBody>
           <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
             <FormGroup>
-              <div style={container}>
+              <div>
                 <Row md="3">
                   <Col md="4"><strong>Title *</strong></Col>
                   <Col md="4"><strong>Type *</strong></Col>
                   {
-                    variants.length == 0 &&
+                    variants.length <= 0 &&
                     <Col md="4"><strong>Price (RM) *</strong></Col>
                   }
                 </Row>
@@ -150,7 +224,7 @@ export default props => {
                     <Input type="text" id="text-input" name="text-input" placeholder="Food" />
                   </Col>
                   {
-                    variants.length == 0 &&
+                    variants.length <= 0 &&
                     <Col md="4">
                       <Input type="text" id="text-input" name="text-input" placeholder="15.00" />
                     </Col>
@@ -160,7 +234,7 @@ export default props => {
             </FormGroup>
 
             <FormGroup>
-              <div style={container}>
+              <div>
                 <Row md="3">
                   <Col><strong>Description</strong></Col>
                 </Row>
@@ -173,7 +247,7 @@ export default props => {
             </FormGroup>
 
             <FormGroup>
-              <div style={container}>
+              <div>
                 <Row md="3">
                   <Col><strong>Images</strong></Col>
                 </Row>
@@ -195,25 +269,16 @@ export default props => {
         </CardHeader>
 
         <CardBody>
-          <FormGroup col>
-            <div style={container}>
-              <Row xs="12" md="9">
-                <Col><strong>Option Type</strong></Col>
-                <Col><strong>Option Value</strong></Col>
-                <Col></Col>
-              </Row>
-              {variantsMarkup}
-              {/* <Button onClick={addVariantType}>
-                Add more option type
-              </Button> */}
-              <br/>
-              <p style={{color: '#6A84F0', cursor: 'pointer'}} onClick={addVariant}>Add more option type</p>
+          <FormGroup>
+            <div>
+              {addVariantMarkup}
+              {editVariantMarkup}
             </div>
           </FormGroup>
         </CardBody>
 
         <CardFooter>
-          <Button type="submit" size="sm" color="primary"><i className="fa fa-dot-circle-o"></i> Submit</Button>
+          <Button type="submit" size="sm" color="primary" style={{marginRight: 20}}><i className="fa fa-dot-circle-o"></i> Submit</Button>
           <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
         </CardFooter>
       </Card>
