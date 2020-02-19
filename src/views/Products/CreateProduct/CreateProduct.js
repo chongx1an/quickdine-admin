@@ -14,6 +14,20 @@ export default props => {
 
   }
 
+  const editVariantType = (e, index) => {
+
+    setVariants(variants.map((x, i) => {
+
+      if(i === index) {
+        x.type = e.target.value;
+      }
+
+      return x;
+
+    }));
+
+  }
+
   const removeVariantType = variant => {
 
     variants.length > 0 && setVariants(variants.filter((x) => x !== variant));
@@ -65,7 +79,7 @@ export default props => {
   const variantsMarkup = variants.map((variant, index) => (
     <Row key={index} xs="12" md="9" style={{ marginTop: "1vh", marginBottom: "1vh" }}>
       <Col>
-        <Input type="text" placeholder="Size" value={variant.type} />
+        <Input type="text" placeholder="Size" value={variant.type} onChange={e => editVariantType(e, index)} />
       </Col>
       <Col>
         <Row style={{border: '1px solid #E4E7EA', borderRadius: 5, justifyContent: 'flex-start'}}>
