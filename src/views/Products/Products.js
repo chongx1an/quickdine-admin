@@ -75,7 +75,7 @@ class Products extends Component {
       );
     }
 
-    const createProductPage = '#/products/create';
+    const createProductPage = '#/products/new';
 
     return (
       <div className="animated fadeIn">

@@ -93,10 +93,19 @@ class Products extends Component {
               </FormGroup>
               <FormGroup row>
                 <Col md="3">
-                  <Label htmlFor="email-input">Description</Label>
+                  <Label htmlFor="textarea-input">Description</Label>
                 </Col>
                 <Col xs="12" md="9">
-                  <Input type="email" id="email-input" name="email-input" placeholder="Type something" autoComplete="email" />
+                  <Input type="textarea" name="textarea-input" id="textarea-input" rows="9"
+                    placeholder="Type something" />
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <Col md="3">
+                  <Label htmlFor="text-input">Tag</Label>
+                </Col>
+                <Col xs="12" md="9">
+                  <Input type="text" id="text-input" name="text-input" placeholder="Give this product a name" />
                 </Col>
               </FormGroup>
               <FormGroup row>
