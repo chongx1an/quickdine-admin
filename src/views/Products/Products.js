@@ -76,11 +76,11 @@ class Products extends Component {
 
     const viewCreateProductPage = '#/products/create';
 
-    const viewUpdateProductPage = (id) => "#/products/" + id;
+    const viewUpdateProductPage = id => window.location.href = "#/products/" + id;
 
     const productsMarkup = products.length > 0 && products.map((product, index) => (
       <Col xs="12" sm="6" md="2">
-        <a href={viewUpdateProductPage(product.id)}>
+        <div onClick={() => viewUpdateProductPage(product.id)}>
           <Card>
             <CardBody style={styles.productCard}>
               <Badge color="danger" style={styles.badge}>Hot Item</Badge>
@@ -92,7 +92,7 @@ class Products extends Component {
               <p>{'RM ' + product.price}</p>
             </CardFooter>
           </Card>
-        </a>
+        </div>
       </Col>
     ));
 
