@@ -9,11 +9,7 @@ export default props => {
   const [variants, setVariants] = useState([]);
   const [combinations, setCombinations] = useState([]);
 
-  const addVariant = () => {
-
-    setVariants([...variants, { type: 'Size', options: [], combinations: [] }]);
-
-  }
+  const addVariant = () => variants.length < 3 && setVariants([...variants, { type: getOptionType(), options: [] }]);
 
   const editVariantType = (e, index) => {
 
@@ -25,49 +21,93 @@ export default props => {
 
   }
 
-  const removeVariantType = variant => {
-
-    variants.length && setVariants(variants.filter((x) => x !== variant));
-
-  }
+  const removeVariant = variant => variants.length && setVariants(variants.filter(x => x !== variant));
 
   const addVariantOption = (e, index) => {
 
-    var variantsCopy = [...variants];
+    if(e.target.value !== '') {
 
-    variantsCopy[index].options.push(e.target.value);
+      var variantsCopy = [...variants];
 
-    variantsCopy[index].combinations.forEach(combination => {
+      variantsCopy[index].options.push(e.target.value);
 
-      variantsCopy[index].combinations.push({
-        name: `${combination.name} · ${e.target.value}`,
-        price: 0.00,
-        image_url: ''
-      });
+      resetCombinations();
 
-    });
+      e.target.value = '';
 
-    variantsCopy[index].combinations.push({
-      name: e.target.value,
-      price: 0.00,
-      image_url: ''
-    });
-
-    setVariants(variantsCopy);
-
-    e.target.value = '';
+    }
 
   }
 
-  const editVariantPrice = (variantIdx, combinationIdx, e) => {
+  const resetCombinations = () => {
 
-    var variantsCopy = [...variants];
+    var combs = [];
 
-    console.log(e.target.value)
+    if(variants[2]) {
 
-    variantsCopy[variantIdx].combinations[combinationIdx].price = e.target.value;
+      variants[0].options.forEach(option0 => {
 
-    setVariants(variantsCopy);
+        variants[1].options.forEach(option1 => {
+
+          variants[2].options.forEach(option2 => {
+
+            combs.push({
+              name: `${option0} · ${option1} · ${option2}`,
+              price: 0.00,
+              image_url: ''
+            })
+
+          })
+
+        })
+
+      })
+
+    }
+
+    else if(variants[1]) {
+
+      variants[0].options.forEach(option0 => {
+
+        variants[1].options.forEach(option1 => {
+
+          combs.push({
+            name: `${option0} · ${option1}`,
+            price: 0.00,
+            image_url: ''
+          })
+
+        })
+
+      })
+
+    }
+
+    else if(variants[0]) {
+
+      variants[0].options.forEach(option => {
+
+        combs.push({
+          name: option,
+          price: 0.00,
+          image_url: ''
+        })
+
+      })
+
+    }
+
+    setCombinations(combs);
+
+  }
+
+  const editVariantPrice = (index, e) => {
+
+    var combinationsCopy = [...combinations];
+
+    combinationsCopy[index].price = e.target.value;
+
+    setVariants(combinationsCopy);
 
   }
 
@@ -103,6 +143,23 @@ export default props => {
     }
   }
 
+  const getOptionType = () => {
+
+    const types = ['Size', 'Type', 'Sauce'];
+
+    switch (variants.length) {
+      case 0:
+        return types[0];
+      case 1:
+        return types[1];
+      case 2:
+        return types[2];
+      default:
+        return types[0];
+    }
+
+  }
+
   const container = {
     marginBottom: "3vh",
     marginLeft: "5vh",
@@ -125,7 +182,7 @@ export default props => {
         </Row>
       </Col>
       <Col>
-        <Button onClick={() => removeVariantType(variant)} color="danger">
+        <Button onClick={() => removeVariant(variant)} color="danger">
           Delete
         </Button>
       </Col>
@@ -156,24 +213,39 @@ export default props => {
     </>
   )
 
+  // const variantCombinationMarkup = (
+  //   variants.length && variants.map((variant, i) => (
+  //     variant.combinations.map((combination, j) => (
+  //       <Row key={j} style={{marginTop: '1vh', marginBottom: '1vh'}}>
+  //         <Col>
+  //           <Button color={getBadgeColor(i)}>{combination.name}</Button>
+  //         </Col>
+  //         <Col>
+  //           <Input type='number' step='1' placeholder='price' value={combination.price} onChange={e => editVariantPrice(i, j, e)} />
+  //         </Col>
+  //         <Col />
+  //       </Row>
+  //     ))
+  //   ))
+  // )
+
   const variantCombinationMarkup = (
-    variants.length && variants.map((variant, i) => (
-      variant.combinations.map((combination, j) => (
-        <Row key={j} style={{marginTop: '1vh', marginBottom: '1vh'}}>
-          <Col>
-            <Button color={getBadgeColor(i)}>{combination.name}</Button>
-          </Col>
-          <Col>
-            <Input type='number' step='1' placeholder='price' value={combination.price} onChange={e => editVariantPrice(i, j, e)} />
-          </Col>
-          <Col />
-        </Row>
-      ))
+    combinations.length > 0 && combinations.map((combination, i) => (
+      <Row key={i} style={{marginTop: '1vh', marginBottom: '1vh'}}>
+        <Col>
+          <Button color={getBadgeColor(i)}>{combination.name}</Button>
+        </Col>
+        <Col>
+          <Input type='number' step='1' placeholder='price' value={combination.price} onChange={e => editVariantPrice(i, e)} />
+        </Col>
+        <Col />
+      </Row>
     ))
   )
 
   const editVariantMarkup = (
-    variants.length && <>
+    combinations.length > 0 &&
+    <>
       <Row>
         <Col><strong>Variant</strong></Col>
         <Col><strong>Price</strong></Col>
