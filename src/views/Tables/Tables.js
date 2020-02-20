@@ -60,7 +60,7 @@ class Tables extends Component {
 
     const viewUpdateTablePage = (id) => "#/tables/" + id;
 
-    const viewCreateTablePage = "#/tables/create";
+    const viewCreateTablePage = "#/tables/new";
 
     const tablesMarkup = tables && tables.map((value, index) => {
       return <Col key={index} xs="12" sm="6" md="2">
@@ -68,7 +68,6 @@ class Tables extends Component {
           <DropdownToggle nav style={styles.toggle}>
             <Card>
               <CardBody style={{
-                height: '20vh',
                 backgroundColor: value.is_occupied ? 'lightGrey' : 'white',
               }}>
                 <div style={styles.text}>
@@ -80,7 +79,7 @@ class Tables extends Component {
                 textAlign: 'center',
                 fontWeight: 'bold',
                 color: value.is_occupied ? "red" : "green"
-              }}>{value.is_occupied ? "Occupied" : "Open"}</CardFooter>
+              }}>{value.is_occupied ? "Occupied" : "Available"}</CardFooter>
             </Card>
           </DropdownToggle>
           <DropdownMenu right>

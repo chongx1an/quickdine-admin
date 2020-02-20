@@ -68,7 +68,7 @@ const routes = [
   // Tables
   { path: '/tables/:table_id/orders', name: 'Orders', component: TableOrders },
   { path: '/tables/:table_id', name: 'Edit Table', component: UpdateTable },
-  { path: '/tables/create', name: 'Add Table', component: CreateTable },
+  { path: '/tables/new', name: 'Add Table', component: CreateTable },
   { path: '/tables', name: 'Tables', component: Tables },
 
   // Customers
