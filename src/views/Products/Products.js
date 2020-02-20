@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Badge, Card, CardBody, CardFooter, CardHeader, Col, Row, Collapse, FadePagination, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
+import { Button, Badge, Card, CardBody, CardFooter, Col, Row, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 import { AppSwitch } from '@coreui/react'
 import ApiClient from '../../ApiClient';
 
@@ -74,13 +74,13 @@ class Products extends Component {
 
     const { products, totalItems, currentPage } = this.state;
 
-    const viewCreateProductPage = '#/products/create';
+    const viewCreateProductPage = '#/products/new';
 
     const viewUpdateProductPage = id => window.location.href = "#/products/" + id;
 
     const productsMarkup = products.length > 0 && products.map((product, index) => (
       <Col xs="12" sm="6" md="2">
-        <div onClick={() => viewUpdateProductPage(product.id)}>
+        <div onClick={() => viewUpdateProductPage(product.id)} style={{cursor: 'pointer'}}>
           <Card>
             <CardBody style={styles.productCard}>
               <Badge color="danger" style={styles.badge}>Hot Item</Badge>
@@ -115,7 +115,7 @@ class Products extends Component {
           <Row>
             {productsMarkup}
           </Row>
-          <Pagination style={{ position: 'fixed', bottom: 55, right: 15 }}>
+          <Pagination style={{ position: 'absolute', bottom: 25, right: 5 }}>
             <PaginationItem>
               <PaginationLink previous tag="button"></PaginationLink>
             </PaginationItem>

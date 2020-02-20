@@ -1,11 +1,46 @@
 import React, { Component, useState } from 'react';
 import { Form, FormGroup, Input, Button, Card, CardBody, CardFooter, CardHeader, Col, Row, ButtonDropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap';
 import ApiClient from '../../../ApiClient';
-import './styles.css'
+import './styles.css';
+
+// sampleProductData = {
+
+//   name: 'McChicken',
+//   description: 'Tasty Chicken Burger',
+//   price: 10.00,
+//   type: 'Food',
+//   variants: [
+//     {
+//       type: 'Size',
+//       options: ['S', 'M', 'L'],
+//     },
+//     {
+//       type: 'Color',
+//       options: ['Red', 'Green', 'Blue'],
+//     }
+//   ],
+//   combinations: [
+//     {
+//       name: 'S · Red',
+//       price: 10.00,
+//       image_url: ''
+//     },
+//     {
+//       name: 'S · Blue',
+//       price: 10.00,
+//       image_url: ''
+//     }
+//     // Continued...
+//   ]
+
+// }
 
 
 export default props => {
 
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [price, setPrice] = useState(0.00);
   const [type, setType] = useState('Food');
   const [variants, setVariants] = useState([]);
   const [combinations, setCombinations] = useState([]);
@@ -41,17 +76,29 @@ export default props => {
 
   }
 
+  const removeVariantOption = (i, j) => {
+
+    var variantsCopy = [...variants];
+
+    variantsCopy[i].options.splice(j, 1);
+
+    setVariants(variantsCopy);
+
+    resetCombinations();
+
+  }
+
   const resetCombinations = () => {
 
     var combs = [];
 
     if(variants[2]) {
 
-      variants[0].options.forEach(option0 => {
+      variants[0].options.forEach(option0 =>
 
-        variants[1].options.forEach(option1 => {
+        variants[1].options.forEach(option1 =>
 
-          variants[2].options.forEach(option2 => {
+          variants[2].options.forEach(option2 =>
 
             combs.push({
               name: `${option0} · ${option1} · ${option2}`,
@@ -59,19 +106,19 @@ export default props => {
               image_url: ''
             })
 
-          })
+          )
 
-        })
+        )
 
-      })
+      )
 
     }
 
     else if(variants[1]) {
 
-      variants[0].options.forEach(option0 => {
+      variants[0].options.forEach(option0 =>
 
-        variants[1].options.forEach(option1 => {
+        variants[1].options.forEach(option1 =>
 
           combs.push({
             name: `${option0} · ${option1}`,
@@ -79,15 +126,15 @@ export default props => {
             image_url: ''
           })
 
-        })
+        )
 
-      })
+      )
 
     }
 
     else if(variants[0]) {
 
-      variants[0].options.forEach(option => {
+      variants[0].options.forEach(option =>
 
         combs.push({
           name: option,
@@ -95,7 +142,7 @@ export default props => {
           image_url: ''
         })
 
-      })
+      )
 
     }
 
@@ -115,19 +162,45 @@ export default props => {
 
   const createProduct = () => {
 
-    ApiClient.apiPost('@store/products', this.state.params)
-      .then(res => {
+    var body = {
+      name,
+      description,
+      type,
+      price,
+      variants,
+      combinations,
+    }
 
-        const { success, product } = res;
+    ApiClient.post('@store/products', body)
+    .then(res => {
 
-      })
-      .catch(console.log);
+    })
+    .catch(console.log);
+
+  }
+
+  const updateProduct = () => {
+
+    var body = {
+      name,
+      description,
+      type,
+      price,
+      variants,
+      combinations,
+    }
+
+    ApiClient.put('@store/products', this.state.params)
+    .then(res => {
+
+    })
+    .catch(console.log);
 
   }
 
   const getBadgeColor = idx => {
 
-    const colors = ['outline-primary', 'outline-success', 'outline-danger', 'outline-warning', 'outline-dark'];
+    const colors = ['outline-primary', 'outline-success', 'outline-danger'];
 
     switch (idx) {
       case 0:
@@ -136,10 +209,6 @@ export default props => {
         return colors[1]
       case 2:
         return colors[2]
-      case 3:
-        return colors[3]
-      case 4:
-        return colors[4]
       default:
         return colors[Math.floor(Math.random() * colors.length)];
     }
@@ -162,12 +231,6 @@ export default props => {
 
   }
 
-  const container = {
-    marginBottom: "3vh",
-    marginLeft: "5vh",
-    marginRight: "5vh",
-  }
-
   const variantsMarkup = variants.length && variants.map((variant, i) => (
     <Row key={i} xs="12" md="9" style={{ marginTop: "1vh", marginBottom: "1vh" }}>
       <Col>
@@ -176,7 +239,9 @@ export default props => {
       <Col>
         <Row style={{border: '1px solid #E4E7EA', borderRadius: 5, justifyContent: 'flex-start'}}>
           {variant.options && variant.options.map((option, j) => (
-            <Button key={j} color={getBadgeColor(i)} style={{margin: 5}}>{option}</Button>
+            <Button key={j} color={getBadgeColor(i)} onClick={() => removeVariantOption(i, j)} style={{margin: 5, position: 'relative'}}>
+              {option}
+            </Button>
           ))}
           <Input type='text' onKeyDown={e => e.key === 'Enter' && addVariantOption(e, i)} className='variant-option-input' />
         </Row>
@@ -213,30 +278,14 @@ export default props => {
     </>
   )
 
-  // const variantCombinationMarkup = (
-  //   variants.length && variants.map((variant, i) => (
-  //     variant.combinations.map((combination, j) => (
-  //       <Row key={j} style={{marginTop: '1vh', marginBottom: '1vh'}}>
-  //         <Col>
-  //           <Button color={getBadgeColor(i)}>{combination.name}</Button>
-  //         </Col>
-  //         <Col>
-  //           <Input type='number' step='1' placeholder='price' value={combination.price} onChange={e => editVariantPrice(i, j, e)} />
-  //         </Col>
-  //         <Col />
-  //       </Row>
-  //     ))
-  //   ))
-  // )
-
   const variantCombinationMarkup = (
     combinations.length > 0 && combinations.map((combination, i) => (
       <Row key={i} style={{marginTop: '1vh', marginBottom: '1vh'}}>
         <Col>
-          <Button color={getBadgeColor(i)}>{combination.name}</Button>
+          <Button color='outline-dark'>{combination.name}</Button>
         </Col>
         <Col>
-          <Input type='number' step='1' placeholder='price' value={combination.price} onChange={e => editVariantPrice(i, e)} />
+          <Input type='number' step='1' min='0' placeholder='price' value={combination.price} onChange={e => editVariantPrice(i, e)} />
         </Col>
         <Col />
       </Row>
@@ -254,20 +303,6 @@ export default props => {
       {variantCombinationMarkup}
     </>
   )
-
-
-  // const editVariantMarkup = variants.length && variants.map((variant, i) => (
-  //   variants.combinations.length && variants.combinations.map((combination, j) => (
-  //     <Row key={j}>
-  //       <Col>
-  //         <p>{combination.name}</p>
-  //       </Col>
-  //       <Col>
-  //         <p>{combination.price}</p>
-  //       </Col>
-  //     </Row>
-  //   ))
-  // ));
 
   return (
     <div className="animated fadeIn">
@@ -290,7 +325,7 @@ export default props => {
                 </Row>
                 <Row md="3">
                   <Col md="4">
-                    <Input type="text" id="text-input" name="text-input" placeholder="French Toast" />
+                    <Input type="text" placeholder="French Toast" onChange={e => setName(e.target.value)} />
                   </Col>
                   <Col md="4">
                     {/* <Input type="text" id="text-input" name="text-input" placeholder="Food" /> */}
@@ -306,7 +341,7 @@ export default props => {
                   {
                     variants.length <= 0 &&
                     <Col md="4">
-                      <Input type="text" id="text-input" name="text-input" placeholder="15.00" />
+                      <Input type="number" step="1" min="0" placeholder="15.00" onChange={e => setPrice(e.target.value)} />
                     </Col>
                   }
                 </Row>
@@ -320,7 +355,7 @@ export default props => {
                 </Row>
                 <Row xs="12" md="9">
                   <Col>
-                    <Input type="textarea" name="textarea-input" id="textarea-input" rows="9" placeholder="Type something" />
+                    <Input type="textarea" rows="9" placeholder="Texas Toast batter dipped, grilled to a golden brown and dusted with powdered sugar!" onChange={e => setDescription(e.target.value)} />
                   </Col>
                 </Row>
               </div>
@@ -365,12 +400,4 @@ export default props => {
 
     </div>
   );
-}
-
-const styles = {
-  variantBadge: {
-    backgroundColor: '#E7F7F1',
-    borderColor: '#BDE8D9',
-    color: '#14B7B9'
-  }
 }

@@ -41,8 +41,7 @@ const Orders = React.lazy(() => import('./views/Orders/Orders'));
 
 // Products
 const Products = React.lazy(() => import('./views/Products/Products'));
-const CreateProduct = React.lazy(() => import('./views/Products/CreateProduct/CreateProduct'));
-const UpdateProduct = React.lazy(() => import('./views/Products/UpdateProduct/UpdateProduct'));
+const EditProduct = React.lazy(() => import('./views/Products/EditProduct/EditProduct'));
 
 // Tables
 const Tables = React.lazy(() => import('./views/Tables/Tables'));
@@ -62,8 +61,8 @@ const routes = [
   { path: '/orders', name: 'Orders', component: Orders },
 
   // Products
-  { path: '/products/create', name: 'Add Product', component: CreateProduct },
-  { path: '/products/:product_id', name: 'Edit Product', component: UpdateProduct },
+  { path: '/products/new', name: 'Add Product', component: EditProduct },
+  { path: '/products/:product_id', name: 'Edit Product', component: EditProduct },
   { path: '/products', name: 'Products', component: Products },
 
   // Tables
