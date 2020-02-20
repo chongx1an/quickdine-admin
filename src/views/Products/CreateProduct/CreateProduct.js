@@ -1,13 +1,15 @@
 import React, { Component, useState } from 'react';
-import { Form, FormGroup, Input, Button, Card, CardBody, CardFooter, CardHeader, Col, Row } from 'reactstrap';
+import { Form, FormGroup, Input, Button, Card, CardBody, CardFooter, CardHeader, Col, Row, ButtonDropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap';
 import ApiClient from '../../../ApiClient';
 import './styles.css'
 
 
 export default props => {
 
+  const [type, setType] = useState('Food');
   const [variants, setVariants] = useState([]);
   const [combinations, setCombinations] = useState([]);
+  const [showTypeDropdown, setShowTypeDropdown] = useState(false);
 
   const addVariant = () => variants.length < 3 && setVariants([...variants, { type: getOptionType(), options: [] }]);
 
@@ -29,7 +31,7 @@ export default props => {
 
       var variantsCopy = [...variants];
 
-      variantsCopy[index].options.push(e.target.value);
+      !variantsCopy[index].options.includes(e.target.value) && variantsCopy[index].options.push(e.target.value);
 
       resetCombinations();
 
@@ -174,9 +176,7 @@ export default props => {
       <Col>
         <Row style={{border: '1px solid #E4E7EA', borderRadius: 5, justifyContent: 'flex-start'}}>
           {variant.options && variant.options.map((option, j) => (
-            <Col md={3} key={j} style={{padding: 10}}>
-              <Button color={getBadgeColor(i)}>{option}</Button>
-            </Col>
+            <Button key={j} color={getBadgeColor(i)} style={{margin: 5}}>{option}</Button>
           ))}
           <Input type='text' onKeyDown={e => e.key === 'Enter' && addVariantOption(e, i)} className='variant-option-input' />
         </Row>
@@ -202,7 +202,7 @@ export default props => {
           </Row>
           {variantsMarkup}
           <br/>
-          <p style={{color: '#6A84F0', cursor: 'pointer'}} onClick={addVariant}>Add more option type</p>
+          {variants.length < 3 && <p style={{color: '#6A84F0', cursor: 'pointer'}} onClick={addVariant}>Add more option type</p>}
         </>
         :
         <>
@@ -290,10 +290,18 @@ export default props => {
                 </Row>
                 <Row md="3">
                   <Col md="4">
-                    <Input type="text" id="text-input" name="text-input" placeholder="McChicken" />
+                    <Input type="text" id="text-input" name="text-input" placeholder="French Toast" />
                   </Col>
                   <Col md="4">
-                    <Input type="text" id="text-input" name="text-input" placeholder="Food" />
+                    {/* <Input type="text" id="text-input" name="text-input" placeholder="Food" /> */}
+                    <ButtonDropdown isOpen={showTypeDropdown} toggle={() => setShowTypeDropdown(!showTypeDropdown)}>
+                      <DropdownToggle caret color='primary' style={{color: '#73818F', backgroundColor: 'white', border: '1px solid #E4E7EA'}}>{type}</DropdownToggle>
+                      <DropdownMenu>
+                        <DropdownItem onClick={() => setType('Food')}>Food</DropdownItem>
+                        <DropdownItem onClick={() => setType('Beverage')}>Beverage</DropdownItem>
+                        <DropdownItem onClick={() => setType('Dessert')}>Dessert</DropdownItem>
+                      </DropdownMenu>
+                    </ButtonDropdown>
                   </Col>
                   {
                     variants.length <= 0 &&
