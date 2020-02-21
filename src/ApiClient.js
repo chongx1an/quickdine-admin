@@ -1,90 +1,94 @@
 import Axios from 'axios';
-import Cookie from 'js-cookie';
+import Cookies from 'js-cookie';
 
-const token = Cookie.get('X-QuickDine-Access-Token');
-
-const axios = Axios.create({
-  baseURL: 'https://quickdineapi.herokuapp.com/api',
-  timeout: 3000,
-  headers: { 'X-QuickDine-Access-Token': token }
+var axios = Axios.create({
+  baseURL: 'http://localhost:8000/admin',
+  timeout: 100000,
 });
 
-const apiGet = (path, params = null, headers = null) => {
+const get = (url = '/', params = {}, headers = {}) => {
 
   return new Promise((resolve, reject) => {
 
-    path = checkStorePath(path);
+    url = processUrl(url);
 
-    axios.get(path, {
-        params: params,
-        headers: headers,
+    axios.get(url, {
+      params: params,
+      headers: headers
     })
     .then(res => resolve(res.data))
     .catch(reject);
-  })
+
+  });
 
 }
 
-const apiPost = (path, body = null, headers = null) => {
-
-  path = checkStorePath(path);
+const post = (url = '/', body = {}, headers = {}) => {
 
   return new Promise((resolve, reject) => {
-    axios.post(path, body, {
-        headers: headers,
-    })
+
+    url = processUrl(url);
+
+    axios.post(url, body, { headers })
     .then(res => resolve(res.data))
     .catch(reject);
-  })
+
+  });
 
 }
 
-const apiPut = (path, body = null, headers = null) => {
-
-  path = checkStorePath(path);
+const put = (url = '/', body = {}, headers = {}) => {
 
   return new Promise((resolve, reject) => {
-    axios.put(path, body, {
-        headers: headers,
-    })
+
+    url = processUrl(url);
+
+    axios.put(url, body, { headers })
     .then(res => resolve(res.data))
     .catch(reject);
-  })
+
+  });
 
 }
 
-const apiDelete = (path, headers = null) => {
-
-  path = checkStorePath(path);
+const del = (url = '/', params = {}, headers = {}) => {
 
   return new Promise((resolve, reject) => {
-    axios.get(path, {
-        headers: headers,
+
+    url = processUrl(url);
+
+    axios.delete(url, {
+      params: params,
+      headers: headers
     })
     .then(res => resolve(res.data))
     .catch(reject);
-  })
+
+  });
 
 }
 
-const checkStorePath = path => {
+const processUrl = url => {
 
-  path = checkStorePath(path);
+  if(url.includes('@store')) {
 
-  if(path.includes('@store')) {
+    var store_id = Cookies.get('store_id');
 
-    const storeId = Cookie.get('storeId');
+    if(store_id) {
 
-    path.replace('@store', `/stores/${storeId}`);
+      url = url.replace('@store', `/stores/${store_id}`);
+
+    }
 
   }
 
-  return path;
+  return url;
+
 }
 
 export default {
-  apiGet,
-  apiPost,
-  apiPut,
-  apiDelete,
+  get,
+  post,
+  put,
+  del
 }
