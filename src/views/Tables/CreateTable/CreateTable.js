@@ -5,12 +5,16 @@ import ApiClient from '../../../ApiClient';
 
 export default props => {
 
-  const createProduct = () => {
+  const createTable = () => {
 
-    ApiClient.apiPost('@store/products', this.state.params)
+    var body = {
+      quantity: 0,
+    };
+
+    ApiClient.post('@store/tables', body)
       .then(res => {
 
-        const { success, product } = res;
+        const { success, tables } = res;
 
       })
       .catch(console.log);
@@ -36,11 +40,11 @@ export default props => {
             <FormGroup>
               <div style={container}>
                 <Row md="3">
-                  <Col md="4"><strong>Table number *</strong></Col>
+                  <Col md="4"><strong>Quantity *</strong></Col>
                 </Row>
                 <Row md="3">
                   <Col md="4">
-                    <Input type="text" id="text-input" name="text-input" placeholder="#1" />
+                    <Input type="number" min="0" max="10" step="1" placeholder="Enter the number of tables you want to create." />
                   </Col>
                 </Row>
               </div>

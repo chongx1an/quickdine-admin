@@ -13,20 +13,46 @@ class Register extends Component {
                   <Form>
                     <h1>Register</h1>
                     <p className="text-muted">Create your account</p>
+
                     <InputGroup className="mb-3">
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
-                          <i className="icon-user"></i>
+                          <i className="icon-home"></i>
                         </InputGroupText>
                       </InputGroupAddon>
-                      <Input type="text" placeholder="Username" autoComplete="username" />
+                      <Input type="text" placeholder="Store name" autoComplete="store-name" />
                     </InputGroup>
+
+                    <Row>
+                      <Col>
+                        <InputGroup className="mb-3">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="icon-user"></i>
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input type="text" placeholder="First name" autoComplete="first-name" />
+                        </InputGroup>
+                      </Col>
+                      <Col>
+                        <InputGroup className="mb-3">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="icon-user"></i>
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input type="text" placeholder="Last name" autoComplete="last-name" />
+                        </InputGroup>
+                      </Col>
+                    </Row>
+
                     <InputGroup className="mb-3">
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>@</InputGroupText>
                       </InputGroupAddon>
                       <Input type="text" placeholder="Email" autoComplete="email" />
                     </InputGroup>
+
                     <InputGroup className="mb-3">
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
@@ -35,17 +61,21 @@ class Register extends Component {
                       </InputGroupAddon>
                       <Input type="password" placeholder="Password" autoComplete="new-password" />
                     </InputGroup>
+
                     <InputGroup className="mb-4">
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
                           <i className="icon-lock"></i>
                         </InputGroupText>
                       </InputGroupAddon>
-                      <Input type="password" placeholder="Repeat password" autoComplete="new-password" />
+                      <Input type="password" placeholder="Confirm password" autoComplete="confirm-password" />
                     </InputGroup>
+
                     <Button color="success" block>Create Account</Button>
+
                   </Form>
                 </CardBody>
+
                 <CardFooter className="p-4">
                   <Row>
                     <Col xs="12" sm="6">

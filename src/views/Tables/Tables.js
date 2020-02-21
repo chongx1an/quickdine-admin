@@ -1,106 +1,135 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { Badge, Card, CardBody, CardFooter, DropdownItem, Col, Row, Button, DropdownToggle, DropdownMenu, UncontrolledDropdown } from 'reactstrap';
 import ApiClient from '../../ApiClient';
+import { AppSwitch } from '@coreui/react'
 
-class Tables extends Component {
-  constructor(props) {
-    super(props);
+const generateRandomData = () => {
 
-    this.listTables = this.listTables.bind(this);
+  var tables = [];
 
-    this.state = {
-      tables: this.generateRandomData(),
-      totalItems: 50,
-      currentPage: 1
+  for (let i = 0; i < 20; i++) {
+    var table = {
+      id: i,
+      number: i + 1,
+      is_occupied: Math.floor(Math.random() * 2 + 1) % 2 ? true : false,
     }
+
+    tables.push(table);
   }
 
-  componentDidMount() {
-    // this.listTables();
-  }
+  return tables;
 
-  listTables() {
-    ApiClient.apiGet('@store/tables')
+}
+
+export default props => {
+
+  useEffect(() => {
+
+    // listTables();
+
+  }, []);
+
+  const [tables, setTables] = useState(generateRandomData());
+
+  const viewTableOrdersPage = (id) => window.location.href = "#/tables/" + id;
+
+  const viewCreateTablePage = "#/tables/new";
+
+  const listTables = () => {
+
+    ApiClient.get('@store/tables')
       .then(res => {
 
-        const { tables, totalItems, currentPage } = res;
+        const { success, tables } = res;
 
-        this.setState({
-          tables,
-          totalItems,
-          currentPage
-        });
+        if (success) {
+          setTables(tables);
+        }
 
       })
       .catch(console.log);
+
   }
 
-  generateRandomData() {
-    var tables = [];
+  const updateTable = (updatingTable) => {
 
-    for (let i = 0; i < 20; i++) {
-      var table = {
-        id: i,
-        number: i + 1,
-        is_occupied: Math.floor(Math.random() * 2 + 1) % 2 ? true : false,
+    // updateTables(updatingTable);
+
+    var updatedTables = tables.map((table) => {
+
+      if (table === updatingTable) {
+        table.is_occupied = !table.is_occupied;
       }
 
-      tables.push(table);
-    }
+      return table;
 
-    return tables;
+    });
+
+    setTables(updatedTables);
+
   }
 
+  const updateTables = (table) => {
 
-  render() {
+    var body = {
+      is_occupied: !table.is_occupied,
+    };
 
-    const { tables, totalItems, currentPage } = this.state;
+    ApiClient.put('@store/tables/' + table.id, body)
+      .then(res => {
 
-    const viewTableOrdersPage = (id) => "#/tables/" + id + "/orders";
+        const { success, table } = res;
 
-    const viewUpdateTablePage = (id) => "#/tables/" + id;
+        if (success) {
+          updateTable(table);
+        }
 
-    const viewCreateTablePage = "#/tables/new";
+      })
+      .catch(console.log);
 
-    const tablesMarkup = tables && tables.map((value, index) => {
-      return <Col key={index} xs="12" sm="6" md="2">
-        <UncontrolledDropdown>
-          <DropdownToggle nav style={styles.toggle}>
-            <Card>
-              <CardBody style={{
-                backgroundColor: value.is_occupied ? 'lightGrey' : 'white',
-              }}>
-                <div style={styles.text}>
-                  <h4>Table</h4>
-                  <h1>{value.number}</h1>
-                </div>
-              </CardBody>
-              <CardFooter style={{
-                textAlign: 'center',
-                fontWeight: 'bold',
-                color: value.is_occupied ? "red" : "green"
-              }}>{value.is_occupied ? "Occupied" : "Available"}</CardFooter>
-            </Card>
-          </DropdownToggle>
-          <DropdownMenu right>
-            <DropdownItem href={viewTableOrdersPage(value.id)}><i className="fa fa-info"></i>View table orders</DropdownItem>
-            <DropdownItem href={viewUpdateTablePage(value.id)}><i className="fa fa-edit"></i>Edit table</DropdownItem>
-          </DropdownMenu>
-        </UncontrolledDropdown>
-      </Col >
-    })
-
-    return (
-      <div className="animated fadeIn" >
-        <Row style={styles.button}>
-          <Button href={viewCreateTablePage} color="primary">Add table</Button>
-        </Row>
-        <Row>
-          {tablesMarkup}
-        </Row>
-      </div>
-    )
   }
+
+  const tablesMarkup = tables && tables.map((table, index) => {
+    return <Col key={index} xs="12" sm="6" md="2">
+      <Card>
+        <div onClick={() => viewTableOrdersPage(table.id)} style={{ cursor: 'pointer' }}>
+          <CardBody style={{
+            backgroundColor: table.is_occupied ? 'lightGrey' : 'white',
+          }}>
+            <div style={styles.text}>
+              <h4>Table</h4>
+              <h1>{table.number}</h1>
+            </div>
+          </CardBody>
+        </div>
+        <CardFooter style={{
+          textAlign: 'center',
+          fontWeight: 'bold',
+          color: table.is_occupied ? "red" : "green"
+        }}>
+          <Row style={{ alignItems: "center" }}>
+            <Col>{table.is_occupied ? "Occupied" : "Available"}</Col>
+            <Col>
+              <AppSwitch variant={'3d'} color={'danger'} checked={table.is_occupied} onClick={() => updateTable(table)} />
+            </Col>
+          </Row>
+        </CardFooter>
+      </Card>
+    </Col >
+  })
+
+  return (
+
+    <div className="animated fadeIn" >
+      <Row style={styles.button}>
+        <Button href={viewCreateTablePage} color="primary">Add table</Button>
+      </Row>
+      <Row>
+        {tablesMarkup}
+      </Row>
+    </div>
+
+  );
 }
 
 const styles = {
@@ -121,6 +150,3 @@ const styles = {
     marginRight: "0.2vw"
   }
 }
-
-
-export default Tables;
