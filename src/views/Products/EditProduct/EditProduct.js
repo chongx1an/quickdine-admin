@@ -101,7 +101,7 @@ export default props => {
           variants[2].options.forEach(option2 =>
 
             combs.push({
-              name: `${option0} · ${option1} · ${option2}`,
+              name: `${option0}, ${option1}, ${option2}`,
               price: 0.00,
               image_url: ''
             })
@@ -121,7 +121,7 @@ export default props => {
         variants[1].options.forEach(option1 =>
 
           combs.push({
-            name: `${option0} · ${option1}`,
+            name: `${option0}, ${option1}`,
             price: 0.00,
             image_url: ''
           })
@@ -282,7 +282,7 @@ export default props => {
     combinations.length > 0 && combinations.map((combination, i) => (
       <Row key={i} style={{marginTop: '1vh', marginBottom: '1vh'}}>
         <Col>
-          <Button color='outline-dark'>{combination.name}</Button>
+          <Button color='outline-dark'>{combination.name.split(', ').join(' · ')}</Button>
         </Col>
         <Col>
           <Input type='number' step='1' min='0' placeholder='price' value={combination.price} onChange={e => editVariantPrice(i, e)} />
