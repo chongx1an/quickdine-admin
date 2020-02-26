@@ -53,7 +53,7 @@ const Customers = React.lazy(() => import('./views/Customers/Customers'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
-  { path: '/', exact: true, name: 'Home' },
+  { path: '/', exact: true, name: 'Auth' },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
 
   // Orders

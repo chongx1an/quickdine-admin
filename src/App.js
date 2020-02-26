@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 // import { renderRoutes } from 'react-router-config';
+import ApiClient from './ApiClient';
 import './App.scss';
 
 const loading = () => <div className="animated fadeIn pt-3 text-center">Loading...</div>;
@@ -17,7 +18,49 @@ const Page500 = React.lazy(() => import('./views/Pages/Page500'));
 
 class App extends Component {
 
+  constructor(props) {
+
+    super(props);
+
+    this.state = {
+      authState: false,
+    };
+
+  }
+
+  componentDidMount() {
+
+    this.authenticate();
+
+  }
+
+  authenticate() {
+
+    ApiClient.get('/auth')
+      .then(res => {
+
+        const { success } = res;
+
+        if (success) {
+
+          this.state.authState = true;  // go to home screen
+
+        } else {
+
+          this.state.authState = false;  // else go to login screen
+
+        }
+
+        console.log(this.state.authState);
+
+      })
+      .catch(console.log);
+
+  }
+
+
   render() {
+
     return (
       <HashRouter>
         <React.Suspense fallback={loading()}>
@@ -27,7 +70,11 @@ class App extends Component {
             <Route exact path="/stores" name="Stores Page" render={props => <Stores {...props} />} />
             <Route exact path="/404" name="Page 404" render={props => <Page404 {...props} />} />
             <Route exact path="/500" name="Page 500" render={props => <Page500 {...props} />} />
-            <Route path="/" name="Home" render={props => <DefaultLayout {...props} />} />
+            {
+              this.state.authState
+                ? <Route path="/" name="Auth" render={props => <DefaultLayout {...props} />} />
+                : <Route path="/" name="Auth" render={props => <Login {...props} />} />
+            }
           </Switch>
         </React.Suspense>
       </HashRouter>
