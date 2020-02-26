@@ -6,7 +6,11 @@ var axios = Axios.create({
   timeout: 100000,
 });
 
+const token = Cookies.get("token");
+
 const get = (url = '/', params = {}, headers = {}) => {
+
+  headers['x-quickdine-access-token'] = token;
 
   return new Promise((resolve, reject) => {
 
@@ -16,8 +20,8 @@ const get = (url = '/', params = {}, headers = {}) => {
       params: params,
       headers: headers
     })
-    .then(res => resolve(res.data))
-    .catch(reject);
+      .then(res => resolve(res.data))
+      .catch(reject);
 
   });
 
@@ -25,13 +29,15 @@ const get = (url = '/', params = {}, headers = {}) => {
 
 const post = (url = '/', body = {}, headers = {}) => {
 
+  headers['x-quickdine-access-token'] = token;
+
   return new Promise((resolve, reject) => {
 
     url = processUrl(url);
 
     axios.post(url, body, { headers })
-    .then(res => resolve(res.data))
-    .catch(reject);
+      .then(res => resolve(res.data))
+      .catch(reject);
 
   });
 
@@ -39,19 +45,23 @@ const post = (url = '/', body = {}, headers = {}) => {
 
 const put = (url = '/', body = {}, headers = {}) => {
 
+  headers['x-quickdine-access-token'] = token;
+
   return new Promise((resolve, reject) => {
 
     url = processUrl(url);
 
     axios.put(url, body, { headers })
-    .then(res => resolve(res.data))
-    .catch(reject);
+      .then(res => resolve(res.data))
+      .catch(reject);
 
   });
 
 }
 
 const del = (url = '/', params = {}, headers = {}) => {
+
+  headers['x-quickdine-access-token'] = token;
 
   return new Promise((resolve, reject) => {
 
@@ -61,8 +71,8 @@ const del = (url = '/', params = {}, headers = {}) => {
       params: params,
       headers: headers
     })
-    .then(res => resolve(res.data))
-    .catch(reject);
+      .then(res => resolve(res.data))
+      .catch(reject);
 
   });
 
@@ -70,11 +80,11 @@ const del = (url = '/', params = {}, headers = {}) => {
 
 const processUrl = url => {
 
-  if(url.includes('@store')) {
+  if (url.includes('@store')) {
 
     var store_id = Cookies.get('store_id');
 
-    if(store_id) {
+    if (store_id) {
 
       url = url.replace('@store', `/stores/${store_id}`);
 

@@ -1,8 +1,51 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import ApiClient from '../../../ApiClient';
 import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 
 class Login extends Component {
+
+  constructor(props) {
+
+    super(props);
+
+    this.login = this.login.bind(this);
+
+    this.state = {
+      email: "",
+      password: "",
+    };
+
+  }
+
+  login() {
+
+    ApiClient.post('/auth/login', this.state)
+      .then(res => {
+
+        const { success, user, token } = res;
+
+        console.table(res);
+
+        if (success) {
+
+          // store token in cookie and go to home screen
+          Cookies.set("token", token, { expires: 365 });
+          Cookies.set("user", user, { expires: 365 });
+          // window.location.href = "/";
+
+        } else {
+
+          // TODO: show error
+
+        }
+
+      })
+      .catch(console.log);
+
+  }
+
   render() {
     return (
       <div className="app flex-row align-items-center">
@@ -21,7 +64,7 @@ class Login extends Component {
                             <i className="icon-user"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input type="text" placeholder="Username" autoComplete="username" />
+                        <Input onChange={(e) => this.setState({ email: e.target.value })} type="text" placeholder="Email" autoComplete="email" value={this.state.email} />
                       </InputGroup>
                       <InputGroup className="mb-4">
                         <InputGroupAddon addonType="prepend">
@@ -29,15 +72,15 @@ class Login extends Component {
                             <i className="icon-lock"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input type="password" placeholder="Password" autoComplete="current-password" />
+                        <Input onChange={(e) => this.setState({ password: e.target.value })} type="password" placeholder="Password" autoComplete="current-password" value={this.state.password} />
                       </InputGroup>
                       <Row>
                         <Col xs="6">
-                          <Button color="primary" className="px-4">Login</Button>
+                          <Button onClick={this.login} color="primary" className="px-4">Login</Button>
                         </Col>
-                        <Col xs="6" className="text-right">
+                        {/* <Col xs="6" className="text-right">
                           <Button color="link" className="px-0">Forgot password?</Button>
-                        </Col>
+                        </Col> */}
                       </Row>
                     </Form>
                   </CardBody>
