@@ -33,7 +33,7 @@ class Login extends Component {
           // store token in cookie and go to home screen
           Cookies.set("token", token, { expires: 365 });
           Cookies.set("user", user, { expires: 365 });
-          // window.location.href = "/";
+          window.location.href = "/";
 
         } else {
 
