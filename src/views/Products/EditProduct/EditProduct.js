@@ -46,13 +46,13 @@ export default props => {
   const [combinations, setCombinations] = useState([]);
   const [showTypeDropdown, setShowTypeDropdown] = useState(false);
 
-  const addVariant = () => variants.length < 3 && setVariants([...variants, { type: getOptionType(), options: [] }]);
+  const addVariant = () => variants.length < 3 && setVariants([...variants, { type: { name: getOptionType() }, options: [] }]);
 
   const editVariantType = (e, index) => {
 
     var variantsCopy = [...variants];
 
-    variantsCopy[index].type = e.target.value;
+    variantsCopy[index].type = { name: e.target.value };
 
     setVariants(variantsCopy);
 
@@ -66,7 +66,7 @@ export default props => {
 
       var variantsCopy = [...variants];
 
-      !variantsCopy[index].options.includes(e.target.value) && variantsCopy[index].options.push(e.target.value);
+      !variantsCopy[index].options.includes(e.target.value) && variantsCopy[index].options.push({ name: e.target.value });
 
       resetCombinations();
 
@@ -234,13 +234,13 @@ export default props => {
   const variantsMarkup = variants.length && variants.map((variant, i) => (
     <Row key={i} xs="12" md="9" style={{ marginTop: "1vh", marginBottom: "1vh" }}>
       <Col>
-        <Input type="text" placeholder="Type" value={variant.type} onChange={e => editVariantType(e, i)} />
+        <Input type="text" placeholder="Type" value={variant.type.name} onChange={e => editVariantType(e, i)} />
       </Col>
       <Col>
         <Row style={{border: '1px solid #E4E7EA', borderRadius: 5, justifyContent: 'flex-start'}}>
           {variant.options && variant.options.map((option, j) => (
             <Button key={j} color={getBadgeColor(i)} onClick={() => removeVariantOption(i, j)} style={{margin: 5, position: 'relative'}}>
-              {option}
+              {option.name}
             </Button>
           ))}
           <Input type='text' onKeyDown={e => e.key === 'Enter' && addVariantOption(e, i)} className='variant-option-input' />
