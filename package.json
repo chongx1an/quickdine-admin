@@ -9,7 +9,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git@github.com:coreui/coreui-free-react-admin-template.git"
+    "url": "git+ssh://git@github.com/coreui/coreui-free-react-admin-template.git"
   },
   "dependencies": {
     "@coreui/coreui": "^2.1.16",
@@ -73,5 +73,6 @@
   "engines": {
     "node": ">=8.10",
     "npm": ">=6"
-  }
+  },
+  "main": "index.js"
 }

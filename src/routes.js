@@ -57,20 +57,20 @@ const routes = [
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
 
   // Orders
-  { path: '/orders', name: 'Orders', component: Orders },
+  { path: '/stores/:store_id/orders', name: 'Orders', component: Orders },
 
   // Products
-  { path: '/products/new', name: 'Add Product', component: EditProduct },
-  { path: '/products/:product_id', name: 'Edit Product', component: EditProduct },
-  { path: '/products', name: 'Products', component: Products },
+  { path: '/stores/:store_id/products/new', name: 'Add Product', component: EditProduct },
+  { path: '/stores/:store_id/products/:product_id', name: 'Edit Product', component: EditProduct },
+  { path: '/stores/:store_id/products', name: 'Products', component: Products },
 
   // Tables
-  { path: '/tables/new', name: 'Add Table', component: CreateTable },
-  { path: '/tables/:table_id', name: 'Orders', component: TableOrders },
-  { path: '/tables', name: 'Tables', component: Tables },
+  { path: '/stores/:store_id/tables/new', name: 'Add Table', component: CreateTable },
+  { path: '/stores/:store_id/tables/:table_id', name: 'Orders', component: TableOrders },
+  { path: '/stores/:store_id/tables', name: 'Tables', component: Tables },
 
   // Customers
-  { path: '/customers', name: 'Customers', component: Customers },
+  { path: '/stores/:store_id/customers', name: 'Customers', component: Customers },
 ];
 
 export default routes;

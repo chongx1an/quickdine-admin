@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { HashRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 // import { renderRoutes } from 'react-router-config';
 import ApiClient from './ApiClient';
 import './App.scss';
@@ -62,7 +62,7 @@ class App extends Component {
   render() {
 
     return (
-      <HashRouter>
+      <Router>
         <React.Suspense fallback={loading()}>
           <Switch>
             <Route exact path="/login" name="Login Page" render={props => <Login {...props} />} />
@@ -77,7 +77,7 @@ class App extends Component {
             }
           </Switch>
         </React.Suspense>
-      </HashRouter>
+      </Router>
     );
   }
 }
