@@ -3,42 +3,25 @@ import Cookies from 'js-cookie';
 import ApiClient from '../../../ApiClient';
 import { Button, Card, CardBody, Modal, ModalBody, ModalFooter, ModalHeader, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 
-// const generateRandomData = () => {
-
-//   var stores = [];
-
-//   for (let i = 0; i < 10; i++) {
-//     var store = {
-//       id: i + 1,
-//       name: "Wave",
-//     }
-
-//     stores.push(store);
-//   }
-
-//   return stores;
-
-// }
-
 export default props => {
 
   useEffect(() => {
-    getUsername();
+    getFirstName();
     listStores();
   }, []);
 
   const [stores, setStores] = useState([]);
-  const [username, setUsername] = useState("Admin");
+  const [firstName, setFirstName] = useState("Admin");
   const [toggle, setToggle] = useState(false);
   const [storeName, setStoreName] = useState("");
 
-  const getUsername = () => {
+  const getFirstName = () => {
 
-    var user = Cookies.get("user");
+    var admin = Cookies.get("admin");
 
-    user = JSON.parse(user);
+    admin = JSON.parse(admin);
 
-    setUsername(user.first_name);
+    setFirstName(admin.first_name);
 
   }
 
@@ -51,11 +34,11 @@ export default props => {
 
         if (success) {
 
-          setStores([...stores]);
+          setStores(stores.data);
 
         } else {
 
-
+          // TODO: show error message
 
         }
 
@@ -66,19 +49,39 @@ export default props => {
 
   const createStore = () => {
 
-    var body = {
-      name: storeName,
+    if (storeName !== "") {
+
+      var body = {
+        name: storeName,
+      }
+
+      ApiClient.post('/stores', body)
+        .then(res => {
+
+          const { success, store } = res;
+
+          if (success) {
+
+            setStores([...stores, store]);
+            toggleModal();
+
+          } else {
+
+            // TODO: show error message
+
+          }
+
+        })
+        .catch(console.log);
+
     }
 
-    ApiClient.post('/stores', body)
-      .then(res => {
+  }
 
-        const { success, store } = res;
+  const loginStore = (storeId) => {
 
-        console.table(res);
-
-      })
-      .catch(console.log);
+    Cookies.set("store_id", storeId, { expires: 365 });
+    window.location.href = "/";
 
   }
 
@@ -88,12 +91,20 @@ export default props => {
 
   }
 
+  const logout = () => {
+
+    Cookies.remove("token");
+    Cookies.remove("admin");
+    window.location.href = "/";
+
+  }
+
   const storesMarkup = stores && stores.map((store, index) => (
     <Col md="4" style={{ alignItems: "center", justifyContent: "center" }}>
       <Card style={{ margin: "1vw", height: "20vh" }}>
         <CardBody>
           <h4>{store.name}</h4>
-          <Button color="primary" style={{ position: "absolute", bottom: 15, right: 15 }}>Manage this store</Button>
+          <Button onClick={() => loginStore(store.id)} color="primary" style={{ position: "absolute", bottom: 15, right: 15 }}>Manage this store</Button>
         </CardBody>
       </Card>
     </Col>
@@ -104,7 +115,7 @@ export default props => {
     <div className="align-items-center" style={{ margin: "20vh" }}>
       <h1 style={{ textAlign: "center" }}>Quickdine</h1>
       <div style={{ height: "5vh" }}></div>
-      <h3 style={{ textAlign: "center" }}>Welcome back, {username}</h3>
+      <h3 style={{ textAlign: "center" }}>Welcome back, {firstName}</h3>
       <div style={{ height: "5vh" }}></div>
       <Row style={{ justifyContent: "center" }}>
         {storesMarkup}
@@ -113,7 +124,7 @@ export default props => {
       <Row className="justify-content-center">
         <Button onClick={toggleModal} className="mr-1" color="primary">Create a new store</Button>
 
-        <Form className="needs-validation" action="javascript:void(0)" novalidate>
+        <Form className="needs-validation" action="javascript:void(0)">
           <Modal isOpen={toggle} toggle={toggleModal}>
             <ModalHeader toggle={toggleModal}>Create a new store</ModalHeader>
             <ModalBody>
@@ -136,14 +147,14 @@ export default props => {
 
             </ModalBody>
             <ModalFooter>
-              <Button color="secondary">Cancel</Button>
+              <Button color="secondary" onClick={toggleModal} >Cancel</Button>
               <Button color="primary" onClick={createStore} type="submit">Create</Button>
             </ModalFooter>
           </Modal>
         </Form>
 
         <div style={{ width: "2vw" }}></div>
-        <Button>Log out</Button>
+        <Button onClick={logout} >Log out</Button>
       </Row>
     </div>
 
