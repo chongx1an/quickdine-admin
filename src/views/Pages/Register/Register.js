@@ -99,7 +99,7 @@ class Register extends Component {
               <Card className="mx-4">
                 <CardBody className="p-4">
 
-                  <Form className="needs-validation" action="javascript:void(0)" novalidate>
+                  <Form onSubmit={this.register} className="needs-validation" action="javascript:void(0)" novalidate>
                     <h1>Register</h1>
                     <p className="text-muted">Create your account</p>
 
@@ -204,7 +204,7 @@ class Register extends Component {
                       />
                     </InputGroup>
 
-                    <Button onClick={this.register} color="success" type="submit" block>Create Account</Button>
+                    <Button color="success" type="submit" block>Create Account</Button>
                     <div style={{ height: "1vh" }}></div>
                     <Link to="/login">
                       <Button color="primary" block>Back to login</Button>
