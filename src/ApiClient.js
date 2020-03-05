@@ -6,6 +6,8 @@ var axios = Axios.create({
   timeout: 100000,
 });
 
+axios.defaults.withCredentials = true;
+
 const token = Cookies.get("token");
 
 const get = (url = '/', params = {}, headers = {}) => {
