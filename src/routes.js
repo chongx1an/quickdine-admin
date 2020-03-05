@@ -51,6 +51,9 @@ const TableOrders = React.lazy(() => import('./views/Tables/TableOrders/TableOrd
 // Customers
 const Customers = React.lazy(() => import('./views/Customers/Customers'));
 
+// Settings
+const Settings = React.lazy(() => import('./views/Settings/Settings'));
+
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Auth' },
@@ -71,6 +74,9 @@ const routes = [
 
   // Customers
   { path: '/stores/:store_id/customers', name: 'Customers', component: Customers },
+
+  // Settings
+  { path: '/stores/:store_id/settings', name: 'Settings', component: Settings },
 ];
 
 export default routes;

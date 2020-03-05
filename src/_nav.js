@@ -17,7 +17,7 @@ export default {
     {
       name: 'Products',
       url: '/stores/:store_id/products',
-      icon: 'cui-fastfood',
+      icon: 'cil-fastfood',
     },
     {
       name: 'Tables',
@@ -28,6 +28,11 @@ export default {
       name: 'Customers',
       url: '/stores/:store_id/customers',
       icon: 'icon-people',
+    },
+    {
+      name: 'Settings',
+      url: '/stores/:store_id/settings',
+      icon: 'icon-settings',
     },
   ],
 };
