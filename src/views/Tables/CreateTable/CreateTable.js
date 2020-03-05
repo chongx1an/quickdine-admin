@@ -5,19 +5,29 @@ import ApiClient from '../../../ApiClient';
 
 export default props => {
 
+  const [quantity, setQuantity] = useState(0);
+
+  const onChange = (e) => {
+
+    setQuantity(e.target.value);
+
+  }
+
   const createTable = () => {
 
     var body = {
-      quantity: 0,
+      quantity: quantity,
     };
 
-    ApiClient.post('@store/tables', body)
-      .then(res => {
+    console.log(quantity);
 
-        const { success, tables } = res;
-
-      })
-      .catch(console.log);
+    // ApiClient.post('@store/tables', body)
+    //   .then(res => {
+    //
+    //     const { success, tables } = res;
+    //
+    //   })
+    //   .catch(console.log);
 
   }
 
@@ -36,7 +46,7 @@ export default props => {
         </CardHeader>
 
         <CardBody>
-          <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+          <Form className="form-horizontal">
             <FormGroup>
               <div style={container}>
                 <Row md="3">
@@ -44,7 +54,15 @@ export default props => {
                 </Row>
                 <Row md="3">
                   <Col md="4">
-                    <Input type="number" min="0" max="10" step="1" placeholder="Enter the number of tables you want to create." />
+                    <Input
+                      onChange={onChange}
+                      value={quantity}
+                      type="number"
+                       min="0"
+                       max="10"
+                       step="1"
+                       placeholder="Enter the number of tables you want to create."
+                      />
                   </Col>
                 </Row>
               </div>
@@ -53,8 +71,7 @@ export default props => {
         </CardBody>
 
         <CardFooter>
-          <Button type="submit" size="sm" color="primary"><i className="fa fa-dot-circle-o"></i> Submit</Button>
-          <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
+          <Button onClick={createTable} size="sm" color="primary"><i className="fa fa-dot-circle-o"></i> Create</Button>
         </CardFooter>
 
       </Card>

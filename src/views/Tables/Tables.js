@@ -25,11 +25,11 @@ export default props => {
 
   useEffect(() => {
 
-    // listTables();
+    listTables();
 
   }, []);
 
-  const [tables, setTables] = useState(generateRandomData());
+  const [tables, setTables] = useState([]);
 
   const viewTableOrdersPage = (id) => window.location.href = "#/tables/" + id;
 

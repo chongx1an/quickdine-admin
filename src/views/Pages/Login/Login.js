@@ -24,7 +24,7 @@ class Login extends Component {
     ApiClient.post('/auth/login', this.state)
       .then(res => {
 
-        const { success, user, token } = res;
+        const { success, user, token, store_id } = res;
 
         console.table(res);
 
@@ -33,6 +33,7 @@ class Login extends Component {
           // store token in cookie and go to home screen
           Cookies.set("token", token, { expires: 365 });
           Cookies.set("user", user, { expires: 365 });
+          Cookies.set("store_id", store_id, { expires: 365 });
           window.location.href = "/";
 
         } else {

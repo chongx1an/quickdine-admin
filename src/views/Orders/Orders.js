@@ -35,24 +35,24 @@ class Orders extends Component {
   }
 
   componentDidMount() {
-    this.listOrders();
+    // this.listOrders();
   }
 
   listOrders() {
 
-    ApiClient.apiGet('@store/orders')
-      .then(res => {
-
-        const { orders, totalItems, currentPage } = res;
-
-        this.setState({
-          orders,
-          totalItems,
-          currentPage
-        });
-
-      })
-      .catch(console.log);
+    // ApiClient.apiGet('@store/orders')
+    //   .then(res => {
+    //
+    //     const { orders, totalItems, currentPage } = res;
+    //
+    //     this.setState({
+    //       orders,
+    //       totalItems,
+    //       currentPage
+    //     });
+    //
+    //   })
+    //   .catch(console.log);
 
   }
 
