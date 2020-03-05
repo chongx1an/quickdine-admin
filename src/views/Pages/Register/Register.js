@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Cookies from 'js-cookie';
 import ApiClient from '../../../ApiClient';
 import { Button, Card, CardBody, CardFooter, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
 class Register extends Component {
 
@@ -204,7 +205,10 @@ class Register extends Component {
                     </InputGroup>
 
                     <Button onClick={this.register} color="success" type="submit" block>Create Account</Button>
-
+                    <div style={{ height: "1vh" }}></div>
+                    <Link to="/login">
+                      <Button color="primary" block>Back to login</Button>
+                    </Link>
                   </Form>
                 </CardBody>
 
