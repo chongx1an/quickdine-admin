@@ -1,8 +1,8 @@
 import React, { Component, useState } from 'react';
 import { FormText, Label, CardFooter, Form, FormGroup, Input, Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table, Button } from 'reactstrap';
 import ApiClient from '../../ApiClient';
-
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default props => {
 
@@ -39,13 +39,20 @@ export default props => {
       phone: phone
     };
 
-    console.log(settings);
-
     ApiClient.put('@store', settings)
       .then(res => {
-        console.log(res);
-        const { success, settings } = res;
 
+        const { success, settings } = res;
+        console.log(res.success);
+        if (success) {
+          toast.success("Save successfully!", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+        } else {
+          toast.error("Save failed :)", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+        }
       })
       .catch(console.log);
 
@@ -58,6 +65,7 @@ export default props => {
           <i className="fa fa-align-justify"></i> Settings
         </CardHeader>
         <CardBody>
+          <ToastContainer />
           <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
             <FormGroup row>
               <Col md="2">

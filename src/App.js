@@ -54,7 +54,9 @@ class App extends Component {
   render() {
 
     return (
+
       <Router>
+        <link rel="stylesheet" href="https://unpkg.com/@coreui/icons@1.0.0/css/all.min.css"></link>
         <React.Suspense fallback={loading()}>
           <Switch>
             <Route exact path="/login" name="Login Page" render={props => <Login {...props} />} />

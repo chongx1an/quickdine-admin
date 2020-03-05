@@ -56,27 +56,27 @@ const Settings = React.lazy(() => import('./views/Settings/Settings'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
-  { path: '/', exact: true, name: 'Auth' },
+  { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
 
   // Orders
-  { path: '/stores/:store_id/orders', name: 'Orders', component: Orders },
+  { path: '/orders', name: 'Orders', component: Orders },
 
   // Products
-  { path: '/stores/:store_id/products/new', name: 'Add Product', component: EditProduct },
-  { path: '/stores/:store_id/products/:product_id', name: 'Edit Product', component: EditProduct },
-  { path: '/stores/:store_id/products', name: 'Products', component: Products },
+  { path: '/products/new', name: 'Add Product', component: EditProduct },
+  { path: '/products/:product_id', name: 'Edit Product', component: EditProduct },
+  { path: '/products', name: 'Products', component: Products },
 
   // Tables
-  { path: '/stores/:store_id/tables/new', name: 'Add Table', component: CreateTable },
-  { path: '/stores/:store_id/tables/:table_id', name: 'Orders', component: TableOrders },
-  { path: '/stores/:store_id/tables', name: 'Tables', component: Tables },
+  { path: '/tables/new', name: 'Add Table', component: CreateTable },
+  { path: '/tables/:table_id', name: 'Orders', component: TableOrders },
+  { path: '/tables', name: 'Tables', component: Tables },
 
   // Customers
-  { path: '/stores/:store_id/customers', name: 'Customers', component: Customers },
+  { path: '/customers', name: 'Customers', component: Customers },
 
   // Settings
-  { path: '/stores/:store_id/settings', name: 'Settings', component: Settings },
+  { path: '/settings', name: 'Settings', component: Settings },
 ];
 
 export default routes;

@@ -483,7 +483,7 @@ class Dashboard extends Component {
 
     return (
       <div className="animated fadeIn">
-        <link rel="stylesheet" href="https://unpkg.com/@coreui/icons@1.0.0/css/all.min.css"></link>
+
 
         <Row>
           <Col xs="12" sm="6" lg="3">
