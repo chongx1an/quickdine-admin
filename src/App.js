@@ -41,17 +41,9 @@ class App extends Component {
 
         const { success } = res;
 
-        console.log(res);
+        console.table(res);
 
-        if (success) {
-
-          this.setState({ authState: true });  // go to home screen
-
-        } else {
-
-          this.setState({ authState: false });  // else go to login screen
-
-        }
+        this.setState({ authState: success });
 
       })
       .catch(console.log);
