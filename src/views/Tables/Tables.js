@@ -2,6 +2,7 @@ import React, { Component, useState, useEffect } from 'react';
 import { Badge, Card, CardBody, CardFooter, DropdownItem, Col, Row, Button, DropdownToggle, DropdownMenu, UncontrolledDropdown } from 'reactstrap';
 import ApiClient from '../../ApiClient';
 import { AppSwitch } from '@coreui/react'
+import { Link } from 'react-router-dom';
 
 const generateRandomData = () => {
 
@@ -29,9 +30,9 @@ export default props => {
 
   }, []);
 
-  const [tables, setTables] = useState([]);
+  const [tables, setTables] = useState(generateRandomData());
 
-  const viewTableOrdersPage = (id) => window.location.href = "/tables/" + id;
+  const viewTableOrdersPage = (id) => "/tables/" + id;
 
   const viewCreateTablePage = "/tables/new";
 
@@ -94,7 +95,7 @@ export default props => {
   const tablesMarkup = tables && tables.map((table, index) => {
     return <Col key={index} xs="12" sm="6" md="2">
       <Card>
-        <div onClick={() => viewTableOrdersPage(table.id)} style={{ cursor: 'pointer' }}>
+        <Link to={viewTableOrdersPage(table.id)} style={{ textDecoration: 'none' }}>
           <CardBody style={{
             backgroundColor: table.is_occupied ? 'lightGrey' : 'white',
           }}>
@@ -103,7 +104,7 @@ export default props => {
               <h1>{table.number}</h1>
             </div>
           </CardBody>
-        </div>
+        </Link>
         <CardFooter style={{
           textAlign: 'center',
           fontWeight: 'bold',
@@ -124,7 +125,9 @@ export default props => {
 
     <div className="animated fadeIn" >
       <Row style={styles.button}>
-        <Button href={viewCreateTablePage} color="primary">Add table</Button>
+        <Link to={viewCreateTablePage}>
+          <Button color="primary">Add table</Button>
+        </Link>
       </Row>
       <Row>
         {tablesMarkup}

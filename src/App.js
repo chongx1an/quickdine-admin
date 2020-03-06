@@ -42,14 +42,14 @@ class App extends Component {
             <Route exact path="/register" name="Register Page" render={props => <Register {...props} />} />
             <Route exact path="/404" name="Page 404" render={props => <Page404 {...props} />} />
             <Route exact path="/500" name="Page 500" render={props => <Page500 {...props} />} />
-            {/* <Route path="/" name="Auth" render={props => <DefaultLayout {...props} />} /> */}
-            {
+            <Route path="/" name="Auth" render={props => <DefaultLayout {...props} />} />
+            {/* {
               this.state.token != null
                 ? this.state.store_id != null
                   ? <Route path="/" name="Auth" render={props => <DefaultLayout {...props} />} />
                   : <Route exact path="/stores" name="Stores Page" render={props => <Stores {...props} />} />
                 : <Route path="/" name="Auth" render={props => <Login {...props} />} />
-            }
+            } */}
           </Switch>
         </React.Suspense>
       </Router>
