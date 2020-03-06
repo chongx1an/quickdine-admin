@@ -3,23 +3,23 @@ import { Badge, Card, CardBody, CardHeader, Col, Label, PaginationItem, Paginati
 import ApiClient from '../../../ApiClient';
 
 
-class RetrieveCustomer extends Component {
+class RetrieveOrder extends Component {
 
   constructor(props) {
 
     super(props);
 
-    this.retrieveCustomer = this.retrieveCustomer.bind(this);
+    this.retrieveOrder = this.retrieveOrder.bind(this);
 
     const { match: { params } } = this.props;
 
     this.state = {
-      customerId: params.customer_id,
-      customer: {
-        firstName: "Ming Sern",
-        lastName: "Yeo",
-        email: "mingsern@gmail.com",
-        phone: "01112314145",
+      orderId: params.order_id,
+      order: {
+        number: "2",
+        tableNumber: "17",
+        customerName: "Ming Sern Yeo",
+        totalPrice: "RM 27",
       },
     };
 
@@ -27,21 +27,21 @@ class RetrieveCustomer extends Component {
 
   componentDidMount() {
 
-    this.retrieveCustomer();
+    this.retrieveOrder();
 
   }
 
-  retrieveCustomer() {
+  retrieveOrder() {
 
-    ApiClient.get('@store/customers/' + this.state.customerId)
+    ApiClient.get('@store/orders/' + this.state.orderId)
       .then(res => {
 
-        const { success, customer } = res;
+        const { success, order } = res;
 
         if (success) {
 
           this.setState({
-            customer: customer,
+            order: order,
           });
 
         } else {
@@ -57,41 +57,48 @@ class RetrieveCustomer extends Component {
 
   render() {
 
-    const { firstName, lastName, email, phone } = this.state.customer;
-
-    const getFullname = () => firstName + " " + lastName;
+    const { number, tableNumber, customerName, totalPrice } = this.state.order;
 
     return (
       <div className="animated fadeIn">
         <Card>
           <CardHeader>
-            Customer Profile
+            Order Detail
           </CardHeader>
           <CardBody>
             <Row>
               <Col md="2">
-                <strong>Fullname</strong>
+                <strong>Order Number</strong>
               </Col>
               <Col xs="12" md="9">
-                <Label>{getFullname()}</Label>
+                <Label>#{number}</Label>
               </Col>
             </Row>
 
             <Row>
               <Col md="2">
-                <strong>Email</strong>
+                <strong>Table Number</strong>
               </Col>
               <Col xs="12" md="9">
-                <Label>{email}</Label>
+                <Label>{tableNumber}</Label>
               </Col>
             </Row>
 
             <Row>
               <Col md="2">
-                <strong>Phone Number</strong>
+                <strong>Customer Name</strong>
               </Col>
               <Col xs="12" md="9">
-                <Label>{phone}</Label>
+                <Label>{customerName}</Label>
+              </Col>
+            </Row>
+
+            <Row>
+              <Col md="2">
+                <strong>Total Price</strong>
+              </Col>
+              <Col xs="12" md="9">
+                <Label>{totalPrice}</Label>
               </Col>
             </Row>
           </CardBody>
@@ -102,4 +109,4 @@ class RetrieveCustomer extends Component {
 }
 
 
-export default RetrieveCustomer;
+export default RetrieveOrder;

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, Badge, Card, CardBody, CardFooter, Col, Row, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 import { AppSwitch } from '@coreui/react'
 import ApiClient from '../../ApiClient';
+import { Link } from 'react-router-dom';
 
 class Products extends Component {
 
@@ -33,11 +34,17 @@ class Products extends Component {
       "https://tinyurl.com/rrscpnw",
       "https://tinyurl.com/qk72g7x",
     ];
+    var types = [
+      "Food",
+      "Beverage",
+      "Dessert",
+    ];
 
     for (let i = 0; i < 20; i++) {
       var table = {
         id: i,
         name: names[Math.floor(Math.random() * names.length)],
+        type: types[Math.floor(Math.random() * types.length)],
         image: images[Math.floor(Math.random() * images.length)],
         price: Math.floor(Math.random() * 30 + 10),
       }
@@ -49,7 +56,9 @@ class Products extends Component {
   }
 
   componentDidMount() {
+
     // this.listProducts();
+
   }
 
   listProducts() {
@@ -57,15 +66,21 @@ class Products extends Component {
     ApiClient.get('@store/products')
       .then(res => {
 
-        const { products, totalItems, currentPage } = res;
+        const { success, products, totalItems, currentPage } = res;
 
-        console.table(res);
+        if (success) {
 
-        // this.setState({
-        //   products,
-        //   totalItems,
-        //   currentPage
-        // });
+          this.setState({
+            products,
+            totalItems,
+            currentPage
+          });
+
+        } else {
+
+          // TODO: show error
+
+        }
 
       })
       .catch(console.log);
@@ -76,13 +91,13 @@ class Products extends Component {
 
     const { products, totalItems, currentPage } = this.state;
 
-    const viewCreateProductPage = '#/products/new';
+    const viewCreateProductPage = "/products/new";
 
-    const viewUpdateProductPage = id => window.location.href = "#/products/" + id;
+    const viewUpdateProductPage = (productId) => "/products/" + productId;
 
     const productsMarkup = products.length > 0 && products.map((product, index) => (
       <Col xs="12" sm="6" md="2">
-        <div onClick={() => viewUpdateProductPage(product.id)} style={{ cursor: 'pointer' }}>
+        <Link to={viewUpdateProductPage(product.id)} style={{ textDecoration: 'none', color: 'black' }}>
           <Card>
             <CardBody style={styles.productCard}>
               <Badge color="danger" style={styles.badge}>Hot Item</Badge>
@@ -94,7 +109,7 @@ class Products extends Component {
               <p>{'RM ' + product.price}</p>
             </CardFooter>
           </Card>
-        </div>
+        </Link>
       </Col>
     ));
 
@@ -112,7 +127,9 @@ class Products extends Component {
       <div className="animated fadeIn">
         <Col>
           <Row style={{ justifyContent: 'flex-end', marginBottom: "3vh", marginRight: "0.2vw" }}>
-            <Button href={viewCreateProductPage} color="primary">Add product</Button>
+            <Link to={viewCreateProductPage}>
+              <Button color="primary">Add product</Button>
+            </Link>
           </Row>
           <Row>
             {productsMarkup}

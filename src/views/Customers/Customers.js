@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table, Button } from 'reactstrap';
 import ApiClient from '../../ApiClient';
+import { Link } from 'react-router-dom';
 
 
 class Customers extends Component {
@@ -67,7 +68,7 @@ class Customers extends Component {
     const buildCustomers = customers && customers.map((customer, index) => {
       return <tr key={index}>
         <td>
-          <a href={viewCustomerPage(customer.id)}>{customer.name}</a>
+          <Link to={viewCustomerPage(customer.id)}>{customer.name}</Link>
         </td>
         <td>{customer.email}</td>
         <td>{customer.phone}</td>

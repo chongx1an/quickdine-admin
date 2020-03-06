@@ -38,6 +38,7 @@ const User = React.lazy(() => import('./views/Users/User'));
 
 // Orders
 const Orders = React.lazy(() => import('./views/Orders/Orders'));
+const RetrieveOrder = React.lazy(() => import('./views/Orders/RetrieveOrder/RetrieveOrder'));
 
 // Products
 const Products = React.lazy(() => import('./views/Products/Products'));
@@ -61,6 +62,7 @@ const routes = [
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
 
   // Orders
+  { path: '/orders/:order_id', name: 'Order Detail', component: RetrieveOrder },
   { path: '/orders', name: 'Orders', component: Orders },
 
   // Products
