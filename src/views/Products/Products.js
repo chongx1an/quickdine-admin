@@ -76,7 +76,7 @@ class Products extends Component {
 
     const { products, totalItems, currentPage } = this.state;
 
-    const viewCreateProductPage = '#/products/new';
+    const viewCreateProductPage = '/products/new';
 
     const viewUpdateProductPage = id => window.location.href = "#/products/" + id;
 

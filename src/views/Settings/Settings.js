@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { FormText, Label, CardFooter, Form, FormGroup, Input, Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table, Button } from 'reactstrap';
 import ApiClient from '../../ApiClient';
 import { ToastContainer, toast } from 'react-toastify';
@@ -6,12 +6,15 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default props => {
 
-  const [name, setName] = useState("Caaaa");
-  const [description, setDescription] = useState("Wow come");
-  const [address, setAddress] = useState("Lot -1, Level 102, Low Valley Mega Mall");
-  const [email, setEmail] = useState("caaaa@gmail.com");
-  const [phone, setPhone] = useState("017-8276272");
+  useEffect(() => {
+    getStoreSettings();
+  }, []);
 
+  const [name, setName] = useState();
+  const [description, setDescription] = useState();
+  const [address, setAddress] = useState();
+  const [email, setEmail] = useState();
+  const [phone, setPhone] = useState();
 
   const onChangeName = (e) => {
     setName(e.target.value);
@@ -27,6 +30,32 @@ export default props => {
   }
   const onChangePhone = (e) => {
     setPhone(e.target.value);
+  }
+
+  const getStoreSettings = () => {
+    ApiClient.get('@store')
+      .then(res => {
+
+        const { success, store } = res;
+
+        if (success) {
+
+          setName(store.name);
+          setDescription(store.description);
+          setAddress(store.address);
+          setEmail(store.email);
+          setPhone(store.phone);
+
+        } else {
+
+          toast.error("Something went wrong at Quickdine server :(", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+
+        }
+
+      })
+      .catch(console.log);
   }
 
   const saveSettings = () => {
@@ -49,7 +78,7 @@ export default props => {
             position: toast.POSITION.TOP_CENTER,
           });
         } else {
-          toast.error("Save failed :)", {
+          toast.error("Save failed :(", {
             position: toast.POSITION.TOP_CENTER,
           });
         }
@@ -72,7 +101,7 @@ export default props => {
                 <Label>Store name</Label>
               </Col>
               <Col xs="12" md="9">
-                <Input onChange={onChangeName} type="text" id="text-input" name="text-input" placeholder="Text" value={name} />
+                <Input onChange={onChangeName} type="text" id="text-input" name="text-input" placeholder="Your store name" value={name} />
 
               </Col>
             </FormGroup>
@@ -81,7 +110,7 @@ export default props => {
                 <Label htmlFor="text-input">Description</Label>
               </Col>
               <Col xs="12" md="9">
-                <Input onChange={onChangeDescription} type="text" id="text-input" name="text-input" placeholder="Text" value={description} />
+                <Input onChange={onChangeDescription} type="text" id="text-input" name="text-input" placeholder="Descript your store" value={description} />
 
               </Col>
             </FormGroup>
@@ -91,7 +120,7 @@ export default props => {
               </Col>
               <Col xs="12" md="9">
                 <Input onChange={onChangeAddress} type="textarea" name="textarea-input" id="textarea-input" rows="9"
-                  placeholder="Content..." value={address} />
+                  placeholder="Address..." value={address} />
               </Col>
             </FormGroup>
             <FormGroup row>
@@ -99,7 +128,7 @@ export default props => {
                 <Label htmlFor="text-input">Email</Label>
               </Col>
               <Col xs="12" md="9">
-                <Input onChange={onChangeEmail} type="text" id="text-input" name="text-input" placeholder="Text" value={email} />
+                <Input onChange={onChangeEmail} type="text" id="text-input" name="text-input" placeholder="Store email" value={email} />
 
               </Col>
             </FormGroup>
@@ -108,7 +137,7 @@ export default props => {
                 <Label htmlFor="text-input">Phone</Label>
               </Col>
               <Col xs="12" md="9">
-                <Input onChange={onChangePhone} type="text" id="text-input" name="text-input" placeholder="Text" value={phone} />
+                <Input onChange={onChangePhone} type="text" id="text-input" name="text-input" placeholder="Contact number" value={phone} />
 
               </Col>
             </FormGroup>
