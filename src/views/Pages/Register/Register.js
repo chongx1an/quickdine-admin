@@ -34,26 +34,28 @@ class Register extends Component {
       password: this.state.password,
     };
 
-    ApiClient.post('/auth/register', body)
-      .then(res => {
+    ApiClient.post('/admin/auth/register', body)
+    .then(res => {
 
-        const { success, user, token } = res;
+      const { success, admin, token } = res;
 
-        if (success) {
+      if (success) {
 
-          // store token in cookie and go to home screen
-          Cookies.set("token", token, { expires: 365 });
-          Cookies.set("user", user, { expires: 365 });
-          window.location.href = "/";
+        //store token in cookie and go to home screen
 
-        } else {
+        Cookies.set("token", token, { expires: 365 });
+        Cookies.set("user", admin, { expires: 365 });
 
-          // TODO: show error
+        window.location.href = "/";
 
-        }
+      } else {
 
-      })
-      .catch(console.log);
+        // TODO: show error
+
+      }
+
+    })
+    .catch(console.log);
 
   }
 

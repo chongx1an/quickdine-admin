@@ -2,17 +2,15 @@ import Axios from 'axios';
 import Cookies from 'js-cookie';
 
 var axios = Axios.create({
-  baseURL: 'https://quickdineapi.herokuapp.com/admin',
+  baseURL: 'https://quickdineapi.herokuapp.com',
   timeout: 100000,
 });
-
-axios.defaults.withCredentials = true;
 
 const token = Cookies.get("token");
 
 const get = (url = '/', params = {}, headers = {}) => {
 
-  headers['x-quickdine-access-token'] = token;
+  headers['Authorization'] = `Bearer ${token}`;
 
   return new Promise((resolve, reject) => {
 
@@ -20,7 +18,8 @@ const get = (url = '/', params = {}, headers = {}) => {
 
     axios.get(url, {
       params: params,
-      headers: headers
+      headers: headers,
+      withCredentials: true,
     })
       .then(res => resolve(res.data))
       .catch(reject);
@@ -31,13 +30,13 @@ const get = (url = '/', params = {}, headers = {}) => {
 
 const post = (url = '/', body = {}, headers = {}) => {
 
-  headers['x-quickdine-access-token'] = token;
+  headers['Authorization'] = `Bearer ${token}`;
 
   return new Promise((resolve, reject) => {
 
     url = processUrl(url);
 
-    axios.post(url, body, { headers })
+    axios.post(url, body, { headers, withCredentials: true })
       .then(res => resolve(res.data))
       .catch(reject);
 
@@ -47,7 +46,7 @@ const post = (url = '/', body = {}, headers = {}) => {
 
 const put = (url = '/', body = {}, headers = {}) => {
 
-  headers['x-quickdine-access-token'] = token;
+  headers['Authorization'] = `Bearer ${token}`;
 
   return new Promise((resolve, reject) => {
 
@@ -63,7 +62,7 @@ const put = (url = '/', body = {}, headers = {}) => {
 
 const del = (url = '/', params = {}, headers = {}) => {
 
-  headers['x-quickdine-access-token'] = token;
+  headers['Authorization'] = `Bearer ${token}`;
 
   return new Promise((resolve, reject) => {
 
@@ -88,7 +87,7 @@ const processUrl = url => {
 
     if (store_id) {
 
-      url = url.replace('@store', `/stores/${store_id}`);
+      url = '/admin' + url.replace('@store', `/stores/${store_id}`);
 
     }
 
