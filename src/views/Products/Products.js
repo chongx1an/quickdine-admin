@@ -49,21 +49,23 @@ class Products extends Component {
   }
 
   componentDidMount() {
-    this.listProducts();
+    // this.listProducts();
   }
 
   listProducts() {
 
-    ApiClient.apiGet('@store/products')
+    ApiClient.get('@store/products')
       .then(res => {
 
         const { products, totalItems, currentPage } = res;
 
-        this.setState({
-          products,
-          totalItems,
-          currentPage
-        });
+        console.table(res);
+
+        // this.setState({
+        //   products,
+        //   totalItems,
+        //   currentPage
+        // });
 
       })
       .catch(console.log);
@@ -80,7 +82,7 @@ class Products extends Component {
 
     const productsMarkup = products.length > 0 && products.map((product, index) => (
       <Col xs="12" sm="6" md="2">
-        <div onClick={() => viewUpdateProductPage(product.id)} style={{cursor: 'pointer'}}>
+        <div onClick={() => viewUpdateProductPage(product.id)} style={{ cursor: 'pointer' }}>
           <Card>
             <CardBody style={styles.productCard}>
               <Badge color="danger" style={styles.badge}>Hot Item</Badge>

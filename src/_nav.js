@@ -2,7 +2,7 @@ export default {
   items: [
     {
       name: 'Home',
-      url: '/stores/:store_id/',
+      url: '/dashboard',
       icon: 'icon-home',
       badge: {
         variant: 'info',
@@ -11,23 +11,28 @@ export default {
     },
     {
       name: 'Orders',
-      url: '/stores/:store_id/orders',
+      url: '/orders',
       icon: 'icon-list',
     },
     {
       name: 'Products',
-      url: '/stores/:store_id/products',
-      icon: 'cui-fastfood',
+      url: '/products',
+      icon: 'cil-fastfood',
     },
     {
       name: 'Tables',
-      url: '/stores/:store_id/tables',
+      url: '/tables',
       icon: 'icon-pencil',
     },
     {
       name: 'Customers',
-      url: '/stores/:store_id/customers',
+      url: '/customers',
       icon: 'icon-people',
+    },
+    {
+      name: 'Settings',
+      url: '/settings',
+      icon: 'icon-settings',
     },
   ],
 };

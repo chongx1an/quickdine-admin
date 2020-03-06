@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 // import { renderRoutes } from 'react-router-config';
 import ApiClient from './ApiClient';
+import Cookies from 'js-cookie';
 import './App.scss';
 
 const loading = () => <div className="animated fadeIn pt-3 text-center">Loading...</div>;
@@ -23,56 +24,30 @@ class App extends Component {
     super(props);
 
     this.state = {
-      authState: false,
+      token: Cookies.get('token'),
+      store_id: Cookies.get('store_id'),
     };
 
   }
 
-  componentDidMount() {
-
-    this.authenticate();
-
-  }
-
-  authenticate() {
-
-    ApiClient.get('/auth')
-      .then(res => {
-
-        const { success } = res;
-
-        console.log(res);
-
-        if (success) {
-
-          this.setState({ authState: true });  // go to home screen
-
-        } else {
-
-          this.setState({ authState: false });  // else go to login screen
-
-        }
-
-      })
-      .catch(console.log);
-
-  }
-
-
   render() {
 
     return (
+
       <Router>
+        <link rel="stylesheet" href="https://unpkg.com/@coreui/icons@1.0.0/css/all.min.css"></link>
         <React.Suspense fallback={loading()}>
           <Switch>
             <Route exact path="/login" name="Login Page" render={props => <Login {...props} />} />
             <Route exact path="/register" name="Register Page" render={props => <Register {...props} />} />
-            <Route exact path="/stores" name="Stores Page" render={props => <Stores {...props} />} />
             <Route exact path="/404" name="Page 404" render={props => <Page404 {...props} />} />
             <Route exact path="/500" name="Page 500" render={props => <Page500 {...props} />} />
+            {/* <Route path="/" name="Auth" render={props => <DefaultLayout {...props} />} /> */}
             {
-              this.state.authState
-                ? <Route path="/" name="Auth" render={props => <DefaultLayout {...props} />} />
+              this.state.token != null
+                ? this.state.store_id != null
+                  ? <Route path="/" name="Auth" render={props => <DefaultLayout {...props} />} />
+                  : <Route exact path="/stores" name="Stores Page" render={props => <Stores {...props} />} />
                 : <Route path="/" name="Auth" render={props => <Login {...props} />} />
             }
           </Switch>

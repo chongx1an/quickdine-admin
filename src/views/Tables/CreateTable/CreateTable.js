@@ -5,7 +5,7 @@ import ApiClient from '../../../ApiClient';
 
 export default props => {
 
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(1);
 
   const onChange = (e) => {
 
@@ -19,15 +19,23 @@ export default props => {
       quantity: quantity,
     };
 
-    console.log(quantity);
+    ApiClient.post('@store/tables', body)
+      .then(res => {
 
-    // ApiClient.post('@store/tables', body)
-    //   .then(res => {
-    //
-    //     const { success, tables } = res;
-    //
-    //   })
-    //   .catch(console.log);
+        const { success, table } = res;
+
+        if (success) {
+
+          window.location.href = "/tables";
+
+        } else {
+
+          // TODO: show error
+
+        }
+
+      })
+      .catch(console.log);
 
   }
 
@@ -36,7 +44,6 @@ export default props => {
     marginLeft: "5vh",
     marginRight: "5vh",
   }
-
 
   return (
     <div className="animated fadeIn">
@@ -58,11 +65,11 @@ export default props => {
                       onChange={onChange}
                       value={quantity}
                       type="number"
-                       min="0"
-                       max="10"
-                       step="1"
-                       placeholder="Enter the number of tables you want to create."
-                      />
+                      min="1"
+                      max="10"
+                      step="1"
+                      placeholder="Enter the number of tables you want to create."
+                    />
                   </Col>
                 </Row>
               </div>

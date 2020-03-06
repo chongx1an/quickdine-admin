@@ -22,7 +22,7 @@ class Customers extends Component {
 
     for (var i = 0; i < 20; i++) {
       var customer = {
-        number: i + 1,
+        id: i + 1,
         name: Math.random() > 0.5 ? 'Jian Yong' : 'Ming Sern',
         email: Math.random() > 0.5 ? 'jianyong@gmail.com' : 'mingsern@gmail.com',
         phone: Math.floor(Math.random() * 9000000000) + 1000000000,
@@ -35,33 +35,40 @@ class Customers extends Component {
   }
 
   componentDidMount() {
-    // this.listCustomers();
+
+    this.listCustomers();
+
   }
 
   listCustomers() {
-    ApiClient.apiGet('@store/customers')
+
+    ApiClient.get('@store/customers')
       .then(res => {
 
         const { customers, totalItems, currentPage } = res;
 
         this.setState({
-          customers,
-          totalItems,
-          currentPage
+          customers: customers,
+          totalItems: totalItems,
+          currentPage: currentPage,
         });
 
       })
       .catch(console.log);
+
   }
 
   render() {
 
     const { customers, totalItems, currentPage } = this.state;
 
+    const viewCustomerPage = (customerId) => "/customers/" + customerId;
+
     const buildCustomers = customers && customers.map((customer, index) => {
       return <tr key={index}>
-        <td>{customer.number}</td>
-        <td>{customer.name}</td>
+        <td>
+          <a href={viewCustomerPage(customer.id)}>{customer.name}</a>
+        </td>
         <td>{customer.email}</td>
         <td>{customer.phone}</td>
       </tr>
@@ -77,7 +84,6 @@ class Customers extends Component {
             <Table responsive>
               <thead>
                 <tr>
-                  <th>Number</th>
                   <th>Customer Name</th>
                   <th>Email</th>
                   <th>Phone</th>

@@ -2,6 +2,7 @@ import React, { Component, Suspense } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import * as router from 'react-router-dom';
 import { Container } from 'reactstrap';
+import Cookies from 'js-cookie';
 
 import {
   AppAside,
@@ -30,7 +31,11 @@ class DefaultLayout extends Component {
 
   signOut(e) {
     e.preventDefault()
-    this.props.history.push('/login')
+    // this.props.history.push('/login')
+    Cookies.remove("token");
+    Cookies.remove("admin");
+    Cookies.remove("store_id");
+    window.location.href = "/";
   }
 
   render() {
