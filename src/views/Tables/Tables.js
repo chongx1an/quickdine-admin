@@ -31,9 +31,9 @@ export default props => {
 
   const [tables, setTables] = useState([]);
 
-  const viewTableOrdersPage = (id) => window.location.href = "#/tables/" + id;
+  const viewTableOrdersPage = (id) => window.location.href = "/tables/" + id;
 
-  const viewCreateTablePage = "#/tables/new";
+  const viewCreateTablePage = "/tables/new";
 
   const listTables = () => {
 
@@ -43,7 +43,9 @@ export default props => {
         const { success, tables } = res;
 
         if (success) {
+
           setTables(tables);
+
         }
 
       })

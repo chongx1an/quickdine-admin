@@ -50,6 +50,7 @@ const TableOrders = React.lazy(() => import('./views/Tables/TableOrders/TableOrd
 
 // Customers
 const Customers = React.lazy(() => import('./views/Customers/Customers'));
+const RetrieveCustomer = React.lazy(() => import('./views/Customers/RetrieveCustomer/RetrieveCustomer'));
 
 // Settings
 const Settings = React.lazy(() => import('./views/Settings/Settings'));
@@ -73,6 +74,7 @@ const routes = [
   { path: '/tables', name: 'Tables', component: Tables },
 
   // Customers
+  { path: '/customers/:customer_id', name: 'Customer profile', component: RetrieveCustomer },
   { path: '/customers', name: 'Customers', component: Customers },
 
   // Settings
