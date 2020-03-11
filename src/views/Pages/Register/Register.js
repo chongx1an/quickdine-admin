@@ -3,6 +3,8 @@ import Cookies from 'js-cookie';
 import ApiClient from '../../../ApiClient';
 import { Button, Card, CardBody, CardFooter, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
 
 class Register extends Component {
 
@@ -36,25 +38,28 @@ class Register extends Component {
     };
 
     ApiClient.post('/admin/auth/register', body)
-    .then(res => {
+      .then(res => {
 
-      const { success, admin, token } = res;
+        const { success, admin, token, store_id, message } = res;
 
-      if (success) {
+        if (success) {
 
-        // store token in cookie and go to home screen
-        Cookies.set("token", token, { expires: 365 });
-        Cookies.set("admin", admin, { expires: 365 });
-        window.location.href = "/stores";
+          // store token in cookie and go to home screen
+          Cookies.set("token", token, { expires: 365 });
+          Cookies.set("admin", admin, { expires: 365 });
+          Cookies.set("store_id", store_id, { expires: 365 });
+          window.location.href = "/stores";
 
-      } else {
+        } else {
 
-        // TODO: show error
+          toast.error(message, {
+            position: toast.POSITION.TOP_CENTER,
+          });
 
-      }
+        }
 
-    })
-    .catch(console.log);
+      })
+      .catch(console.log);
 
   }
 
@@ -94,6 +99,7 @@ class Register extends Component {
     return (
       <div className="app flex-row align-items-center">
         <Container>
+          <ToastContainer />
           <Row className="justify-content-center">
             <Col md="9" lg="7" xl="6">
               <Card className="mx-4">
