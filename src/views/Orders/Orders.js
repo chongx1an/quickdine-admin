@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table, Button } from 'reactstrap';
 import ApiClient from '../../ApiClient';
+import { Link } from 'react-router-dom';
 
 
 class Orders extends Component {
@@ -21,16 +22,20 @@ class Orders extends Component {
 
   generateData() {
     var products = [];
+
     for (var i = 0; i < 20; i++) {
       var product = {
-        number: i + 1,
+        id: i + 1,
+        number: 20 - i,
         table_number: Math.floor(Math.random() * 20) + 1,
         customer_name: Math.random() > 0.5 ? 'Jian Yong' : 'Ming Sern',
         total_price: Math.round(Math.random() * 200, 2),
         is_paid: Math.random() > 0.5 ? true : false,
       }
+
       products.push(product);
     }
+
     return products;
   }
 
@@ -40,19 +45,25 @@ class Orders extends Component {
 
   listOrders() {
 
-    // ApiClient.apiGet('@store/orders')
-    //   .then(res => {
-    //
-    //     const { orders, totalItems, currentPage } = res;
-    //
-    //     this.setState({
-    //       orders,
-    //       totalItems,
-    //       currentPage
-    //     });
-    //
-    //   })
-    //   .catch(console.log);
+    ApiClient.get('@store/orders')
+      .then(res => {
+
+        const { success, orders } = res;
+
+        if (success) {
+
+          this.setState({
+            orders: orders,
+          });
+
+        } else {
+
+          // TODO: show error
+
+        }
+
+      })
+      .catch(console.log);
 
   }
 
@@ -60,14 +71,18 @@ class Orders extends Component {
 
     const { orders, totalItems, currentPage } = this.state;
 
-    const ordersMarkup = orders && orders.map((x, i) => (
+    const viewOrderPage = (orderId) => "/orders/" + orderId;
+
+    const ordersMarkup = orders && orders.map((order, index) => (
       <tr>
-        <td>{x.number}</td>
-        <td>{x.table_number}</td>
-        <td>{x.customer_name}</td>
-        <td>{'RM ' + x.total_price}</td>
         <td>
-          <Badge color={x.is_paid ? 'success' : 'danger'}>{x.is_paid ? 'Paid' : 'Pending'}</Badge>
+          <Link to={viewOrderPage(order.id)}>#{order.number}</Link>
+        </td>
+        <td>{order.table_number}</td>
+        <td>{order.customer_name}</td>
+        <td>{'RM ' + order.total_price}</td>
+        <td>
+          <Badge color={order.is_paid ? 'success' : 'danger'}>{order.is_paid ? 'Paid' : 'Pending'}</Badge>
         </td>
       </tr>
     ));
@@ -82,7 +97,7 @@ class Orders extends Component {
             <Table responsive>
               <thead>
                 <tr>
-                  <th>Number</th>
+                  <th>Order Number</th>
                   <th>Table Number</th>
                   <th>Customer Name</th>
                   <th>Total Price</th>

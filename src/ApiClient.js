@@ -35,7 +35,7 @@ const post = (url = '/', body = {}, headers = {}) => {
 
     url = processUrl(url);
 
-    axios.post(url, body)
+    axios.post(url, body, { headers })
       .then(res => resolve(res.data))
       .catch(reject);
 
