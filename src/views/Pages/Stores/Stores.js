@@ -27,7 +27,7 @@ export default props => {
 
   const listStores = () => {
 
-    ApiClient.get('/stores')
+    ApiClient.get('/admin/stores')
       .then(res => {
 
         const { success, stores } = res;
@@ -55,7 +55,7 @@ export default props => {
         name: storeName,
       }
 
-      ApiClient.post('/stores', body)
+      ApiClient.post('/admin/stores', body)
         .then(res => {
 
           const { success, store } = res;

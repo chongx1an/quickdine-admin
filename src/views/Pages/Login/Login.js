@@ -21,7 +21,7 @@ class Login extends Component {
 
   login() {
 
-    ApiClient.post('/auth/login', this.state)
+    ApiClient.post('/admin/auth/login', this.state)
       .then(res => {
 
         const { success, admin, token } = res;
