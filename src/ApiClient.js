@@ -19,7 +19,6 @@ const get = (url = '/', params = {}, headers = {}) => {
     axios.get(url, {
       params: params,
       headers: headers,
-      withCredentials: true,
     })
       .then(res => resolve(res.data))
       .catch(reject);
@@ -36,7 +35,7 @@ const post = (url = '/', body = {}, headers = {}) => {
 
     url = processUrl(url);
 
-    axios.post(url, body, { headers, withCredentials: true })
+    axios.post(url, body)
       .then(res => resolve(res.data))
       .catch(reject);
 
