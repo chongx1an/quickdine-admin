@@ -30,12 +30,17 @@ class DefaultLayout extends Component {
   loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
 
   signOut(e) {
-    e.preventDefault()
+    e.preventDefault();
     // this.props.history.push('/login')
     Cookies.remove("token");
     Cookies.remove("admin");
-    Cookies.remove("store_id");
     window.location.href = "/";
+  }
+
+  switchStore(e) {
+    e.preventDefault();
+    Cookies.remove("store_id");
+    window.location.href = "/stores";
   }
 
   render() {
@@ -43,7 +48,10 @@ class DefaultLayout extends Component {
       <div className="app">
         <AppHeader fixed>
           <Suspense fallback={this.loading()}>
-            <DefaultHeader onLogout={e => this.signOut(e)} />
+            <DefaultHeader
+              onLogout={e => this.signOut(e)}
+              onSwitchStore={e => this.switchStore(e)}
+            />
           </Suspense>
         </AppHeader>
         <div className="app-body">

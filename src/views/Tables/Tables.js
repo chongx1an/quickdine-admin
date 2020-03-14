@@ -3,24 +3,7 @@ import { Badge, Card, CardBody, CardFooter, DropdownItem, Col, Row, Button, Drop
 import ApiClient from '../../ApiClient';
 import { AppSwitch } from '@coreui/react'
 import { Link } from 'react-router-dom';
-
-const generateRandomData = () => {
-
-  var tables = [];
-
-  for (let i = 0; i < 20; i++) {
-    var table = {
-      id: i,
-      number: i + 1,
-      is_occupied: Math.floor(Math.random() * 2 + 1) % 2 ? true : false,
-    }
-
-    tables.push(table);
-  }
-
-  return tables;
-
-}
+import { ToastContainer, toast } from 'react-toastify';
 
 export default props => {
 
@@ -30,7 +13,7 @@ export default props => {
 
   }, []);
 
-  const [tables, setTables] = useState(generateRandomData());
+  const [tables, setTables] = useState([]);
 
   const viewTableOrdersPage = (id) => "/tables/" + id;
 
@@ -41,11 +24,17 @@ export default props => {
     ApiClient.get('@store/tables')
       .then(res => {
 
-        const { success, tables } = res;
+        const { success, tables, message } = res;
 
         if (success) {
 
-          setTables(tables);
+          setTables(tables.data);
+
+        } else {
+
+          toast.error(message, {
+            position: toast.POSITION.TOP_CENTER,
+          });
 
         }
 
@@ -56,7 +45,7 @@ export default props => {
 
   const updateTable = (updatingTable) => {
 
-    // updateTables(updatingTable);
+    updateTables(updatingTable);
 
     var updatedTables = tables.map((table) => {
 
@@ -81,10 +70,14 @@ export default props => {
     ApiClient.put('@store/tables/' + table.id, body)
       .then(res => {
 
-        const { success, table } = res;
+        const { success, table, message } = res;
 
-        if (success) {
-          updateTable(table);
+        if (!success) {
+
+          toast.error(message, {
+            position: toast.POSITION.TOP_CENTER,
+          });
+
         }
 
       })
@@ -95,6 +88,7 @@ export default props => {
   const tablesMarkup = tables && tables.map((table, index) => {
     return <Col key={index} xs="12" sm="6" md="2">
       <Card>
+        <ToastContainer />
         <Link to={viewTableOrdersPage(table.id)} style={{ textDecoration: 'none' }}>
           <CardBody style={{
             backgroundColor: table.is_occupied ? 'lightGrey' : 'white',

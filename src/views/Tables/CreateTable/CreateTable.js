@@ -1,6 +1,7 @@
 import React, { Component, useState } from 'react';
 import { Form, FormGroup, Input, Button, Card, CardBody, CardFooter, CardHeader, Col, Row } from 'reactstrap';
 import ApiClient from '../../../ApiClient';
+import { ToastContainer, toast } from 'react-toastify';
 
 
 export default props => {
@@ -22,7 +23,9 @@ export default props => {
     ApiClient.post('@store/tables', body)
       .then(res => {
 
-        const { success, table } = res;
+        const { success, message } = res;
+
+        console.table(res);
 
         if (success) {
 
@@ -30,7 +33,9 @@ export default props => {
 
         } else {
 
-          // TODO: show error
+          toast.error(message, {
+            position: toast.POSITION.TOP_CENTER,
+          });
 
         }
 
@@ -53,6 +58,7 @@ export default props => {
         </CardHeader>
 
         <CardBody>
+          <ToastContainer />
           <Form className="form-horizontal">
             <FormGroup>
               <div style={container}>

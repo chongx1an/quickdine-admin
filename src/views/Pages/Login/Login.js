@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import ApiClient from '../../../ApiClient';
 import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import LoadingButton from '../../Buttons/LoadingButton';
 
 class Login extends Component {
 
@@ -15,29 +18,37 @@ class Login extends Component {
     this.state = {
       email: "",
       password: "",
+      isLoading: false,
     };
 
   }
 
   login() {
 
-    ApiClient.post('/auth/login', this.state)
+    this.setState({
+      isLoading: true,
+    });
+
+    ApiClient.post('/admin/auth/login', this.state)
       .then(res => {
 
-        const { success, admin, token } = res;
-
-        console.table(res);
+        const { success, admin, token, message } = res;
 
         if (success) {
 
-          // store token in cookie and go to home screen
           Cookies.set("token", token, { expires: 365 });
           Cookies.set("admin", admin, { expires: 365 });
           window.location.href = "/stores";
 
         } else {
 
-          // TODO: show error
+          toast.error(message, {
+            position: toast.POSITION.TOP_CENTER,
+          });
+
+          this.setState({
+            isLoading: false,
+          });
 
         }
 
@@ -55,6 +66,7 @@ class Login extends Component {
               <CardGroup>
                 <Card className="p-4">
                   <CardBody>
+                    <ToastContainer />
                     <Form>
                       <h1>Login</h1>
                       <p className="text-muted">Sign In to your account</p>
@@ -76,25 +88,24 @@ class Login extends Component {
                       </InputGroup>
                       <Row>
                         <Col xs="6">
-                          <Button onClick={this.login} color="primary" className="px-4">Login</Button>
+                          <LoadingButton
+                            isLoading={this.state.isLoading}
+                            text="Login"
+                            onClick={this.login}
+                          />
                         </Col>
-                        {/* <Col xs="6" className="text-right">
-                          <Button color="link" className="px-0">Forgot password?</Button>
-                        </Col> */}
+                        <Col xs="6">
+                          <Link to="/register">
+                            <LoadingButton
+                              isLoading={this.state.isLoading}
+                              text="Register Now!"
+                              color="secondary"
+                            />
+                            {/* <Button color="primary" className="mt-3" active tabIndex={-1}>Register Now!</Button> */}
+                          </Link>
+                        </Col>
                       </Row>
                     </Form>
-                  </CardBody>
-                </Card>
-                <Card className="text-white bg-primary py-5 d-md-down-none" style={{ width: '44%' }}>
-                  <CardBody className="text-center">
-                    <div>
-                      <h2>Sign up</h2>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua.</p>
-                      <Link to="/register">
-                        <Button color="primary" className="mt-3" active tabIndex={-1}>Register Now!</Button>
-                      </Link>
-                    </div>
                   </CardBody>
                 </Card>
               </CardGroup>

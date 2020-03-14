@@ -2,7 +2,8 @@ import Axios from 'axios';
 import Cookies from 'js-cookie';
 
 var axios = Axios.create({
-  baseURL: 'https://quickdineapi.herokuapp.com',
+  // baseURL: 'https://quickdineapi.herokuapp.com',
+  baseURL: 'http://localhost:8000',
   timeout: 100000,
 });
 

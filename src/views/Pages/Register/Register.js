@@ -5,6 +5,7 @@ import { Button, Card, CardBody, CardFooter, Col, Container, Form, Input, InputG
 import { Link } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
+import LoadingButton from '../../Buttons/LoadingButton';
 
 class Register extends Component {
 
@@ -23,11 +24,16 @@ class Register extends Component {
       password: "",
       confirmPassword: "",
       isPasswordMatched: null,
+      isLoading: false,
     }
 
   }
 
   register() {
+
+    this.setState({
+      isLoading: true,
+    });
 
     var body = {
       store_name: this.state.storeName,
@@ -54,6 +60,10 @@ class Register extends Component {
 
           toast.error(message, {
             position: toast.POSITION.TOP_CENTER,
+          });
+
+          this.setState({
+            isLoading: true,
           });
 
         }
@@ -99,12 +109,11 @@ class Register extends Component {
     return (
       <div className="app flex-row align-items-center">
         <Container>
-          <ToastContainer />
           <Row className="justify-content-center">
             <Col md="9" lg="7" xl="6">
               <Card className="mx-4">
                 <CardBody className="p-4">
-
+                  <ToastContainer />
                   <Form onSubmit={this.register} className="needs-validation" action="javascript:void(0)" novalidate>
                     <h1>Register</h1>
                     <p className="text-muted">Create your account</p>
@@ -210,24 +219,26 @@ class Register extends Component {
                       />
                     </InputGroup>
 
-                    <Button color="success" type="submit" block>Create Account</Button>
+                    <LoadingButton
+                      isLoading={this.state.isLoading}
+                      text="Create Account"
+                      color="success"
+                      type="submit"
+                      block
+                    />
+
                     <div style={{ height: "1vh" }}></div>
-                    <Link to="/login">
-                      <Button color="primary" block>Back to login</Button>
+
+                    <Link onClick={this.state.isLoading ? e => e.preventDefault() : () => void 0} to="/login">
+                      <LoadingButton
+                        isLoading={this.state.isLoading}
+                        text="Back to login"
+                        color="primary"
+                        block
+                      />
                     </Link>
                   </Form>
                 </CardBody>
-
-                {/* <CardFooter className="p-4">
-                  <Row>
-                    <Col xs="12" sm="6">
-                      <Button className="btn-facebook mb-1" block><span>facebook</span></Button>
-                    </Col>
-                    <Col xs="12" sm="6">
-                      <Button className="btn-twitter mb-1" block><span>twitter</span></Button>
-                    </Col>
-                  </Row>
-                </CardFooter> */}
               </Card>
             </Col>
           </Row>

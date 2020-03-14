@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table, Button } from 'reactstrap';
 import ApiClient from '../../ApiClient';
 import { Link } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
 
 class Orders extends Component {
@@ -13,34 +14,36 @@ class Orders extends Component {
     this.listOrders = this.listOrders.bind(this);
 
     this.state = {
-      orders: this.generateData(),
+      orders: [],
       totalItems: 50,
       currentPage: 1,
     };
 
   }
 
-  generateData() {
-    var products = [];
+  // generateData() {
+  //   var products = [];
 
-    for (var i = 0; i < 20; i++) {
-      var product = {
-        id: i + 1,
-        number: 20 - i,
-        table_number: Math.floor(Math.random() * 20) + 1,
-        customer_name: Math.random() > 0.5 ? 'Jian Yong' : 'Ming Sern',
-        total_price: Math.round(Math.random() * 200, 2),
-        is_paid: Math.random() > 0.5 ? true : false,
-      }
+  //   for (var i = 0; i < 20; i++) {
+  //     var product = {
+  //       id: i + 1,
+  //       number: 20 - i,
+  //       table_number: Math.floor(Math.random() * 20) + 1,
+  //       customer_name: Math.random() > 0.5 ? 'Jian Yong' : 'Ming Sern',
+  //       total_price: Math.round(Math.random() * 200, 2),
+  //       is_paid: Math.random() > 0.5 ? true : false,
+  //     }
 
-      products.push(product);
-    }
+  //     products.push(product);
+  //   }
 
-    return products;
-  }
+  //   return products;
+  // }
 
   componentDidMount() {
-    // this.listOrders();
+
+    this.listOrders();
+
   }
 
   listOrders() {
@@ -48,7 +51,7 @@ class Orders extends Component {
     ApiClient.get('@store/orders')
       .then(res => {
 
-        const { success, orders } = res;
+        const { success, orders, message } = res;
 
         if (success) {
 
@@ -58,7 +61,9 @@ class Orders extends Component {
 
         } else {
 
-          // TODO: show error
+          toast.error(message, {
+            position: toast.POSITION.TOP_CENTER,
+          });
 
         }
 

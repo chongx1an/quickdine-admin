@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import ApiClient from '../../../ApiClient';
 import { Button, Card, CardBody, Modal, ModalBody, ModalFooter, ModalHeader, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import LoadingButton from '../../Buttons/LoadingButton';
+import BeatLoader from "react-spinners/BeatLoader";
 
 export default props => {
 
@@ -10,6 +14,8 @@ export default props => {
     listStores();
   }, []);
 
+  const [listIsLoading, setListIsLoading] = useState(false);
+  const [createIsLoading, setCreateIsLoading] = useState(false);
   const [stores, setStores] = useState([]);
   const [firstName, setFirstName] = useState("Admin");
   const [toggle, setToggle] = useState(false);
@@ -27,10 +33,14 @@ export default props => {
 
   const listStores = () => {
 
-    ApiClient.get('/stores')
+    setListIsLoading(true);
+
+    ApiClient.get('/admin/stores')
       .then(res => {
 
-        const { success, stores } = res;
+        const { success, stores, message } = res;
+
+        console.table(res);
 
         if (success) {
 
@@ -38,9 +48,13 @@ export default props => {
 
         } else {
 
-          // TODO: show error message
+          toast.error(message, {
+            position: toast.POSITION.TOP_CENTER,
+          });
 
         }
+
+        setListIsLoading(false);
 
       })
       .catch(console.log);
@@ -51,14 +65,16 @@ export default props => {
 
     if (storeName !== "") {
 
+      setCreateIsLoading(true);
+
       var body = {
         name: storeName,
       }
 
-      ApiClient.post('/stores', body)
+      ApiClient.post('/admin/stores', body)
         .then(res => {
 
-          const { success, store } = res;
+          const { success, store, message } = res;
 
           if (success) {
 
@@ -67,7 +83,11 @@ export default props => {
 
           } else {
 
-            // TODO: show error message
+            toast.error(message, {
+              position: toast.POSITION.TOP_CENTER,
+            });
+
+            setCreateIsLoading(false);
 
           }
 
@@ -113,20 +133,29 @@ export default props => {
   return (
 
     <div className="align-items-center" style={{ margin: "20vh" }}>
+      <ToastContainer />
       <h1 style={{ textAlign: "center" }}>Quickdine</h1>
       <div style={{ height: "5vh" }}></div>
       <h3 style={{ textAlign: "center" }}>Welcome back, {firstName}</h3>
       <div style={{ height: "5vh" }}></div>
       <Row style={{ justifyContent: "center" }}>
-        {storesMarkup}
+        {
+          listIsLoading
+            ? < BeatLoader
+              size={15}
+              margin={2}
+              color={"#333333"}
+            />
+            : storesMarkup
+        }
       </Row>
       <div style={{ height: "5vh" }}></div>
       <Row className="justify-content-center">
         <Button onClick={toggleModal} className="mr-1" color="primary">Create a new store</Button>
 
         <Form className="needs-validation" action="javascript:void(0)">
-          <Modal isOpen={toggle} toggle={toggleModal}>
-            <ModalHeader toggle={toggleModal}>Create a new store</ModalHeader>
+          <Modal isOpen={toggle} toggle={false}>
+            <ModalHeader toggle={false}>Create a new store</ModalHeader>
             <ModalBody>
 
               <InputGroup className="mb-3">
@@ -136,6 +165,7 @@ export default props => {
                   </InputGroupText>
                 </InputGroupAddon>
                 <Input
+                  disabled={createIsLoading}
                   required
                   className="form-control"
                   value={storeName}
@@ -147,8 +177,17 @@ export default props => {
 
             </ModalBody>
             <ModalFooter>
-              <Button color="secondary" onClick={toggleModal} >Cancel</Button>
-              <Button color="primary" onClick={createStore} type="submit">Create</Button>
+              <LoadingButton
+                color="secondary"
+                isLoading={createIsLoading}
+                text="Cancel"
+                onClick={toggleModal}
+              />
+              <LoadingButton
+                isLoading={createIsLoading}
+                text="Create"
+                onClick={createStore}
+              />
             </ModalFooter>
           </Modal>
         </Form>
