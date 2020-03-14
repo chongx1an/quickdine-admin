@@ -8,27 +8,24 @@ import './styles.css';
 //   name: 'McChicken',
 //   description: 'Tasty Chicken Burger',
 //   price: 10.00,
-//   type: 'Food',
 //   variants: [
 //     {
-//       type: 'Size',
-//       options: ['S', 'M', 'L'],
+//       type: { name: 'Size' },
+//       options: [{ name: 'S' }, { name: 'M' }, { name: 'L' }],
 //     },
 //     {
-//       type: 'Color',
-//       options: ['Red', 'Green', 'Blue'],
+//       type: { name: 'Color' },
+//       options: [{ name: 'Red' }, { name: 'Green' }, { name: 'Blue' }],
 //     }
 //   ],
 //   combinations: [
 //     {
-//       name: 'S · Red',
 //       price: 10.00,
-//       image_url: ''
+//       option_values: ['S', 'Red']
 //     },
 //     {
-//       name: 'S · Blue',
 //       price: 10.00,
-//       image_url: ''
+//       option_values: ['S', 'Blue']
 //     }
 //     // Continued...
 //   ]
@@ -41,7 +38,6 @@ export default props => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState(0.00);
-  const [type, setType] = useState('Food');
   const [variants, setVariants] = useState([]);
   const [combinations, setCombinations] = useState([]);
   const [showTypeDropdown, setShowTypeDropdown] = useState(false);
@@ -101,9 +97,8 @@ export default props => {
           variants[2].options.forEach(option2 =>
 
             combs.push({
-              name: `${option0} · ${option1} · ${option2}`,
+              option_values: [option0, option1, option2].map(x => x.name),
               price: 0.00,
-              image_url: ''
             })
 
           )
@@ -121,9 +116,8 @@ export default props => {
         variants[1].options.forEach(option1 =>
 
           combs.push({
-            name: `${option0} · ${option1}`,
+            option_values: [option0, option1].map(x => x.name),
             price: 0.00,
-            image_url: ''
           })
 
         )
@@ -137,9 +131,8 @@ export default props => {
       variants[0].options.forEach(option =>
 
         combs.push({
-          name: option,
+          option_values: [option.name],
           price: 0.00,
-          image_url: ''
         })
 
       )
@@ -156,7 +149,7 @@ export default props => {
 
     combinationsCopy[index].price = e.target.value;
 
-    setVariants(combinationsCopy);
+    setCombinations(combinationsCopy);
 
   }
 
@@ -165,7 +158,6 @@ export default props => {
     var body = {
       name,
       description,
-      type,
       price,
       variants,
       combinations,
@@ -184,7 +176,6 @@ export default props => {
     var body = {
       name,
       description,
-      type,
       price,
       variants,
       combinations,
@@ -234,7 +225,7 @@ export default props => {
   const variantsMarkup = variants.length && variants.map((variant, i) => (
     <Row key={i} xs="12" md="9" style={{ marginTop: "1vh", marginBottom: "1vh" }}>
       <Col>
-        <Input type="text" placeholder="Type" value={variant.type.name} onChange={e => editVariantType(e, i)} />
+        <Input value={variant.type.name} onChange={e => editVariantType(e, i)} />
       </Col>
       <Col>
         <Row style={{border: '1px solid #E4E7EA', borderRadius: 5, justifyContent: 'flex-start'}}>
@@ -282,7 +273,7 @@ export default props => {
     combinations.length > 0 && combinations.map((combination, i) => (
       <Row key={i} style={{marginTop: '1vh', marginBottom: '1vh'}}>
         <Col>
-          <Button color='outline-dark'>{combination.name}</Button>
+          <Button color='outline-dark'>{combination.option_values.join(' · ')}</Button>
         </Col>
         <Col>
           <Input type='number' step='1' min='0' placeholder='price' value={combination.price} onChange={e => editVariantPrice(i, e)} />
@@ -317,7 +308,6 @@ export default props => {
               <div>
                 <Row md="3">
                   <Col md="4"><strong>Title *</strong></Col>
-                  <Col md="4"><strong>Type *</strong></Col>
                   {
                     variants.length <= 0 &&
                     <Col md="4"><strong>Price (RM) *</strong></Col>
@@ -326,17 +316,6 @@ export default props => {
                 <Row md="3">
                   <Col md="4">
                     <Input type="text" placeholder="French Toast" onChange={e => setName(e.target.value)} />
-                  </Col>
-                  <Col md="4">
-                    {/* <Input type="text" id="text-input" name="text-input" placeholder="Food" /> */}
-                    <ButtonDropdown isOpen={showTypeDropdown} toggle={() => setShowTypeDropdown(!showTypeDropdown)}>
-                      <DropdownToggle caret color='primary' style={{color: '#73818F', backgroundColor: 'white', border: '1px solid #E4E7EA'}}>{type}</DropdownToggle>
-                      <DropdownMenu>
-                        <DropdownItem onClick={() => setType('Food')}>Food</DropdownItem>
-                        <DropdownItem onClick={() => setType('Beverage')}>Beverage</DropdownItem>
-                        <DropdownItem onClick={() => setType('Dessert')}>Dessert</DropdownItem>
-                      </DropdownMenu>
-                    </ButtonDropdown>
                   </Col>
                   {
                     variants.length <= 0 &&
