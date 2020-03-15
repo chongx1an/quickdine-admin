@@ -21,14 +21,23 @@ export default props => {
   >
     {
       props.isLoading
-        ? < BeatLoader
+        ?
+        < BeatLoader
           css={override}
           size={props.size ? props.size : 7}
           margin={props.margin ? props.margin : 2}
           color={"#FFFFFF"}
           loading={props.isLoading}
         />
-        : <div>{props.text}</div>
+        :
+        <div>
+          {
+            props.iconClassName
+              ? <i className={props.iconClassName} style={{ marginRight: 5 }}></i>
+              : <></>
+          }
+          {props.text}
+        </div>
     }
   </Button>
 

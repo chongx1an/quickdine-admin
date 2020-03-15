@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import ApiClient from '../../../ApiClient';
-import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
+import { Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LoadingButton from '../../Buttons/LoadingButton';
@@ -53,7 +53,17 @@ class Login extends Component {
         }
 
       })
-      .catch(console.log);
+      .catch(() => {
+
+        toast.error("Something went wrong at Quickdine server :(", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+
+        this.setState({
+          isLoading: false,
+        });
+
+      });
 
   }
 
@@ -67,7 +77,7 @@ class Login extends Component {
                 <Card className="p-4">
                   <CardBody>
                     <ToastContainer />
-                    <Form>
+                    <Form onSubmit={this.login} className="needs-validation" action="javascript:void(0)" novalidate>
                       <h1>Login</h1>
                       <p className="text-muted">Sign In to your account</p>
                       <InputGroup className="mb-3">
@@ -76,7 +86,14 @@ class Login extends Component {
                             <i className="icon-user"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input onChange={(e) => this.setState({ email: e.target.value })} type="text" placeholder="Email" autoComplete="email" value={this.state.email} />
+                        <Input
+                          required
+                          onChange={(e) => this.setState({ email: e.target.value })}
+                          type="email"
+                          placeholder="Email"
+                          autoComplete="email"
+                          value={this.state.email}
+                        />
                       </InputGroup>
                       <InputGroup className="mb-4">
                         <InputGroupAddon addonType="prepend">
@@ -84,14 +101,21 @@ class Login extends Component {
                             <i className="icon-lock"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input onChange={(e) => this.setState({ password: e.target.value })} type="password" placeholder="Password" autoComplete="current-password" value={this.state.password} />
+                        <Input
+                          required
+                          onChange={(e) => this.setState({ password: e.target.value })}
+                          type="password"
+                          placeholder="Password"
+                          autoComplete="current-password"
+                          value={this.state.password}
+                        />
                       </InputGroup>
                       <Row>
                         <Col xs="6">
                           <LoadingButton
                             isLoading={this.state.isLoading}
                             text="Login"
-                            onClick={this.login}
+                            type="submit"
                           />
                         </Col>
                         <Col xs="6">

@@ -69,7 +69,17 @@ class Register extends Component {
         }
 
       })
-      .catch(console.log);
+      .catch(() => {
+
+        toast.error("Something went wrong at Quickdine server :(", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+
+        this.setState({
+          isLoading: false,
+        });
+
+      });
 
   }
 
@@ -126,6 +136,7 @@ class Register extends Component {
                       </InputGroupAddon>
                       <Input
                         required
+                        disabled={this.state.isLoading}
                         className="form-control"
                         value={this.state.storeName}
                         onChange={(e) => this.setState({ storeName: e.target.value })}
@@ -144,6 +155,7 @@ class Register extends Component {
                           </InputGroupAddon>
                           <Input
                             required
+                            disabled={this.state.isLoading}
                             className="form-control"
                             value={this.state.firstName}
                             onChange={(e) => this.setState({ firstName: e.target.value })}
@@ -161,6 +173,7 @@ class Register extends Component {
                           </InputGroupAddon>
                           <Input
                             required
+                            disabled={this.state.isLoading}
                             className="form-control"
                             value={this.state.lastName}
                             onChange={(e) => this.setState({ lastName: e.target.value })}
@@ -177,10 +190,11 @@ class Register extends Component {
                       </InputGroupAddon>
                       <Input
                         required
+                        disabled={this.state.isLoading}
                         className="form-control"
                         value={this.state.email}
                         onChange={(e) => this.setState({ email: e.target.value })}
-                        type="text"
+                        type="email"
                         placeholder="Email"
                       />
                     </InputGroup>
@@ -193,6 +207,7 @@ class Register extends Component {
                       </InputGroupAddon>
                       <Input
                         required
+                        disabled={this.state.isLoading}
                         name="password"
                         className="form-control"
                         value={this.state.password}
@@ -210,6 +225,7 @@ class Register extends Component {
                       </InputGroupAddon>
                       <Input
                         required
+                        disabled={this.state.isLoading}
                         name="confirm-password"
                         className={this.handleClassName()}
                         value={this.state.confirmPassword}

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table, Button } from 'reactstrap';
 import ApiClient from '../../ApiClient';
 import { Link } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 class Customers extends Component {
@@ -46,16 +48,32 @@ class Customers extends Component {
     ApiClient.get('@store/customers')
       .then(res => {
 
-        const { customers, totalItems, currentPage } = res;
+        const { success, customers, totalItems, currentPage } = res;
 
-        this.setState({
-          customers: customers,
-          totalItems: totalItems,
-          currentPage: currentPage,
-        });
+        if (success) {
+
+          this.setState({
+            customers: customers,
+            totalItems: totalItems,
+            currentPage: currentPage,
+          });
+
+        } else {
+
+          toast.error("Something went wrong at Quickdine server :(", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+
+        }
 
       })
-      .catch(console.log);
+      .catch(() => {
+
+        toast.error("Something went wrong at Quickdine server :(", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+
+      });
 
   }
 
@@ -82,6 +100,7 @@ class Customers extends Component {
             <i className="fa fa-align-justify"></i> Customers
           </CardHeader>
           <CardBody>
+            <ToastContainer />
             <Table responsive>
               <thead>
                 <tr>

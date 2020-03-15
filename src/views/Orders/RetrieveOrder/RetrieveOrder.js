@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardHeader, Col, Label, PaginationItem, PaginationLink, Row, Table, Button } from 'reactstrap';
+import { Card, CardBody, CardHeader, Col, Label, Row } from 'reactstrap';
 import ApiClient from '../../../ApiClient';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 class RetrieveOrder extends Component {
@@ -15,12 +17,7 @@ class RetrieveOrder extends Component {
 
     this.state = {
       orderId: params.order_id,
-      order: {
-        number: "2",
-        tableNumber: "17",
-        customerName: "Ming Sern Yeo",
-        totalPrice: "RM 27",
-      },
+      order: {},
     };
 
   }
@@ -36,7 +33,7 @@ class RetrieveOrder extends Component {
     ApiClient.get('@store/orders/' + this.state.orderId)
       .then(res => {
 
-        const { success, order } = res;
+        const { success, order, message } = res;
 
         if (success) {
 
@@ -46,12 +43,20 @@ class RetrieveOrder extends Component {
 
         } else {
 
-          // TODO: show error
+          toast.error(message, {
+            position: toast.POSITION.TOP_CENTER,
+          });
 
         }
 
       })
-      .catch(console.log);
+      .catch(() => {
+
+        toast.error("Something went wrong at Quickdine server :(", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+
+      });
 
   }
 
@@ -62,6 +67,7 @@ class RetrieveOrder extends Component {
     return (
       <div className="animated fadeIn">
         <Card>
+          <ToastContainer />
           <CardHeader>
             Order Detail
           </CardHeader>
