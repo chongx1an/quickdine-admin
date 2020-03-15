@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Badge, Card, CardBody, CardHeader, Col, Label, PaginationItem, PaginationLink, Row, Table, Button } from 'reactstrap';
 import ApiClient from '../../../ApiClient';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 class RetrieveCustomer extends Component {
 
@@ -46,12 +47,20 @@ class RetrieveCustomer extends Component {
 
         } else {
 
-          // TODO: show error
+          toast.error("Something went wrong at Quickdine server :(", {
+            position: toast.POSITION.TOP_CENTER,
+          });
 
         }
 
       })
-      .catch(console.log);
+      .catch(() => {
+
+        toast.error("Something went wrong at Quickdine server :(", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+
+      });
 
   }
 
@@ -68,6 +77,7 @@ class RetrieveCustomer extends Component {
             Customer Profile
           </CardHeader>
           <CardBody>
+            <ToastContainer />
             <Row>
               <Col md="2">
                 <strong>Fullname</strong>

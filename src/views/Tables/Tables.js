@@ -39,7 +39,13 @@ export default props => {
         }
 
       })
-      .catch(console.log);
+      .catch(() => {
+
+        toast.error("Something went wrong at Quickdine server :(", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+
+      });
 
   }
 
@@ -70,7 +76,7 @@ export default props => {
     ApiClient.put('@store/tables/' + table.id, body)
       .then(res => {
 
-        const { success, table, message } = res;
+        const { success, message } = res;
 
         if (!success) {
 
@@ -81,7 +87,13 @@ export default props => {
         }
 
       })
-      .catch(console.log);
+      .catch(() => {
+
+        toast.error("Something went wrong at Quickdine server :(", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+
+      });
 
   }
 

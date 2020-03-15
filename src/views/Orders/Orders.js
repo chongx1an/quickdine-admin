@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table, Button } from 'reactstrap';
+import { Badge, Card, CardBody, CardHeader, Pagination, PaginationItem, PaginationLink, Table } from 'reactstrap';
 import ApiClient from '../../ApiClient';
 import { Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
-
+import 'react-toastify/dist/ReactToastify.css';
 
 class Orders extends Component {
 
@@ -20,25 +20,6 @@ class Orders extends Component {
     };
 
   }
-
-  // generateData() {
-  //   var products = [];
-
-  //   for (var i = 0; i < 20; i++) {
-  //     var product = {
-  //       id: i + 1,
-  //       number: 20 - i,
-  //       table_number: Math.floor(Math.random() * 20) + 1,
-  //       customer_name: Math.random() > 0.5 ? 'Jian Yong' : 'Ming Sern',
-  //       total_price: Math.round(Math.random() * 200, 2),
-  //       is_paid: Math.random() > 0.5 ? true : false,
-  //     }
-
-  //     products.push(product);
-  //   }
-
-  //   return products;
-  // }
 
   componentDidMount() {
 
@@ -68,7 +49,13 @@ class Orders extends Component {
         }
 
       })
-      .catch(console.log);
+      .catch(() => {
+
+        toast.error("Something went wrong at Quickdine server :(", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+
+      });
 
   }
 
@@ -95,6 +82,7 @@ class Orders extends Component {
     return (
       <div className="animated fadeIn">
         <Card>
+          <ToastContainer />
           <CardHeader>
             <i className="fa fa-align-justify"></i> Orders
           </CardHeader>

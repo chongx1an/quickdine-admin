@@ -40,8 +40,6 @@ export default props => {
 
         const { success, stores, message } = res;
 
-        console.table(res);
-
         if (success) {
 
           setStores(stores.data);
@@ -57,7 +55,15 @@ export default props => {
         setListIsLoading(false);
 
       })
-      .catch(console.log);
+      .catch(() => {
+
+        toast.error("Something went wrong at Quickdine server :(", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+
+        setListIsLoading(false);
+
+      });
 
   };
 
@@ -68,7 +74,7 @@ export default props => {
       setCreateIsLoading(true);
 
       var body = {
-        name: storeName,
+        name: storeName.trim().replace(/\s\s+/g, ' '),
       }
 
       ApiClient.post('/admin/stores', body)
@@ -79,6 +85,7 @@ export default props => {
           if (success) {
 
             setStores([...stores, store]);
+            setStoreName("");
             toggleModal();
 
           } else {
@@ -87,12 +94,20 @@ export default props => {
               position: toast.POSITION.TOP_CENTER,
             });
 
-            setCreateIsLoading(false);
-
           }
 
+          setCreateIsLoading(false);
+
         })
-        .catch(console.log);
+        .catch(() => {
+
+          toast.error("Something went wrong at Quickdine server :(", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+
+          setCreateIsLoading(false);
+
+        });
 
     }
 
@@ -152,9 +167,8 @@ export default props => {
       <div style={{ height: "5vh" }}></div>
       <Row className="justify-content-center">
         <Button onClick={toggleModal} className="mr-1" color="primary">Create a new store</Button>
-
-        <Form className="needs-validation" action="javascript:void(0)">
-          <Modal isOpen={toggle} toggle={false}>
+        <Modal isOpen={toggle} toggle={false}>
+          <Form onSubmit={createStore} className="needs-validation" action="javascript:void(0)" novalidate>
             <ModalHeader toggle={false}>Create a new store</ModalHeader>
             <ModalBody>
 
@@ -165,8 +179,8 @@ export default props => {
                   </InputGroupText>
                 </InputGroupAddon>
                 <Input
-                  disabled={createIsLoading}
                   required
+                  disabled={createIsLoading}
                   className="form-control"
                   value={storeName}
                   onChange={(e) => setStoreName(e.target.value)}
@@ -186,16 +200,18 @@ export default props => {
               <LoadingButton
                 isLoading={createIsLoading}
                 text="Create"
+                type="submit"
                 onClick={createStore}
               />
             </ModalFooter>
-          </Modal>
-        </Form>
+          </Form>
+        </Modal>
 
         <div style={{ width: "2vw" }}></div>
         <Button onClick={logout} >Log out</Button>
       </Row>
-    </div>
+
+    </div >
 
   );
 }
