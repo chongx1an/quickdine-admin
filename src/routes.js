@@ -80,11 +80,8 @@ const routes = [
   { path: "/orders", name: "Orders", component: Orders },
 
   // Products
-  {
-    path: "/products/:product_id",
-    name: "Edit Product",
-    component: EditProduct
-  },
+  { path: "/products/new", name: "Add Product", component: EditProduct },
+  { path: "/products/:product_id", name: "Edit Product", component: EditProduct },
   { path: "/products", name: "Products", component: Products },
 
   // Tables
