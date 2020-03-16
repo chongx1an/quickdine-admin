@@ -24,28 +24,10 @@ class Customers extends Component {
     this.listCustomers = this.listCustomers.bind(this);
 
     this.state = {
-      customers: this.generateData(),
+      customers: [],
       totalItems: 50,
       currentPage: 1
     };
-  }
-
-  generateData() {
-    var customers = [];
-
-    for (var i = 0; i < 20; i++) {
-      var customer = {
-        id: i + 1,
-        name: Math.random() > 0.5 ? "Jian Yong" : "Ming Sern",
-        email:
-          Math.random() > 0.5 ? "jianyong@gmail.com" : "mingsern@gmail.com",
-        phone: Math.floor(Math.random() * 9000000000) + 1000000000
-      };
-
-      customers.push(customer);
-    }
-
-    return customers;
   }
 
   componentDidMount() {
