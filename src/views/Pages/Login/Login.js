@@ -67,72 +67,80 @@ class Login extends Component {
 
   }
 
+  viewRegisterPage() {
+
+    window.location.href = "/register";
+
+  }
+
   render() {
     return (
       <div className="app flex-row align-items-center">
         <Container>
           <Row className="justify-content-center">
-            <Col md="8">
-              <CardGroup>
-                <Card className="p-4">
-                  <CardBody>
-                    <ToastContainer />
-                    <Form onSubmit={this.login} className="needs-validation" action="javascript:void(0)" novalidate>
-                      <h1>Login</h1>
-                      <p className="text-muted">Sign In to your account</p>
-                      <InputGroup className="mb-3">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="icon-user"></i>
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input
-                          required
-                          onChange={(e) => this.setState({ email: e.target.value })}
-                          type="email"
-                          placeholder="Email"
-                          autoComplete="email"
-                          value={this.state.email}
-                        />
-                      </InputGroup>
-                      <InputGroup className="mb-4">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="icon-lock"></i>
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input
-                          required
-                          onChange={(e) => this.setState({ password: e.target.value })}
-                          type="password"
-                          placeholder="Password"
-                          autoComplete="current-password"
-                          value={this.state.password}
-                        />
-                      </InputGroup>
-                      <Row>
-                        <Col xs="6">
-                          <LoadingButton
-                            isLoading={this.state.isLoading}
-                            text="Login"
-                            type="submit"
-                          />
-                        </Col>
-                        <Col xs="6">
-                          <Link to="/register">
-                            <LoadingButton
-                              isLoading={this.state.isLoading}
-                              text="Register Now!"
-                              color="secondary"
-                            />
-                            {/* <Button color="primary" className="mt-3" active tabIndex={-1}>Register Now!</Button> */}
-                          </Link>
-                        </Col>
-                      </Row>
-                    </Form>
-                  </CardBody>
-                </Card>
-              </CardGroup>
+
+            <Col md="9" lg="7" xl="6">
+              <Card className="mx-4">
+
+                <CardBody className="p-4">
+                  <ToastContainer />
+                  <Form onSubmit={this.login} className="needs-validation" action="javascript:void(0)" novalidate>
+                    <h1>Login</h1>
+                    <p className="text-muted">Sign In to your account</p>
+
+                    <InputGroup className="mb-3">
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="icon-user"></i>
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <Input
+                        required
+                        disabled={this.state.isLoading}
+                        onChange={(e) => this.setState({ email: e.target.value })}
+                        type="email"
+                        placeholder="Email"
+                        autoComplete="email"
+                        value={this.state.email}
+                      />
+                    </InputGroup>
+
+                    <InputGroup className="mb-3">
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="icon-lock"></i>
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <Input
+                        required
+                        disabled={this.state.isLoading}
+                        onChange={(e) => this.setState({ password: e.target.value })}
+                        type="password"
+                        placeholder="Password"
+                        autoComplete="current-password"
+                        value={this.state.password}
+                      />
+                    </InputGroup>
+
+                    <LoadingButton
+                      isLoading={this.state.isLoading}
+                      text="Login"
+                      type="submit"
+                      block
+                    />
+
+                    <div style={{ height: "1vh" }}></div>
+
+                    <LoadingButton
+                      isLoading={this.state.isLoading}
+                      text="Register Now!"
+                      color="secondary"
+                      onClick={this.viewRegisterPage}
+                      block
+                    />
+                  </Form>
+                </CardBody>
+              </Card>
             </Col>
           </Row>
         </Container>
