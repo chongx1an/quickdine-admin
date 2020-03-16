@@ -13,12 +13,17 @@ import {
   ButtonDropdown,
   DropdownItem,
   DropdownMenu,
-  DropdownToggle
+  DropdownToggle,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter
 } from "reactstrap";
 import ApiClient from "../../../ApiClient";
 import "./styles.css";
 import { ToastContainer, toast } from "react-toastify";
 import LoadingButton from "../../Buttons/LoadingButton";
+import EditVariantDialog from "./EditVariantDialog";
 
 // sampleProductData = {
 
@@ -50,13 +55,14 @@ import LoadingButton from "../../Buttons/LoadingButton";
 // }
 
 export default props => {
+  const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0.0);
   const [variants, setVariants] = useState([]);
   const [combinations, setCombinations] = useState([]);
-  const [showTypeDropdown, setShowTypeDropdown] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalActive, setIsModalActive] = useState(false);
 
   const addVariant = () =>
     variants.length < 3 &&
@@ -181,12 +187,25 @@ export default props => {
       name,
       description,
       price,
-      variants,
-      combinations
+      variants: combinations
     };
 
-    ApiClient.put("@store/products", this.state.params)
-      .then(res => {})
+    setIsLoading(true);
+
+    ApiClient.put(`@store/products/${id}`, body)
+      .then(res => {
+        const { success, error } = res;
+
+        if (success) {
+          window.location.href = "/products";
+        } else {
+          setIsLoading(false);
+
+          toast.error(error, {
+            position: toast.POSITION.TOP_CENTER
+          });
+        }
+      })
       .catch(console.log);
   };
 
@@ -197,6 +216,7 @@ export default props => {
       .then(res => {
         const { success, product } = res;
 
+        setId(product.id);
         setName(product.name);
         setDescription(product.description);
         setPrice(product.price);
@@ -231,6 +251,8 @@ export default props => {
 
           return combination;
         });
+
+        console.log(combinations);
 
         setCombinations(combinations);
       })
@@ -491,7 +513,15 @@ export default props => {
 
       <Card>
         <CardHeader>
-          <strong>Variants</strong>
+          <Row
+            className="justify-content-between"
+            style={{ marginLeft: 5, marginRight: 5 }}
+          >
+            <strong>Variants</strong>
+            <a href="#" onClick={() => setIsModalActive(true)}>
+              Edit variant options
+            </a>
+          </Row>
         </CardHeader>
 
         <CardBody>
@@ -507,10 +537,17 @@ export default props => {
           <LoadingButton
             isLoading={isLoading}
             text="Save"
-            onClick={createProduct}
+            onClick={id ? updateProduct : createProduct}
           />
         </CardFooter>
       </Card>
+      {variants.length > 0 && (
+        <EditVariantDialog
+          active={isModalActive}
+          setActive={setIsModalActive}
+          variants={variants}
+        />
+      )}
     </div>
   );
 };

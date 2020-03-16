@@ -37,8 +37,6 @@ class Products extends Component {
       .then(res => {
         const { success, products } = res;
 
-        console.log(products.data);
-
         if (success) {
           this.setState({
             products: products.data,
