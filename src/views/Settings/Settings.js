@@ -110,7 +110,7 @@ export default props => {
                 <Label htmlFor="text-input">Description</Label>
               </Col>
               <Col xs="12" md="9">
-                <Input onChange={onChangeDescription} type="text" id="text-input" name="text-input" placeholder="Descript your store" value={description} />
+                <Input onChange={onChangeDescription} type="text" id="text-input" name="text-input" placeholder="Describe your store" value={description} />
 
               </Col>
             </FormGroup>

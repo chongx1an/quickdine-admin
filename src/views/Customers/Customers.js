@@ -1,13 +1,23 @@
-import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table, Button } from 'reactstrap';
-import ApiClient from '../../ApiClient';
-import { Link } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
+import React, { Component } from "react";
+import {
+  Badge,
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Pagination,
+  PaginationItem,
+  PaginationLink,
+  Row,
+  Table,
+  Button
+} from "reactstrap";
+import ApiClient from "../../ApiClient";
+import { Link } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 class Customers extends Component {
-
   constructor(props) {
     super(props);
 
@@ -16,7 +26,7 @@ class Customers extends Component {
     this.state = {
       customers: this.generateData(),
       totalItems: 50,
-      currentPage: 1,
+      currentPage: 1
     };
   }
 
@@ -26,10 +36,11 @@ class Customers extends Component {
     for (var i = 0; i < 20; i++) {
       var customer = {
         id: i + 1,
-        name: Math.random() > 0.5 ? 'Jian Yong' : 'Ming Sern',
-        email: Math.random() > 0.5 ? 'jianyong@gmail.com' : 'mingsern@gmail.com',
-        phone: Math.floor(Math.random() * 9000000000) + 1000000000,
-      }
+        name: Math.random() > 0.5 ? "Jian Yong" : "Ming Sern",
+        email:
+          Math.random() > 0.5 ? "jianyong@gmail.com" : "mingsern@gmail.com",
+        phone: Math.floor(Math.random() * 9000000000) + 1000000000
+      };
 
       customers.push(customer);
     }
@@ -38,60 +49,67 @@ class Customers extends Component {
   }
 
   componentDidMount() {
-
     this.listCustomers();
-
   }
 
   listCustomers() {
-
-    ApiClient.get('@store/customers')
+    ApiClient.get("@store/customers")
       .then(res => {
-
-        const { success, customers, totalItems, currentPage } = res;
+        const { success, customers, error } = res;
 
         if (success) {
-
           this.setState({
-            customers: customers,
-            totalItems: totalItems,
-            currentPage: currentPage,
+            customers: customers.data,
+            currentPage: customers.current_page,
+            lastPage: customers.last_page
           });
-
         } else {
-
           toast.error("Something went wrong at Quickdine server :(", {
-            position: toast.POSITION.TOP_CENTER,
+            position: toast.POSITION.TOP_CENTER
           });
-
         }
-
       })
-      .catch(() => {
-
-        toast.error("Something went wrong at Quickdine server :(", {
-          position: toast.POSITION.TOP_CENTER,
+      .catch(error => {
+        toast.error(error, {
+          position: toast.POSITION.TOP_CENTER
         });
-
       });
-
   }
 
   render() {
+    const { customers, lastPage, currentPage } = this.state;
 
-    const { customers, totalItems, currentPage } = this.state;
+    const viewCustomerPage = customerId => "/customers/" + customerId;
 
-    const viewCustomerPage = (customerId) => "/customers/" + customerId;
+    const customersMarkup =
+      customers &&
+      customers.map((customer, index) => {
+        return (
+          <tr key={index}>
+            <td>
+              <Link to={viewCustomerPage(customer.id)}>{customer.name}</Link>
+            </td>
+            <td>{customer.email}</td>
+            <td>{customer.phone}</td>
+          </tr>
+        );
+      });
 
-    const buildCustomers = customers && customers.map((customer, index) => {
-      return <tr key={index}>
-        <td>
-          <Link to={viewCustomerPage(customer.id)}>{customer.name}</Link>
-        </td>
-        <td>{customer.email}</td>
-        <td>{customer.phone}</td>
-      </tr>
-    });
+    var paginationMarkup = [
+      currentPage > 1 && (
+        <PaginationItem active={false}>
+          <PaginationLink tag="button">{currentPage - 1}</PaginationLink>
+        </PaginationItem>
+      ),
+      <PaginationItem active={true}>
+        <PaginationLink tag="button">{currentPage}</PaginationLink>
+      </PaginationItem>,
+      currentPage < lastPage && (
+        <PaginationItem active={false}>
+          <PaginationLink tag="button">{currentPage + 1}</PaginationLink>
+        </PaginationItem>
+      )
+    ];
 
     return (
       <div className="animated fadeIn">
@@ -109,26 +127,13 @@ class Customers extends Component {
                   <th>Phone</th>
                 </tr>
               </thead>
-              <tbody>
-                {buildCustomers}
-              </tbody>
+              <tbody>{customersMarkup}</tbody>
             </Table>
             <Pagination>
               <PaginationItem>
                 <PaginationLink previous tag="button"></PaginationLink>
               </PaginationItem>
-              <PaginationItem active>
-                <PaginationLink tag="button">1</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">2</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">3</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">4</PaginationLink>
-              </PaginationItem>
+              {paginationMarkup}
               <PaginationItem>
                 <PaginationLink next tag="button"></PaginationLink>
               </PaginationItem>
@@ -139,6 +144,5 @@ class Customers extends Component {
     );
   }
 }
-
 
 export default Customers;

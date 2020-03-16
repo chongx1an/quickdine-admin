@@ -108,23 +108,34 @@ class Products extends Component {
     //   );
     // }
 
-    var paginationMarkup = [
-      this.state.currentPage > 1 && (
-        <PaginationItem active={false}>
-          <PaginationLink tag="button">
-            {this.state.currentPage - 1}
-          </PaginationLink>
+    var paginationMarkup =
+      (currentPage > 1 &&
+        ((
+          <PaginationItem>
+            <PaginationLink previous tag="button" />
+          </PaginationItem>
+        ),
+        (
+          <PaginationItem active={false}>
+            <PaginationLink tag="button">{currentPage - 1}</PaginationLink>
+          </PaginationItem>
+        )),
+      (
+        <PaginationItem active={true}>
+          <PaginationLink tag="button">{currentPage}</PaginationLink>
         </PaginationItem>
       ),
-      <PaginationItem active={true}>
-        <PaginationLink tag="button">{this.state.currentPage}</PaginationLink>
-      </PaginationItem>,
-      <PaginationItem active={false}>
-        <PaginationLink tag="button">
-          {this.state.currentPage + 1}
-        </PaginationLink>
-      </PaginationItem>
-    ];
+      currentPage < lastPage &&
+        ((
+          <PaginationItem active={false}>
+            <PaginationLink tag="button">{currentPage + 1}</PaginationLink>
+          </PaginationItem>
+        ),
+        (
+          <PaginationItem>
+            <PaginationLink next tag="button" />
+          </PaginationItem>
+        )));
 
     return (
       <div className="animated fadeIn">
@@ -142,15 +153,9 @@ class Products extends Component {
           </Row>
           <Row>{productsMarkup}</Row>
         </Col>
-        {this.state.products.length > 0 && (
+        {products.length > 0 && (
           <Pagination style={{ position: "absolute", bottom: 50, right: 20 }}>
-            <PaginationItem>
-              <PaginationLink previous tag="button"></PaginationLink>
-            </PaginationItem>
             {paginationMarkup}
-            <PaginationItem>
-              <PaginationLink next tag="button"></PaginationLink>
-            </PaginationItem>
           </Pagination>
         )}
       </div>
