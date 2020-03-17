@@ -9,15 +9,7 @@ import {
   CardFooter,
   CardHeader,
   Col,
-  Row,
-  ButtonDropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter
+  Row
 } from "reactstrap";
 import ApiClient from "../../../ApiClient";
 import "./styles.css";
@@ -29,28 +21,18 @@ import EditVariantDialog from "./EditVariantDialog";
 
 //   name: 'McChicken',
 //   description: 'Tasty Chicken Burger',
+//   tag: 'Hot Item',
 //   price: 10.00,
 //   variants: [
 //     {
 //       type: { name: 'Size' },
-//       options: [{ name: 'S' }, { name: 'M' }, { name: 'L' }],
+//       options: [{ name: 'S', add_price: 0.00 }, { name: 'M', add_price: 0.00 }, { name: 'L', add_price: 0.00 }],
 //     },
 //     {
 //       type: { name: 'Color' },
-//       options: [{ name: 'Red' }, { name: 'Green' }, { name: 'Blue' }],
+//       options: [{ name: 'Red', add_price: 0.00 }, { name: 'Green', add_price: 0.00 }, { name: 'Blue', add_price: 0.00 }],
 //     }
 //   ],
-//   combinations: [
-//     {
-//       price: 10.00,
-//       option_values: ['S', 'Red']
-//     },
-//     {
-//       price: 10.00,
-//       option_values: ['S', 'Blue']
-//     }
-//     // Continued...
-//   ]
 
 // }
 
@@ -61,7 +43,6 @@ export default props => {
   const [price, setPrice] = useState(0.0);
   const [variants, setVariants] = useState([]);
   const [images, setImages] = useState([]);
-  const [combinations, setCombinations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalActive, setIsModalActive] = useState(false);
 
@@ -69,7 +50,7 @@ export default props => {
     variants.length < 3 &&
     setVariants([
       ...variants,
-      { type: { name: getOptionType() }, options: [] }
+      { type: { name: getOptionType(), is_required: false }, options: [] }
     ]);
 
   const editVariantType = (e, index) => {
@@ -88,9 +69,10 @@ export default props => {
       var variantsCopy = [...variants];
 
       !variantsCopy[index].options.includes(e.target.value) &&
-        variantsCopy[index].options.push({ name: e.target.value });
-
-      resetCombinations();
+        variantsCopy[index].options.push({
+          name: e.target.value,
+          add_price: 0.0
+        });
 
       e.target.value = "";
     }
@@ -102,51 +84,18 @@ export default props => {
     variantsCopy[i].options.splice(j, 1);
 
     setVariants(variantsCopy);
-
-    resetCombinations();
   };
 
-  const resetCombinations = () => {
-    var combs = [];
-
-    if (variants[2]) {
-      variants[0].options.forEach(option0 =>
-        variants[1].options.forEach(option1 =>
-          variants[2].options.forEach(option2 =>
-            combs.push({
-              option_values: [option0, option1, option2].map(x => x.name),
-              price: 0.0
-            })
-          )
-        )
-      );
-    } else if (variants[1]) {
-      variants[0].options.forEach(option0 =>
-        variants[1].options.forEach(option1 =>
-          combs.push({
-            option_values: [option0, option1].map(x => x.name),
-            price: 0.0
-          })
-        )
-      );
-    } else if (variants[0]) {
-      variants[0].options.forEach(option =>
-        combs.push({
-          option_values: [option.name],
-          price: 0.0
-        })
-      );
-    }
-
-    setCombinations(combs);
+  const editOptionName = (i, j, val) => {
+    var variantsCopy = [...variants];
+    variantsCopy[i].options[i].name = val;
+    setVariants(variantsCopy);
   };
 
-  const editVariantPrice = (index, e) => {
-    var combinationsCopy = [...combinations];
-
-    combinationsCopy[index].price = e.target.value;
-
-    setCombinations(combinationsCopy);
+  const editOptionPrice = (i, j, val) => {
+    var variantsCopy = [...variants];
+    variantsCopy[i].options[i].add_price = val;
+    setVariants(variantsCopy);
   };
 
   useEffect(() => {
@@ -161,7 +110,6 @@ export default props => {
       description,
       price,
       variants,
-      combinations,
       images
     };
 
@@ -189,7 +137,7 @@ export default props => {
       name,
       description,
       price,
-      variants: combinations,
+      variants,
       images
     };
 
@@ -225,8 +173,6 @@ export default props => {
         setPrice(product.price);
         setImages(product.images);
 
-        var combinations = product.variants;
-
         var variants = product.variant_types;
 
         variants = variants.map(variant => {
@@ -239,26 +185,6 @@ export default props => {
         });
 
         setVariants(variants);
-
-        var options = variants.map(variant => variant.options).flat();
-
-        combinations = combinations.map(combination => {
-          var option_values = combination.options
-            .split(", ")
-            .map(x => x.split("_")[1]);
-
-          option_values = option_values.map(
-            x => options.filter(option => option.id == x)[0].name
-          );
-
-          combination.option_values = option_values;
-
-          return combination;
-        });
-
-        console.log(combinations);
-
-        setCombinations(combinations);
       })
       .catch(console.log);
   };
@@ -268,10 +194,7 @@ export default props => {
 
     reader.addEventListener(
       "load",
-      () => {
-        console.log(reader.result);
-        setImages([...images, { url: reader.result }]);
-      },
+      () => setImages([...images, { url: reader.result }]),
       false
     );
 
@@ -361,7 +284,7 @@ export default props => {
 
   const addVariantMarkup = (
     <>
-      {variants.length ? (
+      {variants.length > 0 ? (
         <>
           <Row>
             <Col>
@@ -395,45 +318,50 @@ export default props => {
     </>
   );
 
-  const variantCombinationMarkup =
-    combinations.length > 0 &&
-    combinations.map((combination, i) => (
-      <Row key={i} style={{ marginTop: "1vh", marginBottom: "1vh" }}>
-        <Col>
-          <Button color="outline-dark">
-            {combination.option_values.join(" · ")}
-          </Button>
-        </Col>
-        <Col>
-          <Input
-            type="number"
-            step="1"
-            min="0"
-            placeholder="price"
-            value={combination.price}
-            onChange={e => editVariantPrice(i, e)}
-          />
-        </Col>
-        <Col>
-          {props.match.params.product_id !== "new" && (
-            <i className="icon-pencil" />
-          )}
-        </Col>
-      </Row>
-    ));
-
-  const editVariantMarkup = combinations.length > 0 && (
+  const editVariantMarkup = variants.length > 0 && (
     <>
-      <Row>
-        <Col>
-          <strong>Variant</strong>
-        </Col>
-        <Col>
-          <strong>Price</strong>
-        </Col>
-        <Col />
-      </Row>
-      {variantCombinationMarkup}
+      {variants.map((variant, i) => (
+        <Card>
+          <CardBody>
+            <Row>
+              <Col md={4} style={{ marginBottom: "1vh" }}>
+                <strong>{variant.type.name}</strong>
+              </Col>
+              <Col md={2}>
+                <strong>Additional Price</strong>
+              </Col>
+            </Row>
+            <Row key={i} style={{ marginTop: "1vh", marginBottom: "1vh" }}>
+              <Col>
+                {variant.options.map((option, j) => (
+                  <Row>
+                    <Col md={4}>
+                      {/* <Button color="outline-dark">{option.name}</Button> */}
+                      {/* <p>{option.name}</p> */}
+                      <Input
+                        value={option.name}
+                        onChange={e => editOptionName(i, j, e.target.value)}
+                      />
+                    </Col>
+                    <Col md={2}>
+                      <Row>
+                        <Input
+                          type="number"
+                          step="1"
+                          min="0"
+                          placeholder="0.00"
+                          value={option.add_price}
+                          onChange={e => editOptionPrice(i, j, e.target.value)}
+                        />
+                      </Row>
+                    </Col>
+                  </Row>
+                ))}
+              </Col>
+            </Row>
+          </CardBody>
+        </Card>
+      ))}
     </>
   );
 
@@ -530,37 +458,33 @@ export default props => {
               </div>
             </FormGroup>
           </Form>
-          <Row>
-            {images.length > 0 &&
-              images.map((img, i) => (
-                <Col md={3} key={i}>
-                  <img
-                    src={img.url}
-                    style={{ maxHeight: "100%", maxWidth: "100%" }}
-                  />
-                </Col>
-              ))}
-          </Row>
+          <Card>
+            <CardBody>
+              <Row>
+                {images.length > 0 &&
+                  images.map((img, i) => (
+                    <Col md={3} key={i}>
+                      <img
+                        src={img.url}
+                        style={{ maxHeight: "100%", maxWidth: "100%" }}
+                      />
+                    </Col>
+                  ))}
+              </Row>
+            </CardBody>
+          </Card>
         </CardBody>
       </Card>
 
       <Card>
         <CardHeader>
-          <Row
-            className="justify-content-between"
-            style={{ marginLeft: 5, marginRight: 5 }}
-          >
-            <strong>Variants</strong>
-            <a href="#" onClick={() => setIsModalActive(true)}>
-              Edit variant options
-            </a>
-          </Row>
+          <strong>Variants</strong>
         </CardHeader>
 
         <CardBody>
           <FormGroup>
             <div>
-              {props.match.params.product_id === "new" && addVariantMarkup}
+              {addVariantMarkup}
               {editVariantMarkup}
             </div>
           </FormGroup>
@@ -574,13 +498,6 @@ export default props => {
           />
         </CardFooter>
       </Card>
-      {variants.length > 0 && (
-        <EditVariantDialog
-          active={isModalActive}
-          setActive={setIsModalActive}
-          variants={variants}
-        />
-      )}
     </div>
   );
 };
