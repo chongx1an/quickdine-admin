@@ -223,6 +223,7 @@ export default props => {
         setName(product.name);
         setDescription(product.description);
         setPrice(product.price);
+        setImages(product.images);
 
         var combinations = product.variants;
 
@@ -269,7 +270,7 @@ export default props => {
       "load",
       () => {
         console.log(reader.result);
-        setImages([...images, reader.result]);
+        setImages([...images, { url: reader.result }]);
       },
       false
     );
@@ -534,7 +535,7 @@ export default props => {
               images.map((img, i) => (
                 <Col md={3} key={i}>
                   <img
-                    src={img}
+                    src={img.url}
                     style={{ maxHeight: "100%", maxWidth: "100%" }}
                   />
                 </Col>
