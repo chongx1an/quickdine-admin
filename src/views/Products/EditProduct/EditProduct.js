@@ -60,6 +60,7 @@ export default props => {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0.0);
   const [variants, setVariants] = useState([]);
+  const [images, setImages] = useState([]);
   const [combinations, setCombinations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalActive, setIsModalActive] = useState(false);
@@ -160,7 +161,8 @@ export default props => {
       description,
       price,
       variants,
-      combinations
+      combinations,
+      images
     };
 
     setIsLoading(true);
@@ -187,7 +189,8 @@ export default props => {
       name,
       description,
       price,
-      variants: combinations
+      variants: combinations,
+      images
     };
 
     setIsLoading(true);
@@ -257,6 +260,23 @@ export default props => {
         setCombinations(combinations);
       })
       .catch(console.log);
+  };
+
+  const addImage = file => {
+    const reader = new FileReader();
+
+    reader.addEventListener(
+      "load",
+      () => {
+        console.log(reader.result);
+        setImages([...images, reader.result]);
+      },
+      false
+    );
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
   };
 
   const getBadgeColor = idx => {
@@ -502,12 +522,24 @@ export default props => {
                       id="file-multiple-input"
                       name="file-multiple-input"
                       multiple
+                      onChange={e => addImage(e.target.files[0])}
                     />
                   </Col>
                 </Row>
               </div>
             </FormGroup>
           </Form>
+          <Row>
+            {images.length > 0 &&
+              images.map((img, i) => (
+                <Col md={3} key={i}>
+                  <img
+                    src={img}
+                    style={{ maxHeight: "100%", maxWidth: "100%" }}
+                  />
+                </Col>
+              ))}
+          </Row>
         </CardBody>
       </Card>
 
