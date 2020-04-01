@@ -163,9 +163,16 @@ export default props => {
         var variants = product.variant_types
 
         variants = variants.map(variant => {
-          variant.type = { id: variant.id, name: variant.name }
+          variant.type = {
+            id: variant.id,
+            name: variant.name,
+            is_required: variant.is_required,
+            options_limit: variant.options_limit,
+          }
           delete variant.id
           delete variant.name
+          delete variant.is_required
+          delete variant.options_limit
           variant.options = variant.variant_options
           delete variant.variantOptions
           return variant
@@ -348,7 +355,7 @@ export default props => {
             <Row style={{ alignItems: 'center', marginRight: '1vh', marginLeft: '1vh' }}>
               <p style={{ fontWeight: 'bold', marginRight: '1vh' }}>Options limit</p>
               <Input
-                value={variants[i].options_limit}
+                value={variants[i].type.options_limit}
                 type="number"
                 step="1"
                 min="0"
@@ -388,11 +395,9 @@ export default props => {
                   <Col md="4">
                     <strong>Title *</strong>
                   </Col>
-                  {variants.length <= 0 && (
-                    <Col md="4">
-                      <strong>Price (RM) *</strong>
-                    </Col>
-                  )}
+                  <Col md="4">
+                    <strong>Price (RM) *</strong>
+                  </Col>
                 </Row>
                 <Row md="3">
                   <Col md="4">
@@ -403,18 +408,16 @@ export default props => {
                       onChange={e => setName(e.target.value)}
                     />
                   </Col>
-                  {variants.length <= 0 && (
-                    <Col md="4">
-                      <Input
-                        value={price}
-                        type="number"
-                        step="1"
-                        min="0"
-                        placeholder="15.00"
-                        onChange={e => setPrice(e.target.value)}
-                      />
-                    </Col>
-                  )}
+                  <Col md="4">
+                    <Input
+                      value={price}
+                      type="number"
+                      step="1"
+                      min="0"
+                      placeholder="15.00"
+                      onChange={e => setPrice(e.target.value)}
+                    />
+                  </Col>
                 </Row>
               </div>
             </FormGroup>
