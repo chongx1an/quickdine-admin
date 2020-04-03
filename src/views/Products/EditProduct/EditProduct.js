@@ -14,8 +14,10 @@ import {
 import ApiClient from "../../../ApiClient";
 import "./styles.css";
 import { ToastContainer, toast } from "react-toastify";
-import LoadingButton from "../../Buttons/LoadingButton";
-import EditVariantDialog from "./EditVariantDialog";
+import LoadingButton from "../../Components/LoadingButton";
+import Loading from "../../Components/Loading";
+import 'react-toastify/dist/ReactToastify.css';
+// import EditVariantDialog from "./EditVariantDialog";
 
 // sampleProductData = {
 
@@ -45,6 +47,7 @@ export default props => {
   const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalActive, setIsModalActive] = useState(false);
+  const [isScreenLoading, setIsScreenLoading] = useState(false);
 
   const addVariant = () =>
     variants.length < 3 &&
@@ -129,7 +132,15 @@ export default props => {
           });
         }
       })
-      .catch(console.log);
+      .catch(() => {
+
+        toast.error("Something went wrong at Quickdine server :(", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+
+        setIsLoading(false);
+
+      });
   };
 
   const updateProduct = () => {
@@ -157,36 +168,66 @@ export default props => {
           });
         }
       })
-      .catch(console.log);
+      .catch(() => {
+
+        toast.error("Something went wrong at Quickdine server :(", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+
+        setIsLoading(false);
+
+      });
   };
 
   const getProduct = () => {
+    setIsScreenLoading(true);
     var product_id = props.match.params.product_id;
 
     ApiClient.get(`@store/products/${product_id}`)
       .then(res => {
-        const { success, product } = res;
+        const { success, product, message } = res;
 
-        setId(product.id);
-        setName(product.name);
-        setDescription(product.description);
-        setPrice(product.price);
-        setImages(product.images);
+        if (success) {
 
-        var variants = product.variant_types;
+          setId(product.id);
+          setName(product.name);
+          setDescription(product.description);
+          setPrice(product.price);
+          setImages(product.images);
 
-        variants = variants.map(variant => {
-          variant.type = { id: variant.id, name: variant.name };
-          delete variant.id;
-          delete variant.name;
-          variant.options = variant.variant_options;
-          delete variant.variantOptions;
-          return variant;
+          var variants = product.variant_types;
+
+          variants = variants.map(variant => {
+            variant.type = { id: variant.id, name: variant.name };
+            delete variant.id;
+            delete variant.name;
+            variant.options = variant.variant_options;
+            delete variant.variantOptions;
+            return variant;
+          });
+
+          setVariants(variants);
+
+        } else {
+
+          toast.error(message, {
+            position: toast.POSITION.TOP_CENTER,
+          });
+
+        }
+
+        setIsScreenLoading(false);
+
+      })
+      .catch(() => {
+
+        toast.error("Something went wrong at Quickdine server :(", {
+          position: toast.POSITION.TOP_CENTER,
         });
 
-        setVariants(variants);
-      })
-      .catch(console.log);
+        setIsScreenLoading(false);
+
+      });
   };
 
   const addImage = file => {
@@ -307,14 +348,14 @@ export default props => {
           )}
         </>
       ) : (
-        <>
-          <p>
-            Add variants if this product comes in multiple versions, like
-            different sizes or types.
+          <>
+            <p>
+              Add variants if this product comes in multiple versions, like
+              different sizes or types.
           </p>
-          <Button onClick={addVariant}>Add variants</Button>
-        </>
-      )}
+            <Button onClick={addVariant}>Add variants</Button>
+          </>
+        )}
     </>
   );
 
@@ -367,137 +408,144 @@ export default props => {
 
   return (
     <div className="animated fadeIn">
-      <Card>
-        <CardHeader>
-          <strong>Product</strong>
-        </CardHeader>
+      <ToastContainer />
+      {
+        isScreenLoading
+          ? <Loading />
+          : <div>
+            <Card>
+              <CardHeader>
+                <strong>Product</strong>
+              </CardHeader>
 
-        <CardBody>
-          <Form
-            action=""
-            method="post"
-            encType="multipart/form-data"
-            className="form-horizontal"
-          >
-            <FormGroup>
-              <div>
-                <Row md="3">
-                  <Col md="4">
-                    <strong>Title *</strong>
-                  </Col>
-                  {variants.length <= 0 && (
-                    <Col md="4">
-                      <strong>Price (RM) *</strong>
-                    </Col>
-                  )}
-                </Row>
-                <Row md="3">
-                  <Col md="4">
-                    <Input
-                      type="text"
-                      value={name}
-                      placeholder="French Toast"
-                      onChange={e => setName(e.target.value)}
-                    />
-                  </Col>
-                  {variants.length <= 0 && (
-                    <Col md="4">
-                      <Input
-                        value={price}
-                        type="number"
-                        step="1"
-                        min="0"
-                        placeholder="15.00"
-                        onChange={e => setPrice(e.target.value)}
-                      />
-                    </Col>
-                  )}
-                </Row>
-              </div>
-            </FormGroup>
+              <CardBody>
+                <Form
+                  action=""
+                  method="post"
+                  encType="multipart/form-data"
+                  className="form-horizontal"
+                >
+                  <FormGroup>
+                    <div>
+                      <Row md="3">
+                        <Col md="4">
+                          <strong>Title *</strong>
+                        </Col>
+                        {variants.length <= 0 && (
+                          <Col md="4">
+                            <strong>Price (RM) *</strong>
+                          </Col>
+                        )}
+                      </Row>
+                      <Row md="3">
+                        <Col md="4">
+                          <Input
+                            type="text"
+                            value={name}
+                            placeholder="French Toast"
+                            onChange={e => setName(e.target.value)}
+                          />
+                        </Col>
+                        {variants.length <= 0 && (
+                          <Col md="4">
+                            <Input
+                              value={price}
+                              type="number"
+                              step="1"
+                              min="0"
+                              placeholder="15.00"
+                              onChange={e => setPrice(e.target.value)}
+                            />
+                          </Col>
+                        )}
+                      </Row>
+                    </div>
+                  </FormGroup>
 
-            <FormGroup>
-              <div>
-                <Row md="3">
-                  <Col>
-                    <strong>Description</strong>
-                  </Col>
-                </Row>
-                <Row xs="12" md="9">
-                  <Col>
-                    <Input
-                      type="textarea"
-                      value={description}
-                      rows="9"
-                      placeholder="Texas Toast batter dipped, grilled to a golden brown and dusted with powdered sugar!"
-                      onChange={e => setDescription(e.target.value)}
-                    />
-                  </Col>
-                </Row>
-              </div>
-            </FormGroup>
+                  <FormGroup>
+                    <div>
+                      <Row md="3">
+                        <Col>
+                          <strong>Description</strong>
+                        </Col>
+                      </Row>
+                      <Row xs="12" md="9">
+                        <Col>
+                          <Input
+                            type="textarea"
+                            value={description}
+                            rows="9"
+                            placeholder="Texas Toast batter dipped, grilled to a golden brown and dusted with powdered sugar!"
+                            onChange={e => setDescription(e.target.value)}
+                          />
+                        </Col>
+                      </Row>
+                    </div>
+                  </FormGroup>
 
-            <FormGroup>
-              <div>
-                <Row md="3">
-                  <Col>
-                    <strong>Images</strong>
-                  </Col>
-                </Row>
-                <Row xs="12" md="9">
-                  <Col>
-                    <Input
-                      type="file"
-                      id="file-multiple-input"
-                      name="file-multiple-input"
-                      multiple
-                      onChange={e => addImage(e.target.files[0])}
-                    />
-                  </Col>
-                </Row>
-              </div>
-            </FormGroup>
-          </Form>
-          <Card>
-            <CardBody>
-              <Row>
-                {images.length > 0 &&
-                  images.map((img, i) => (
-                    <Col md={3} key={i}>
-                      <img
-                        src={img.url}
-                        style={{ maxHeight: "100%", maxWidth: "100%" }}
-                      />
-                    </Col>
-                  ))}
-              </Row>
-            </CardBody>
-          </Card>
-        </CardBody>
-      </Card>
+                  <FormGroup>
+                    <div>
+                      <Row md="3">
+                        <Col>
+                          <strong>Images</strong>
+                        </Col>
+                      </Row>
+                      <Row xs="12" md="9">
+                        <Col>
+                          <Input
+                            type="file"
+                            id="file-multiple-input"
+                            name="file-multiple-input"
+                            multiple
+                            onChange={e => addImage(e.target.files[0])}
+                          />
+                        </Col>
+                      </Row>
+                    </div>
+                  </FormGroup>
+                </Form>
+                <Card>
+                  <CardBody>
+                    <Row>
+                      {images.length > 0 &&
+                        images.map((img, i) => (
+                          <Col md={3} key={i}>
+                            <img
+                              src={img.url}
+                              style={{ maxHeight: "100%", maxWidth: "100%" }}
+                            />
+                          </Col>
+                        ))}
+                    </Row>
+                  </CardBody>
+                </Card>
+              </CardBody>
+            </Card>
 
-      <Card>
-        <CardHeader>
-          <strong>Variants</strong>
-        </CardHeader>
+            <Card>
+              <CardHeader>
+                <strong>Variants</strong>
+              </CardHeader>
 
-        <CardBody>
-          <FormGroup>
-            <div>
-              {addVariantMarkup}
-              {editVariantMarkup}
-            </div>
-          </FormGroup>
-        </CardBody>
+              <CardBody>
+                <FormGroup>
+                  <div>
+                    {addVariantMarkup}
+                    {editVariantMarkup}
+                  </div>
+                </FormGroup>
+              </CardBody>
 
-        <CardFooter>
-          <LoadingButton
-            isLoading={isLoading}
-            text="Save"
-            onClick={id ? updateProduct : createProduct}
-          />
-        </CardFooter>
-      </Card>
+              <CardFooter>
+                <LoadingButton
+                  isLoading={isLoading}
+                  text="Save"
+                  onClick={id ? updateProduct : createProduct}
+                />
+              </CardFooter>
+            </Card>
+          </div>
+      }
     </div>
   );
 };

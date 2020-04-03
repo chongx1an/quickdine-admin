@@ -1,9 +1,10 @@
 import React, { Component, useState, useEffect } from 'react';
-import { Badge, Card, CardBody, CardFooter, DropdownItem, Col, Row, Button, DropdownToggle, DropdownMenu, UncontrolledDropdown } from 'reactstrap';
+import { Card, CardBody, CardFooter, Col, Row, Button } from 'reactstrap';
 import ApiClient from '../../ApiClient';
 import { AppSwitch } from '@coreui/react'
 import { Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import Loading from "../Components/Loading";
 
 export default props => {
 
@@ -14,6 +15,7 @@ export default props => {
   }, []);
 
   const [tables, setTables] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const viewTableOrdersPage = (id) => "/tables/" + id;
 
@@ -38,12 +40,16 @@ export default props => {
 
         }
 
+        setIsLoading(false);
+
       })
       .catch(() => {
 
         toast.error("Something went wrong at Quickdine server :(", {
           position: toast.POSITION.TOP_CENTER,
         });
+
+        setIsLoading(false);
 
       });
 
@@ -135,9 +141,11 @@ export default props => {
           <Button color="primary">Add table</Button>
         </Link>
       </Row>
-      <Row>
-        {tablesMarkup}
-      </Row>
+      {
+        isLoading
+          ? <Loading />
+          : <Row>{tablesMarkup}</Row>
+      }
     </div>
 
   );

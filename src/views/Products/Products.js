@@ -14,6 +14,9 @@ import {
 import { AppSwitch } from "@coreui/react";
 import ApiClient from "../../ApiClient";
 import { Link } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Loading from "../Components/Loading";
 
 class Products extends Component {
   constructor(props) {
@@ -21,8 +24,10 @@ class Products extends Component {
 
     this.listProducts = this.listProducts.bind(this);
 
+
     this.state = {
       products: [],
+      isLoading: true,
       lastPage: 1,
       currentPage: 1
     };
@@ -35,19 +40,36 @@ class Products extends Component {
   listProducts() {
     ApiClient.get("@store/products")
       .then(res => {
-        const { success, products } = res;
+        const { success, products, message } = res;
 
         if (success) {
+
           this.setState({
             products: products.data,
             lastPage: products.last_page,
             currentPage: products.current_page
           });
+
         } else {
-          // TODO: show error
+
+          toast.error(message, {
+            position: toast.POSITION.TOP_CENTER,
+          });
+
         }
+
+        this.setState({ isLoading: false });
+
       })
-      .catch(console.log);
+      .catch(() => {
+
+        toast.error("Something went wrong at Quickdine server :(", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+
+        this.setState({ isLoading: false });
+
+      });
   }
 
   render() {
@@ -81,7 +103,7 @@ class Products extends Component {
                       product.images.length
                         ? product.images[0].url
                         : "https://tinyurl.com/wgr44k7"
-                    })`
+                      })`
                   }}
                 ></div>
               </CardBody>
@@ -113,30 +135,31 @@ class Products extends Component {
             <PaginationLink previous tag="button" />
           </PaginationItem>
         ),
+          (
+            <PaginationItem active={false}>
+              <PaginationLink tag="button">{currentPage - 1}</PaginationLink>
+            </PaginationItem>
+          )),
         (
-          <PaginationItem active={false}>
-            <PaginationLink tag="button">{currentPage - 1}</PaginationLink>
+          <PaginationItem active={true}>
+            <PaginationLink tag="button">{currentPage}</PaginationLink>
           </PaginationItem>
-        )),
-      (
-        <PaginationItem active={true}>
-          <PaginationLink tag="button">{currentPage}</PaginationLink>
-        </PaginationItem>
-      ),
-      currentPage < lastPage &&
+        ),
+        currentPage < lastPage &&
         ((
           <PaginationItem active={false}>
             <PaginationLink tag="button">{currentPage + 1}</PaginationLink>
           </PaginationItem>
         ),
-        (
-          <PaginationItem>
-            <PaginationLink next tag="button" />
-          </PaginationItem>
-        )));
+          (
+            <PaginationItem>
+              <PaginationLink next tag="button" />
+            </PaginationItem>
+          )));
 
     return (
       <div className="animated fadeIn">
+        <ToastContainer />
         <Col>
           <Row
             style={{
@@ -149,7 +172,9 @@ class Products extends Component {
               <Button color="primary">Add product</Button>
             </Link>
           </Row>
-          <Row>{productsMarkup}</Row>
+          {
+            this.state.isLoading ? <Loading /> : <Row>{productsMarkup}</Row>
+          }
         </Col>
         {products.length > 0 && (
           <Pagination style={{ position: "absolute", bottom: 50, right: 20 }}>

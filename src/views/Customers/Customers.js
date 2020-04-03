@@ -16,6 +16,7 @@ import ApiClient from "../../ApiClient";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loading from "../Components/Loading";
 
 class Customers extends Component {
   constructor(props) {
@@ -25,6 +26,7 @@ class Customers extends Component {
 
     this.state = {
       customers: [],
+      isLoading: true,
       totalItems: 50,
       currentPage: 1
     };
@@ -40,21 +42,32 @@ class Customers extends Component {
         const { success, customers, error } = res;
 
         if (success) {
+
           this.setState({
             customers: customers.data,
             currentPage: customers.current_page,
             lastPage: customers.last_page
           });
+
         } else {
+
           toast.error("Something went wrong at Quickdine server :(", {
             position: toast.POSITION.TOP_CENTER
           });
+
         }
+
+        this.setState({ isLoading: false });
+
       })
-      .catch(error => {
-        toast.error(error, {
-          position: toast.POSITION.TOP_CENTER
+      .catch(() => {
+
+        toast.error("Something went wrong at Quickdine server :(", {
+          position: toast.POSITION.TOP_CENTER,
         });
+
+        this.setState({ isLoading: false });
+
       });
   }
 
@@ -95,33 +108,37 @@ class Customers extends Component {
 
     return (
       <div className="animated fadeIn">
-        <Card>
-          <CardHeader>
-            <i className="fa fa-align-justify"></i> Customers
-          </CardHeader>
-          <CardBody>
-            <ToastContainer />
-            <Table responsive>
-              <thead>
-                <tr>
-                  <th>Customer Name</th>
-                  <th>Email</th>
-                  <th>Phone</th>
-                </tr>
-              </thead>
-              <tbody>{customersMarkup}</tbody>
-            </Table>
-            <Pagination>
-              <PaginationItem>
-                <PaginationLink previous tag="button"></PaginationLink>
-              </PaginationItem>
-              {paginationMarkup}
-              <PaginationItem>
-                <PaginationLink next tag="button"></PaginationLink>
-              </PaginationItem>
-            </Pagination>
-          </CardBody>
-        </Card>
+        {
+          this.state.isLoading
+            ? <Loading />
+            : <Card>
+              <CardHeader>
+                <i className="fa fa-align-justify"></i> Customers
+              </CardHeader>
+              <CardBody>
+                <ToastContainer />
+                <Table responsive>
+                  <thead>
+                    <tr>
+                      <th>Customer Name</th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                    </tr>
+                  </thead>
+                  <tbody>{customersMarkup}</tbody>
+                </Table>
+                <Pagination>
+                  <PaginationItem>
+                    <PaginationLink previous tag="button"></PaginationLink>
+                  </PaginationItem>
+                  {paginationMarkup}
+                  <PaginationItem>
+                    <PaginationLink next tag="button"></PaginationLink>
+                  </PaginationItem>
+                </Pagination>
+              </CardBody>
+            </Card>
+        }
       </div>
     );
   }

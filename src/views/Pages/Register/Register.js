@@ -5,7 +5,7 @@ import { Button, Card, CardBody, CardFooter, Col, Container, Form, Input, InputG
 import { Link } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
-import LoadingButton from '../../Buttons/LoadingButton';
+import LoadingButton from '../../Components/LoadingButton';
 
 class Register extends Component {
 

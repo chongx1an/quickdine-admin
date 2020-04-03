@@ -4,7 +4,7 @@ import ApiClient from '../../../ApiClient';
 import { Button, Card, CardBody, Modal, ModalBody, ModalFooter, ModalHeader, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import LoadingButton from '../../Buttons/LoadingButton';
+import LoadingButton from '../../Components/LoadingButton';
 import BeatLoader from "react-spinners/BeatLoader";
 
 export default props => {

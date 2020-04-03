@@ -2,7 +2,7 @@ import React, { Component, useState } from 'react';
 import { Form, FormGroup, Input, Button, Card, CardBody, CardFooter, CardHeader, Col, Row } from 'reactstrap';
 import ApiClient from '../../../ApiClient';
 import { ToastContainer, toast } from 'react-toastify';
-import LoadingButton from '../../Buttons/LoadingButton';
+import LoadingButton from '../../Components/LoadingButton';
 
 
 export default props => {
