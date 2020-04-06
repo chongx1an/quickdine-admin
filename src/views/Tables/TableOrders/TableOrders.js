@@ -1,15 +1,22 @@
 import React, { Component } from 'react';
 import { Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
 import { useParams } from 'react-router-dom';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Loading from "../../Components/Loading";
+import ApiClient from "../../../ApiClient";
 
 class TableOrders extends Component {
   constructor(props) {
     super(props);
 
     this.listTableOrders = this.listTableOrders.bind(this);
+    const { match: { params } } = this.props;
 
     this.state = {
-      tableOrders: this.generateRandomData(),
+      isLoading: true,
+      table_id: params.table_id,
+      tableOrders: [],
       totalItems: 50,
       currentPage: 1
     }
@@ -20,28 +27,41 @@ class TableOrders extends Component {
   }
 
   listTableOrders() {
-    // TODO: List table orders
-    const { match: { params } } = this.props;
 
-    console.log(`${params.table_id}`);
-  }
+    ApiClient.get('@store/tables/' + this.state.table_id + '/orders')
+      .then(res => {
 
-  generateRandomData() {
-    var tableOrders = [];
+        const { success, orders, message } = res;
 
-    for (let i = 0; i < 20; i++) {
-      var tableOrder = {
-        number: i + 1,
-        table_number: Math.floor(Math.random() * 20) + 1,
-        customer_name: Math.random() > 0.5 ? 'Jian Yong' : 'Ming Sern',
-        total_price: Math.round(Math.random() * 200, 2),
-        is_paid: Math.random() > 0.5 ? true : false,
-      }
+        console.log(res);
 
-      tableOrders.push(tableOrder);
-    }
+        if (success) {
 
-    return tableOrders;
+          this.setState({
+            tableOrders: orders.data,
+          });
+
+        } else {
+
+          toast.error(message, {
+            position: toast.POSITION.TOP_CENTER,
+          });
+
+        }
+
+        this.setState({ isLoading: false });
+
+      })
+      .catch(() => {
+
+        toast.error("Something went wrong at Quickdine server :(", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+
+        this.setState({ isLoading: false });
+
+      });
+
   }
 
   render() {
@@ -61,47 +81,52 @@ class TableOrders extends Component {
 
     return (
       <div className="animated fadeIn">
-        <Card>
-          <CardHeader>
-            <i className="fa fa-align-justify"></i> Simple Table
-          </CardHeader>
-          <CardBody>
-            <Table responsive>
-              <thead>
-                <tr>
-                  <th>Number</th>
-                  <th>Table Number</th>
-                  <th>Customer Name</th>
-                  <th>Total Price</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {buildTableOrders}
-              </tbody>
-            </Table>
-            <Pagination>
-              <PaginationItem>
-                <PaginationLink previous tag="button"></PaginationLink>
-              </PaginationItem>
-              <PaginationItem active>
-                <PaginationLink tag="button">1</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">2</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">3</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">4</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink next tag="button"></PaginationLink>
-              </PaginationItem>
-            </Pagination>
-          </CardBody>
-        </Card>
+        <ToastContainer />
+        {
+          this.state.isLoading
+            ? <Loading />
+            : <Card>
+              <CardHeader>
+                <i className="fa fa-align-justify"></i> Simple Table
+              </CardHeader>
+              <CardBody>
+                <Table responsive>
+                  <thead>
+                    <tr>
+                      <th>Number</th>
+                      <th>Table Number</th>
+                      <th>Customer Name</th>
+                      <th>Total Price</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {buildTableOrders}
+                  </tbody>
+                </Table>
+                <Pagination>
+                  <PaginationItem>
+                    <PaginationLink previous tag="button"></PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem active>
+                    <PaginationLink tag="button">1</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink tag="button">2</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink tag="button">3</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink tag="button">4</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink next tag="button"></PaginationLink>
+                  </PaginationItem>
+                </Pagination>
+              </CardBody>
+            </Card>
+        }
       </div>
     );
   }

@@ -4,6 +4,7 @@ import ApiClient from '../../ApiClient';
 import { AppSwitch } from '@coreui/react'
 import { Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 import Loading from "../Components/Loading";
 
 export default props => {
