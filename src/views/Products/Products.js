@@ -11,7 +11,6 @@ import {
   PaginationItem,
   PaginationLink
 } from "reactstrap";
-import { AppSwitch } from "@coreui/react";
 import ApiClient from "../../ApiClient";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';

@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardBody, CardFooter, Col, Row, Button } from 'reactstrap';
 import ApiClient from '../../ApiClient';
 import { AppSwitch } from '@coreui/react'

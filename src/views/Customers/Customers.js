@@ -1,17 +1,5 @@
 import React, { Component } from "react";
-import {
-  Badge,
-  Card,
-  CardBody,
-  CardHeader,
-  Col,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  Row,
-  Table,
-  Button
-} from "reactstrap";
+import { Card, CardBody, CardHeader, Pagination, PaginationItem, PaginationLink, Table } from "reactstrap";
 import ApiClient from "../../ApiClient";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -33,7 +21,9 @@ class Customers extends Component {
   }
 
   componentDidMount() {
+
     this.listCustomers();
+
   }
 
   listCustomers() {
