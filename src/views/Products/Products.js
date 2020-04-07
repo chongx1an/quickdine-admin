@@ -43,7 +43,7 @@ class Products extends Component {
         const { success, products, message } = res;
 
         if (success) {
-
+          console.log(products);
           this.setState({
             products: products.data,
             lastPage: products.last_page,
@@ -82,7 +82,7 @@ class Products extends Component {
     const productsMarkup =
       products.length > 0 &&
       products.map((product, index) => (
-        <Col xs="12" sm="6" md="2">
+        <Col key={index} xs="12" sm="6" md="2">
           <Link
             to={viewUpdateProductPage(product.id)}
             style={{ textDecoration: "none", color: "black" }}

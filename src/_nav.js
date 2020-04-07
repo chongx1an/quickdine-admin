@@ -18,6 +18,16 @@ export default {
       name: 'Products',
       url: '/products',
       icon: 'cil-fastfood',
+      children: [
+        {
+          name: 'Products',
+          url: '/products'
+        },
+        {
+          name: 'Collections',
+          url: '/collections'
+        },
+      ]
     },
     {
       name: 'Tables',
