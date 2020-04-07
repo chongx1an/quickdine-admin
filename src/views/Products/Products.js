@@ -168,12 +168,24 @@ class Products extends Component {
               marginRight: "0.2vw"
             }}
           >
-            <Link to={viewCreateProductPage}>
-              <Button color="primary">Add product</Button>
-            </Link>
+            {
+              this.state.products.length > 0 &&
+              <Link to={viewCreateProductPage}>
+                <Button color="primary">Add product</Button>
+              </Link>
+            }
           </Row>
           {
-            this.state.isLoading ? <Loading /> : <Row>{productsMarkup}</Row>
+            this.state.isLoading ? <Loading /> : (this.state.products.length > 0 ?
+              <Row>{productsMarkup}</Row> :
+              <div style={{ textAlign: "center", paddingTop: "30px" }}>
+                <b>
+                  <p>No products, let's create one 🤘</p>
+                </b>
+                <Link to={viewCreateProductPage}>
+                  <Button color="primary">Add product</Button>
+                </Link>
+              </div>)
           }
         </Col>
         {products.length > 0 && (

@@ -129,6 +129,9 @@ class Orders extends Component {
                   </thead>
                   <tbody>{ordersMarkup}</tbody>
                 </Table>
+                {
+                  this.state.orders.length > 0 ? null : <div style={{ textAlign: "center", marginTop: "30px", marginBottom: "30px" }} ><b><p>No orders 😭</p></b></div>
+                }
                 {orders.length > 0 && (
                   <Pagination>
                     <PaginationItem>

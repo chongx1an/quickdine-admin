@@ -127,15 +127,20 @@ class Customers extends Component {
                   </thead>
                   <tbody>{customersMarkup}</tbody>
                 </Table>
-                <Pagination>
-                  <PaginationItem>
-                    <PaginationLink previous tag="button"></PaginationLink>
-                  </PaginationItem>
-                  {paginationMarkup}
-                  <PaginationItem>
-                    <PaginationLink next tag="button"></PaginationLink>
-                  </PaginationItem>
-                </Pagination>
+                {
+                  this.state.customers.length > 0 ? null : <div style={{ textAlign: "center", marginTop: "30px", marginBottom: "30px" }} ><b><p>No customers 😭</p></b></div>
+                }
+                {
+                  this.state.customers.length > 0 &&
+                  <Pagination>
+                    <PaginationItem>
+                      <PaginationLink previous tag="button"></PaginationLink>
+                    </PaginationItem>
+                    {paginationMarkup}
+                    <PaginationItem>
+                      <PaginationLink next tag="button"></PaginationLink>
+                    </PaginationItem>
+                  </Pagination>}
               </CardBody>
             </Card>
         }
