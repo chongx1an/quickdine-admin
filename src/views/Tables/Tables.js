@@ -29,9 +29,11 @@ export default props => {
 
         const { success, tables, message } = res;
 
+        console.log(res);
+
         if (success) {
 
-          setTables(tables.data);
+          setTables(tables);
 
         } else {
 
@@ -137,7 +139,6 @@ export default props => {
   return (
 
     <div className="animated fadeIn" >
-
       {
         tables.length > 0 &&
         <Row style={styles.button}>

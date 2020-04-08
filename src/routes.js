@@ -99,7 +99,7 @@ const routes = [
 
   // Tables
   { path: "/tables/new", name: "Add Table", component: CreateTable },
-  { path: "/tables/:table_id", name: "Orders", component: TableOrders },
+  { path: "/tables/:table_id", name: "Table Detail", component: TableOrders },
   { path: "/tables", name: "Tables", component: Tables },
 
   // Customers

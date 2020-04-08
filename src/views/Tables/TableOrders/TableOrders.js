@@ -1,19 +1,25 @@
 import React, { Component } from 'react';
 import { Badge, Card, CardBody, CardHeader, Label, Table, Col, Row } from 'reactstrap';
 import { ToastContainer, toast } from "react-toastify";
+import { AppSwitch } from '@coreui/react'
 import "react-toastify/dist/ReactToastify.css";
 import Loading from "../../Components/Loading";
 import ApiClient from "../../../ApiClient";
+import LoadingButton from '../../Components/LoadingButton';
 
 class TableOrders extends Component {
   constructor(props) {
     super(props);
 
     this.retrieveTable = this.retrieveTable.bind(this);
+    this.deleteTable = this.deleteTable.bind(this);
+    this.toggle = this.toggle.bind(this);
+
     const { match: { params } } = this.props;
 
     this.state = {
-      isLoading: true,
+      isScreenLoading: true,
+      isLoading: false,
       table_id: params.table_id,
       table: {},
       totalItems: 50,
@@ -47,7 +53,84 @@ class TableOrders extends Component {
 
         }
 
-        this.setState({ isLoading: false });
+        this.setState({ isScreenLoading: false });
+
+      })
+      .catch(() => {
+
+        toast.error("Something went wrong at Quickdine server :(", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+
+        this.setState({ isScreenLoading: false });
+
+      });
+
+  }
+
+  toggle() {
+
+    var table = this.state.table;
+    table.is_occupied = !table.is_occupied;
+
+    this.setState({ table: table });
+
+    this.updateTable(table.is_occupied);
+
+  }
+
+  updateTable(isOccupied) {
+
+    var body = {
+      is_occupied: isOccupied,
+    };
+
+    ApiClient.put('@store/tables/' + this.state.table.id, body)
+      .then(res => {
+
+        const { success, table, message } = res;
+
+        if (!success) {
+
+          toast.error(message, {
+            position: toast.POSITION.TOP_CENTER,
+          });
+
+        }
+
+      })
+      .catch(() => {
+
+        toast.error("Something went wrong at Quickdine server :(", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+
+      });
+
+  }
+
+  deleteTable() {
+
+    this.setState({ isLoading: true });
+
+    ApiClient.del('@store/tables/' + this.state.table_id)
+      .then(res => {
+
+        const { success, message } = res;
+
+        if (success) {
+
+          window.location.href = '/tables'
+
+        } else {
+
+          toast.error(message, {
+            position: toast.POSITION.TOP_CENTER,
+          });
+
+          this.setState({ isLoading: false });
+
+        }
 
       })
       .catch(() => {
@@ -79,9 +162,24 @@ class TableOrders extends Component {
       <div className="animated fadeIn">
         <ToastContainer />
         {
-          this.state.isLoading
+          this.state.isScreenLoading
             ? <Loading />
             : <>
+              <Row
+                style={{
+                  justifyContent: "flex-end",
+                  marginBottom: "3vh",
+                  marginRight: "0.2vw"
+                }}
+              >
+                <LoadingButton
+                  isLoading={this.state.isLoading}
+                  color="danger"
+                  text="Delete table"
+                  onClick={this.deleteTable}
+                  iconClassName="cui-trash"
+                />
+              </Row>
               <Card>
                 <CardHeader>
                   Table Detail
@@ -91,8 +189,18 @@ class TableOrders extends Component {
                     <Col md="2">
                       <strong>Table Number</strong>
                     </Col>
-                    <Col xs="12" md="9">
+                    <Col md="4">
                       <Label>{this.state.table.number}</Label>
+                    </Col>
+                    <Col md="2">
+                      {
+                        this.state.table.is_occupied
+                          ? <strong>Occupied</strong>
+                          : <strong>Available</strong>
+                      }
+                    </Col>
+                    <Col md="4">
+                      <AppSwitch variant={'3d'} color={'danger'} checked={this.state.table.is_occupied} onClick={this.toggle} />
                     </Col>
                   </Row>
                 </CardBody>
@@ -100,7 +208,7 @@ class TableOrders extends Component {
 
               <Card>
                 <CardHeader>
-                  <i className="fa fa-align-justify"></i> Table Orders
+                  <i className="fa fa-align-justify"></i> Order History
               </CardHeader>
                 <CardBody>
                   <Table responsive>
