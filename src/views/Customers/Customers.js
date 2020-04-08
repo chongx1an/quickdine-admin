@@ -73,7 +73,7 @@ class Customers extends Component {
         return (
           <tr key={index}>
             <td>
-              <Link to={viewCustomerPage(customer.id)}>{customer.name}</Link>
+              <Link to={viewCustomerPage(customer.id)}>{customer.first_name + " " + customer.last_name}</Link>
             </td>
             <td>{customer.email}</td>
             <td>{customer.phone}</td>
