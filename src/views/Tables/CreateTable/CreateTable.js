@@ -2,6 +2,7 @@ import React, { Component, useState } from 'react';
 import { Form, FormGroup, Input, Button, Card, CardBody, CardFooter, CardHeader, Col, Row } from 'reactstrap';
 import ApiClient from '../../../ApiClient';
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import LoadingButton from '../../Components/LoadingButton';
 
 
@@ -11,6 +12,10 @@ export default props => {
   const [quantity, setQuantity] = useState(1);
 
   const onChange = (e) => {
+
+    if (e.target.value > 10) e.target.value = 10;
+
+    if (e.target.value < 1) e.target.value = 1;
 
     setQuantity(e.target.value);
 
@@ -28,8 +33,6 @@ export default props => {
       .then(res => {
 
         const { success, message } = res;
-
-        console.table(res);
 
         if (success) {
 
@@ -52,7 +55,7 @@ export default props => {
           position: toast.POSITION.TOP_CENTER,
         });
 
-        setIsLoading(true);
+        setIsLoading(false);
 
       });
 
@@ -87,7 +90,7 @@ export default props => {
                     value={quantity}
                     type="number"
                     min="1"
-                    max="10"
+                    max="15"
                     step="1"
                     placeholder="Number of tables."
                   />

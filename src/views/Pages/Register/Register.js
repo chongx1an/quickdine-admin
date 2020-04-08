@@ -63,7 +63,7 @@ class Register extends Component {
           });
 
           this.setState({
-            isLoading: true,
+            isLoading: false,
           });
 
         }

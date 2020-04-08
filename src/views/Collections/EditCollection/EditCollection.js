@@ -18,7 +18,7 @@ export default props => {
   const [isScreenLoading, setIsScreenLoading] = useState(false);
 
   useEffect(() => {
-    if (props.match.params.collection_id !== 'new') {
+    if (props.match.params.collection_id !== undefined) {
       getCollection()
     }
 

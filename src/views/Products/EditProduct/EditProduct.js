@@ -89,7 +89,7 @@ export default props => {
   }
 
   useEffect(() => {
-    if (props.match.params.product_id !== 'new') {
+    if (props.match.params.product_id !== undefined) {
       getProduct()
     }
   }, [])

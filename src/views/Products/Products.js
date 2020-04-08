@@ -19,7 +19,6 @@ import {
   Label,
   PaginationLink
 } from "reactstrap";
-import { AppSwitch } from "@coreui/react";
 import ApiClient from "../../ApiClient";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
@@ -362,16 +361,18 @@ class Products extends Component {
             }
           </Row>
           {
-            this.state.isLoading ? <Loading /> : (this.state.products.length > 0 ?
-              <Row>{productsMarkup}</Row> :
-              <div style={{ textAlign: "center", paddingTop: "30px" }}>
-                <b>
-                  <p>No products, let's create one 🤘</p>
-                </b>
-                <Link to={viewCreateProductPage}>
-                  <Button color="primary">Add product</Button>
-                </Link>
-              </div>)
+            this.state.isLoading
+              ? <Loading />
+              : this.state.products.length > 0
+                ? <Row>{productsMarkup}</Row>
+                : <div style={{ textAlign: "center", paddingTop: "30px" }}>
+                  <b>
+                    <p>No products, let's create one 🤘</p>
+                  </b>
+                  <Link to={viewCreateProductPage}>
+                    <Button color="primary">Add product</Button>
+                  </Link>
+                </div>
           }
         </Col>
         {
