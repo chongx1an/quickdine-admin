@@ -137,15 +137,28 @@ export default props => {
   return (
 
     <div className="animated fadeIn" >
-      <Row style={styles.button}>
-        <Link to={viewCreateTablePage}>
-          <Button color="primary">Add table</Button>
-        </Link>
-      </Row>
+
+      {
+        tables.length > 0 &&
+        <Row style={styles.button}>
+          <Link to={viewCreateTablePage}>
+            <Button color="primary">Add table</Button>
+          </Link>
+        </Row>
+      }
       {
         isLoading
           ? <Loading />
-          : <Row>{tablesMarkup}</Row>
+          : (tables.length > 0 ?
+            <Row>{tablesMarkup}</Row> :
+            <div style={{ textAlign: "center", paddingTop: "30px" }}>
+              <b>
+                <p>No table, let's add one 🤘</p>
+              </b>
+              <Link to={viewCreateTablePage}>
+                <Button color="primary">Add table</Button>
+              </Link>
+            </div>)
       }
     </div>
 

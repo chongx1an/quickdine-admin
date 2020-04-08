@@ -54,6 +54,12 @@ const EditProduct = React.lazy(() =>
   import("./views/Products/EditProduct/EditProduct")
 );
 
+// Collections
+const Collections = React.lazy(() => import("./views/Collections/Collections"));
+const EditCollection = React.lazy(() =>
+  import("./views/Collections/EditCollection/EditCollection")
+);
+
 // Tables
 const Tables = React.lazy(() => import("./views/Tables/Tables"));
 const CreateTable = React.lazy(() =>
@@ -88,6 +94,14 @@ const routes = [
     component: EditProduct
   },
   { path: "/products", name: "Products", component: Products },
+
+  // Collections
+  {
+    path: "/collections/:collection_id",
+    name: "Edit Collection",
+    component: EditCollection
+  },
+  { path: "/collections", name: "Collections", component: Collections },
 
   // Tables
   { path: "/tables/new", name: "Add Table", component: CreateTable },

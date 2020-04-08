@@ -1,0 +1,6 @@
+{
+  "name": "EditCollection",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./EditCollection.js"
+}

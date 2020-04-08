@@ -42,7 +42,7 @@ class Products extends Component {
         const { success, products, message } = res;
 
         if (success) {
-
+          console.log(products);
           this.setState({
             products: products.data,
             lastPage: products.last_page,
@@ -81,7 +81,7 @@ class Products extends Component {
     const productsMarkup =
       products.length > 0 &&
       products.map((product, index) => (
-        <Col xs="12" sm="6" md="2">
+        <Col key={index} xs="12" sm="6" md="2">
           <Link
             to={viewUpdateProductPage(product.id)}
             style={{ textDecoration: "none", color: "black" }}
@@ -167,12 +167,24 @@ class Products extends Component {
               marginRight: "0.2vw"
             }}
           >
-            <Link to={viewCreateProductPage}>
-              <Button color="primary">Add product</Button>
-            </Link>
+            {
+              this.state.products.length > 0 &&
+              <Link to={viewCreateProductPage}>
+                <Button color="primary">Add product</Button>
+              </Link>
+            }
           </Row>
           {
-            this.state.isLoading ? <Loading /> : <Row>{productsMarkup}</Row>
+            this.state.isLoading ? <Loading /> : (this.state.products.length > 0 ?
+              <Row>{productsMarkup}</Row> :
+              <div style={{ textAlign: "center", paddingTop: "30px" }}>
+                <b>
+                  <p>No products, let's create one 🤘</p>
+                </b>
+                <Link to={viewCreateProductPage}>
+                  <Button color="primary">Add product</Button>
+                </Link>
+              </div>)
           }
         </Col>
         {products.length > 0 && (
