@@ -102,7 +102,7 @@ class Modals extends Component {
 
                 <Button onClick={this.toggleLarge} className="mr-1">Launch large modal</Button>
                 <Modal isOpen={this.state.large} toggle={this.toggleLarge}
-                       className={'modal-lg ' + this.props.className}>
+                  className={'modal-lg ' + this.props.className}>
                   <ModalHeader toggle={this.toggleLarge}>Modal title</ModalHeader>
                   <ModalBody>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
@@ -119,7 +119,7 @@ class Modals extends Component {
 
                 <Button onClick={this.toggleSmall} className="mr-1">Launch small modal</Button>
                 <Modal isOpen={this.state.small} toggle={this.toggleSmall}
-                       className={'modal-sm ' + this.props.className}>
+                  className={'modal-sm ' + this.props.className}>
                   <ModalHeader toggle={this.toggleSmall}>Modal title</ModalHeader>
                   <ModalBody>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
@@ -138,7 +138,7 @@ class Modals extends Component {
 
                 <Button color="primary" onClick={this.togglePrimary} className="mr-1">Primary modal</Button>
                 <Modal isOpen={this.state.primary} toggle={this.togglePrimary}
-                       className={'modal-primary ' + this.props.className}>
+                  className={'modal-primary ' + this.props.className}>
                   <ModalHeader toggle={this.togglePrimary}>Modal title</ModalHeader>
                   <ModalBody>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
@@ -155,7 +155,7 @@ class Modals extends Component {
 
                 <Button color="success" onClick={this.toggleSuccess} className="mr-1">Success modal</Button>
                 <Modal isOpen={this.state.success} toggle={this.toggleSuccess}
-                       className={'modal-success ' + this.props.className}>
+                  className={'modal-success ' + this.props.className}>
                   <ModalHeader toggle={this.toggleSuccess}>Modal title</ModalHeader>
                   <ModalBody>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
@@ -172,7 +172,7 @@ class Modals extends Component {
 
                 <Button color="warning" onClick={this.toggleWarning} className="mr-1">Warning modal</Button>
                 <Modal isOpen={this.state.warning} toggle={this.toggleWarning}
-                       className={'modal-warning ' + this.props.className}>
+                  className={'modal-warning ' + this.props.className}>
                   <ModalHeader toggle={this.toggleWarning}>Modal title</ModalHeader>
                   <ModalBody>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
@@ -189,7 +189,7 @@ class Modals extends Component {
 
                 <Button color="danger" onClick={this.toggleDanger} className="mr-1">Danger modal</Button>
                 <Modal isOpen={this.state.danger} toggle={this.toggleDanger}
-                       className={'modal-danger ' + this.props.className}>
+                  className={'modal-danger ' + this.props.className}>
                   <ModalHeader toggle={this.toggleDanger}>Modal title</ModalHeader>
                   <ModalBody>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
@@ -206,7 +206,7 @@ class Modals extends Component {
 
                 <Button color="info" onClick={this.toggleInfo} className="mr-1">Info modal</Button>
                 <Modal isOpen={this.state.info} toggle={this.toggleInfo}
-                       className={'modal-info ' + this.props.className}>
+                  className={'modal-info ' + this.props.className}>
                   <ModalHeader toggle={this.toggleInfo}>Modal title</ModalHeader>
                   <ModalBody>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
