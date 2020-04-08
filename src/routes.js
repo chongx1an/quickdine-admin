@@ -103,7 +103,7 @@ const routes = [
   { path: "/tables", name: "Tables", component: Tables },
 
   // Customers
-  { path: "/customers/:customer_id", name: "Customer profile", component: RetrieveCustomer },
+  { path: "/customers/:customer_id", name: "Customer Profile", component: RetrieveCustomer },
   { path: "/customers", name: "Customers", component: Customers },
 
   // Settings
