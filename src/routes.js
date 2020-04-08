@@ -88,19 +88,13 @@ const routes = [
   { path: "/orders", name: "Orders", component: Orders },
 
   // Products
-  {
-    path: "/products/:product_id",
-    name: "Edit Product",
-    component: EditProduct
-  },
+  { path: "/products/new", name: "Add Product", component: EditProduct },
+  { path: "/products/:product_id", name: "Edit Product", component: EditProduct },
   { path: "/products", name: "Products", component: Products },
 
   // Collections
-  {
-    path: "/collections/:collection_id",
-    name: "Edit Collection",
-    component: EditCollection
-  },
+  { path: "/collections/new", name: "Add Collection", component: EditCollection },
+  { path: "/collections/:collection_id", name: "Edit Collection", component: EditCollection },
   { path: "/collections", name: "Collections", component: Collections },
 
   // Tables
@@ -109,11 +103,7 @@ const routes = [
   { path: "/tables", name: "Tables", component: Tables },
 
   // Customers
-  {
-    path: "/customers/:customer_id",
-    name: "Customer profile",
-    component: RetrieveCustomer
-  },
+  { path: "/customers/:customer_id", name: "Customer profile", component: RetrieveCustomer },
   { path: "/customers", name: "Customers", component: Customers },
 
   // Settings

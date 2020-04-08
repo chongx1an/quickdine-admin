@@ -23,7 +23,6 @@ class Products extends Component {
 
     this.listProducts = this.listProducts.bind(this);
 
-
     this.state = {
       products: [],
       isLoading: true,
@@ -42,7 +41,7 @@ class Products extends Component {
         const { success, products, message } = res;
 
         if (success) {
-          console.log(products);
+
           this.setState({
             products: products.data,
             lastPage: products.last_page,
@@ -175,16 +174,18 @@ class Products extends Component {
             }
           </Row>
           {
-            this.state.isLoading ? <Loading /> : (this.state.products.length > 0 ?
-              <Row>{productsMarkup}</Row> :
-              <div style={{ textAlign: "center", paddingTop: "30px" }}>
-                <b>
-                  <p>No products, let's create one 🤘</p>
-                </b>
-                <Link to={viewCreateProductPage}>
-                  <Button color="primary">Add product</Button>
-                </Link>
-              </div>)
+            this.state.isLoading
+              ? <Loading />
+              : this.state.products.length > 0
+                ? <Row>{productsMarkup}</Row>
+                : <div style={{ textAlign: "center", paddingTop: "30px" }}>
+                  <b>
+                    <p>No products, let's create one 🤘</p>
+                  </b>
+                  <Link to={viewCreateProductPage}>
+                    <Button color="primary">Add product</Button>
+                  </Link>
+                </div>
           }
         </Col>
         {products.length > 0 && (
