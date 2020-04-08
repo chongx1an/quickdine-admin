@@ -16,20 +16,21 @@ class Customers extends Component {
       customers: [],
       isLoading: true,
       totalItems: 50,
-      currentPage: 1
+      currentPage: 1,
+      lastPage: 1,
     };
   }
 
   componentDidMount() {
-
     this.listCustomers();
-
   }
 
-  listCustomers() {
-    ApiClient.get("@store/customers")
+  listCustomers(page = 1) {
+    ApiClient.get("@store/customers?page=" + page)
       .then(res => {
         const { success, customers, error } = res;
+
+        console.log(res);
 
         if (success) {
 
@@ -80,21 +81,22 @@ class Customers extends Component {
         );
       });
 
-    var paginationMarkup = [
-      currentPage > 1 && (
-        <PaginationItem active={false}>
-          <PaginationLink tag="button">{currentPage - 1}</PaginationLink>
-        </PaginationItem>
-      ),
-      <PaginationItem active={true}>
-        <PaginationLink tag="button">{currentPage}</PaginationLink>
-      </PaginationItem>,
-      currentPage < lastPage && (
-        <PaginationItem active={false}>
-          <PaginationLink tag="button">{currentPage + 1}</PaginationLink>
-        </PaginationItem>
+    const pages = lastPage > 1 && [...Array(lastPage).keys()].map((page) => (
+      <PaginationItem active={currentPage == page + 1} onClick={() => this.listCustomers(page + 1)}>
+        <PaginationLink tag="button">{page + 1}</PaginationLink>
+      </PaginationItem>
+    ));
+
+    const paginationMarkup = (
+      pages &&
+      (
+        (currentPage - 3 >= 0 && currentPage + 2 <= lastPage)
+          ? pages.slice(currentPage - 3, currentPage + 2)
+          : currentPage > 5
+            ? pages.slice(lastPage - 5)
+            : pages.slice(0, 5)
       )
-    ];
+    );
 
     return (
       <div className="animated fadeIn">
@@ -118,19 +120,19 @@ class Customers extends Component {
                   <tbody>{customersMarkup}</tbody>
                 </Table>
                 {
-                  this.state.customers.length > 0 ? null : <div style={{ textAlign: "center", marginTop: "30px", marginBottom: "30px" }} ><b><p>No customers 😭</p></b></div>
+                  customers.length > 0 ? null : <div style={{ textAlign: "center", marginTop: "30px", marginBottom: "30px" }} ><b><p>No customers 😭</p></b></div>
                 }
-                {
-                  this.state.customers.length > 0 &&
+                {(customers.length > 0 && lastPage > 1) && (
                   <Pagination>
-                    <PaginationItem>
-                      <PaginationLink previous tag="button"></PaginationLink>
+                    <PaginationItem disabled={currentPage == 1}>
+                      <PaginationLink previous tag="button" onClick={() => this.listCustomers(currentPage - 1)}></PaginationLink>
                     </PaginationItem>
                     {paginationMarkup}
-                    <PaginationItem>
-                      <PaginationLink next tag="button"></PaginationLink>
+                    <PaginationItem disabled={currentPage == lastPage}>
+                      <PaginationLink next tag="button" onClick={() => this.listCustomers(currentPage + 1)}></PaginationLink>
                     </PaginationItem>
-                  </Pagination>}
+                  </Pagination>
+                )}
               </CardBody>
             </Card>
         }
