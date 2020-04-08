@@ -98,18 +98,21 @@ export default props => {
 
     setIsLoading(true)
 
-    ApiClient.del(`@store/collections/${id}`, {})
+    ApiClient.del(`@store/collections/${id}`)
       .then(res => {
         const { success, error } = res
 
         if (success) {
-          window.location.href = '/collections'
+
+          window.location.href = '/collections';
+
         } else {
-          setIsLoading(false)
 
           toast.error(error, {
             position: toast.POSITION.TOP_CENTER,
           })
+
+          setIsLoading(false)
         }
       })
       .catch(() => {
@@ -201,6 +204,26 @@ export default props => {
         isScreenLoading
           ? <Loading />
           : <div>
+            {
+              props.match.params.collection_id === undefined
+                ? <></>
+                : <Row
+                  style={{
+                    justifyContent: "flex-end",
+                    marginBottom: "3vh",
+                    marginRight: "0.2vw"
+                  }}
+                >
+                  <LoadingButton
+                    isLoading={isLoading}
+                    color="danger"
+                    text="Delete collection"
+                    onClick={deleteCollection}
+                    iconClassName="cui-trash"
+                  />
+                </Row>
+            }
+
             <Card>
               <CardHeader>
                 <strong>Collection</strong>
@@ -311,7 +334,7 @@ export default props => {
               </CardFooter>
 
             </Card>
-            {(props.match.params.collection_id !== 'new') ? <Card>
+            {/* {(props.match.params.collection_id !== 'new') ? <Card>
               <CardBody>
                 <Row style={{
                   alignContent: 'flex-start',
@@ -330,7 +353,7 @@ export default props => {
                 </Row>
 
               </CardBody>
-            </Card> : null}
+            </Card> : null} */}
           </div>
       }
     </div>

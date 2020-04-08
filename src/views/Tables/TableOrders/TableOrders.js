@@ -186,22 +186,18 @@ class TableOrders extends Component {
                 </CardHeader>
                 <CardBody>
                   <Row>
-                    <Col md="2">
-                      <strong>Table Number</strong>
-                    </Col>
-                    <Col md="4">
-                      <Label>{this.state.table.number}</Label>
-                    </Col>
-                    <Col md="2">
+                    <strong style={{ marginLeft: "30px", width: "160px" }}>Table Number</strong>
+                    <Label>{this.state.table.number}</Label>
+                  </Row>
+                  <Row>
+                    <div style={{ marginLeft: "30px", width: "160px" }}>
                       {
                         this.state.table.is_occupied
                           ? <strong>Occupied</strong>
                           : <strong>Available</strong>
                       }
-                    </Col>
-                    <Col md="4">
-                      <AppSwitch variant={'3d'} color={'danger'} checked={this.state.table.is_occupied} onClick={this.toggle} />
-                    </Col>
+                    </div>
+                    <AppSwitch variant={'3d'} color={'danger'} checked={this.state.table.is_occupied} onClick={this.toggle} />
                   </Row>
                 </CardBody>
               </Card>
