@@ -98,7 +98,7 @@ class Orders extends Component {
           <td>{"RM " + order.total_price}</td>
           <td>
             <Badge color={order.is_paid ? "success" : "danger"}>
-              {order.is_paid ? "Paid" : "Pending"}
+              {order.is_paid ? "Paid" : "Unpaid"}
             </Badge>
           </td>
         </tr>
