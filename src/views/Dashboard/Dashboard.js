@@ -460,8 +460,33 @@ export default props => {
   const [isOpenCard3, setIsOpenCard3] = useState(false);
   const [isOpenCard4, setIsOpenCard4] = useState(false);
 
+  // Order
+  const [totalOrderCount, setTotalOrderCount] = useState(1);
+  const [inProgressOrderCount, setInProgressOrderCount] = useState(0);
+  const [completedOrderCount, setCompletedOrderCount] = useState(0);
+
+  // Product
+  const [totalProductCount, setTotalProductCount] = useState(1);
+
+  // Collection
+  const [collection1, setCollection1] = useState(null);
+  const [collection2, setCollection2] = useState(null);
+  const [collection3, setCollection3] = useState(null);
+  const [collection4, setCollection4] = useState(null);
+
+  // Sales
+  const [totalSales, setTotalSales] = useState(0);
+
+  // Tables
+  const [totalTableCount, setTotalTableCount] = useState(1);
+  const [occupiedTableCount, setOccupiedTableCount] = useState(0);
+  const [availableTableCount, setAvailableTableCount] = useState(0);
+
   useEffect(() => {
     getOrderAnalytics();
+    getProductAndCollectionAnalytics();
+    getSalesAnalytics();
+    getTableAnalytics();
   }, []);
 
   const getOrderAnalytics = () => {
@@ -469,10 +494,68 @@ export default props => {
     ApiClient.get('@store/analytics/order')
       .then(res => {
 
-        const { success, orders } = res;
+        const { success, order } = res;
 
-        console.log(orders);
+        setTotalOrderCount(order.total_order_count)
+        setInProgressOrderCount(order.in_progress_order_count)
+        setCompletedOrderCount(order.completed_order_count)
+      })
+      .catch(console.log);
 
+  }
+
+  const getProductAndCollectionAnalytics = () => {
+
+    ApiClient.get('@store/analytics/product_collection')
+      .then(res => {
+
+        const { success, product, collections } = res;
+
+        setTotalProductCount(product.total_product_count)
+        setCollection1(collections[0] != null ? {
+          name: collections[0].name,
+          product_count: collections[0].products.length,
+          product_percent: (collections[0].products.length.toFixed(2) / product.total_product_count.toFixed(2) * 100).toFixed(2)
+        } : null)
+        setCollection2(collections[1] != null ? {
+          name: collections[1].name,
+          product_count: collections[1].products.length,
+          product_percent: (collections[1].products.length.toFixed(2) / product.total_product_count.toFixed(2) * 100).toFixed(2)
+        } : null)
+        setCollection3(collections[2] != null ? {
+          name: collections[2].name,
+          product_count: collections[2].products.length,
+          product_percent: (collections[2].products.length.toFixed(2) / product.total_product_count.toFixed(2) * 100).toFixed(2)
+        } : null)
+        setCollection4(collections[3] != null ? {
+          name: collections[3].name,
+          product_count: collections[3].products.length,
+          product_percent: (collections[3].products.length.toFixed(2) / product.total_product_count.toFixed(2) * 100).toFixed(2)
+        } : null)
+      })
+      .catch(console.log);
+
+  }
+
+  const getSalesAnalytics = () => {
+
+    ApiClient.get('@store/analytics/sales')
+      .then(res => {
+        const { success, sale } = res;
+        setTotalSales(parseFloat(sale.total_sales));
+      })
+      .catch(console.log);
+
+  }
+
+  const getTableAnalytics = () => {
+
+    ApiClient.get('@store/analytics/table')
+      .then(res => {
+        const { success, table } = res;
+        setTotalTableCount(table.total_table_count);
+        setOccupiedTableCount(table.occupied_table_count);
+        setAvailableTableCount(table.available_table_count);
       })
       .catch(console.log);
 
@@ -497,8 +580,8 @@ export default props => {
                   </DropdownMenu>
                 </ButtonDropdown>
               </ButtonGroup>
-              <div className="text-value">9.823</div>
-              <div>Total Orders</div>
+              <div className="text-value">{totalOrderCount}</div>
+              <div>Today Orders</div>
             </CardBody>
             <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
               <Line data={cardChartData2} options={cardChartOpts2} height={70} />
@@ -509,19 +592,7 @@ export default props => {
         <Col xs="12" sm="6" lg="3">
           <Card className="text-white bg-primary">
             <CardBody className="pb-0">
-              <ButtonGroup className="float-right">
-                <Dropdown id='card2' isOpen={isOpenCard2} toggle={() => { setIsOpenCard2(!isOpenCard2); }}>
-                  <DropdownToggle className="p-0" color="transparent">
-                    <i className="icon-location-pin"></i>
-                  </DropdownToggle>
-                  <DropdownMenu right>
-                    <DropdownItem>Action</DropdownItem>
-                    <DropdownItem>Another action</DropdownItem>
-                    <DropdownItem>Something else here</DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-              </ButtonGroup>
-              <div className="text-value">9.823</div>
+              <div className="text-value">{totalProductCount}</div>
               <div>Total Products</div>
             </CardBody>
             <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
@@ -545,7 +616,7 @@ export default props => {
                   </DropdownMenu>
                 </Dropdown>
               </ButtonGroup>
-              <div className="text-value">RM 1000</div>
+              <div className="text-value">RM {totalSales.toFixed(2)}</div>
               <div>Total Sales</div>
             </CardBody>
             <div className="chart-wrapper" style={{ height: '70px' }}>
@@ -569,7 +640,7 @@ export default props => {
                   </DropdownMenu>
                 </ButtonDropdown>
               </ButtonGroup>
-              <div className="text-value">10/20</div>
+              <div className="text-value">{occupiedTableCount}/{totalTableCount}</div>
               <div>Table Occupied</div>
             </CardBody>
             <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
@@ -727,62 +798,74 @@ export default props => {
                       <div className="progress-group-header">
                         <i className="cil-meh progress-group-icon"></i>
                         <span className="title">In progress</span>
-                        <span className="ml-auto font-weight-bold">43%</span>
+                        <span className="ml-auto font-weight-bold">{(inProgressOrderCount / totalOrderCount.toFixed(2) * 100).toFixed(2)}%</span>
                       </div>
                       <div className="progress-group-bars">
-                        <Progress className="progress-xs" color="warning" value="43" />
+                        <Progress className="progress-xs" color="warning" value={(inProgressOrderCount / totalOrderCount.toFixed(2) * 100).toFixed(2)} />
                       </div>
                     </div>
                     <div className="progress-group mb-5">
                       <div className="progress-group-header">
                         <i className="cil-mood-good progress-group-icon"></i>
                         <span className="title">Delivered</span>
-                        <span className="ml-auto font-weight-bold">37%</span>
+                        <span className="ml-auto font-weight-bold">{(completedOrderCount / totalOrderCount.toFixed(2) * 100).toFixed(2)}%</span>
                       </div>
                       <div className="progress-group-bars">
-                        <Progress className="progress-xs" color="warning" value="37" />
+                        <Progress className="progress-xs" color="warning" value={(completedOrderCount / totalOrderCount.toFixed(2) * 100).toFixed(2)} />
                       </div>
                     </div>
-                    <div className="progress-group">
-                      <div className="progress-group-header">
-                        <i className="cil-fastfood progress-group-icon"></i>
-                        <span className="title">Main courses</span>
-                        <span className="ml-auto font-weight-bold">191,235 <span className="text-muted small">(56%)</span></span>
+                    {
+                      collection1 &&
+                      <div className="progress-group">
+                        <div className="progress-group-header">
+                          <i className="cil-fastfood progress-group-icon"></i>
+                          <span className="title">{collection1.name}</span>
+                          <span className="ml-auto font-weight-bold">{collection1.product_count}<span className="text-muted small"> ({collection1.product_percent}%)</span></span>
+                        </div>
+                        <div className="progress-group-bars">
+                          <Progress className="progress-xs" color="success" value={collection1.product_percent} />
+                        </div>
                       </div>
-                      <div className="progress-group-bars">
-                        <Progress className="progress-xs" color="success" value="56" />
+                    }
+                    {
+                      collection2 &&
+                      <div className="progress-group">
+                        <div className="progress-group-header">
+                          <i className="cil-fastfood progress-group-icon"></i>
+                          <span className="title">{collection2.name}</span>
+                          <span className="ml-auto font-weight-bold">{collection2.product_count}<span className="text-muted small"> ({collection2.product_percent}%)</span></span>
+                        </div>
+                        <div className="progress-group-bars">
+                          <Progress className="progress-xs" color="success" value={collection2.product_percent} />
+                        </div>
                       </div>
-                    </div>
-                    <div className="progress-group">
-                      <div className="progress-group-header">
-                        <i className="cil-drink progress-group-icon"></i>
-                        <span className="title">Drinks</span>
-                        <span className="ml-auto font-weight-bold">51,223 <span className="text-muted small">(15%)</span></span>
+                    }
+                    {
+                      collection3 &&
+                      <div className="progress-group">
+                        <div className="progress-group-header">
+                          <i className="cil-fastfood progress-group-icon"></i>
+                          <span className="title">{collection3.name}</span>
+                          <span className="ml-auto font-weight-bold">{collection3.product_count}<span className="text-muted small"> ({collection3.product_percent}%)</span></span>
+                        </div>
+                        <div className="progress-group-bars">
+                          <Progress className="progress-xs" color="success" value={collection3.product_percent} />
+                        </div>
                       </div>
-                      <div className="progress-group-bars">
-                        <Progress className="progress-xs" color="success" value="15" />
+                    }
+                    {
+                      collection4 &&
+                      <div className="progress-group">
+                        <div className="progress-group-header">
+                          <i className="cil-fastfood progress-group-icon"></i>
+                          <span className="title">{collection4.name}</span>
+                          <span className="ml-auto font-weight-bold">{collection4.product_count}<span className="text-muted small"> ({collection4.product_percent}%)</span></span>
+                        </div>
+                        <div className="progress-group-bars">
+                          <Progress className="progress-xs" color="success" value={collection4.product_percent} />
+                        </div>
                       </div>
-                    </div>
-                    <div className="progress-group">
-                      <div className="progress-group-header">
-                        <i className="cil-birthday-cake progress-group-icon"></i>
-                        <span className="title">Dessert</span>
-                        <span className="ml-auto font-weight-bold">37,564 <span className="text-muted small">(11%)</span></span>
-                      </div>
-                      <div className="progress-group-bars">
-                        <Progress className="progress-xs" color="success" value="11" />
-                      </div>
-                    </div>
-                    <div className="progress-group">
-                      <div className="progress-group-header">
-                        <i className="cil-restaurant progress-group-icon"></i>
-                        <span className="title">Others</span>
-                        <span className="ml-auto font-weight-bold">27,319 <span className="text-muted small">(8%)</span></span>
-                      </div>
-                      <div className="progress-group-bars">
-                        <Progress className="progress-xs" color="success" value="8" />
-                      </div>
-                    </div>
+                    }
                     <div className="divider text-center">
                       <Button color="link" size="sm" className="text-muted" data-toggle="tooltip" data-placement="top"
                         title="" data-original-title="show more"><i className="icon-options"></i></Button>
