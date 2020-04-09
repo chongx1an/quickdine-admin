@@ -48,7 +48,7 @@ const cardChartData1 = {
 const cardChartOpts1 = {
   tooltips: {
     enabled: false,
-    custom: CustomTooltips
+    // custom: CustomTooltips
   },
   maintainAspectRatio: false,
   legend: {
@@ -106,7 +106,7 @@ const cardChartData2 = {
 const cardChartOpts2 = {
   tooltips: {
     enabled: false,
-    custom: CustomTooltips
+    // custom: CustomTooltips
   },
   title: {
     display: false,
@@ -169,7 +169,7 @@ const cardChartData3 = {
 const cardChartOpts3 = {
   tooltips: {
     enabled: false,
-    custom: CustomTooltips
+    // custom: CustomTooltips
   },
   maintainAspectRatio: false,
   legend: {
@@ -213,7 +213,7 @@ const cardChartData4 = {
 const cardChartOpts4 = {
   tooltips: {
     enabled: false,
-    custom: CustomTooltips
+    // custom: CustomTooltips
   },
   maintainAspectRatio: false,
   legend: {
