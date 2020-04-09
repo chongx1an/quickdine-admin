@@ -36,7 +36,9 @@ class Orders extends Component {
   listOrders() {
     ApiClient.get("@store/orders")
       .then(res => {
-        const { success, orders, error } = res;
+        const { success, orders } = res;
+
+        console.log(res);
 
         if (success) {
 
@@ -48,7 +50,7 @@ class Orders extends Component {
 
         } else {
 
-          toast.error(error, {
+          toast.error("Something went wrong at Quickdine server :(", {
             position: toast.POSITION.TOP_CENTER
           });
 
@@ -58,7 +60,7 @@ class Orders extends Component {
       })
       .catch(error => {
 
-        toast.error(error, {
+        toast.error("Something went wrong at Quickdine server :(", {
           position: toast.POSITION.TOP_CENTER
         });
 
@@ -75,12 +77,24 @@ class Orders extends Component {
     const ordersMarkup =
       orders &&
       orders.map((order, index) => (
-        <tr>
+        <tr key={index}>
           <td>
             <Link to={viewOrderPage(order.id)}>#{order.number}</Link>
           </td>
-          <td>{order.table_number}</td>
-          <td>{order.customer_name}</td>
+          <td>
+            {
+              order.table == null
+                ? "Empty table"
+                : order.table.number
+            }
+          </td>
+          <td>
+            {
+              order.customer == null
+                ? "Guest"
+                : order.customer.first_name + " " + order.customer.last_name
+            }
+          </td>
           <td>{"RM " + order.total_price}</td>
           <td>
             <Badge color={order.is_paid ? "success" : "danger"}>
@@ -90,21 +104,22 @@ class Orders extends Component {
         </tr>
       ));
 
-    var paginationMarkup = [
-      currentPage > 1 && (
-        <PaginationItem active={false}>
-          <PaginationLink tag="button">{currentPage - 1}</PaginationLink>
-        </PaginationItem>
-      ),
-      <PaginationItem active={true}>
-        <PaginationLink tag="button">{currentPage}</PaginationLink>
-      </PaginationItem>,
-      currentPage < lastPage && (
-        <PaginationItem active={false}>
-          <PaginationLink tag="button">{currentPage + 1}</PaginationLink>
-        </PaginationItem>
+    const pages = lastPage > 1 && [...Array(lastPage).keys()].map((page) => (
+      <PaginationItem active={currentPage == page + 1} onClick={() => this.listCustomers(page + 1)}>
+        <PaginationLink tag="button">{page + 1}</PaginationLink>
+      </PaginationItem>
+    ));
+
+    const paginationMarkup = (
+      pages &&
+      (
+        (currentPage - 3 >= 0 && currentPage + 2 <= lastPage)
+          ? pages.slice(currentPage - 3, currentPage + 2)
+          : currentPage > 5
+            ? pages.slice(lastPage - 5)
+            : pages.slice(0, 5)
       )
-    ];
+    );
 
     return (
       <div className="animated fadeIn">
@@ -132,14 +147,14 @@ class Orders extends Component {
                 {
                   this.state.orders.length > 0 ? null : <div style={{ textAlign: "center", marginTop: "30px", marginBottom: "30px" }} ><b><p>No orders 😭</p></b></div>
                 }
-                {orders.length > 0 && (
+                {(orders.length > 0 && lastPage > 1) && (
                   <Pagination>
-                    <PaginationItem>
-                      <PaginationLink previous tag="button"></PaginationLink>
+                    <PaginationItem disabled={currentPage == 1}>
+                      <PaginationLink previous tag="button" onClick={() => this.listCustomers(currentPage - 1)}></PaginationLink>
                     </PaginationItem>
                     {paginationMarkup}
-                    <PaginationItem>
-                      <PaginationLink next tag="button"></PaginationLink>
+                    <PaginationItem disabled={currentPage == lastPage}>
+                      <PaginationLink next tag="button" onClick={() => this.listCustomers(currentPage + 1)}></PaginationLink>
                     </PaginationItem>
                   </Pagination>
                 )}

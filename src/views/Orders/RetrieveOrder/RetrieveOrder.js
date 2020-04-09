@@ -3,6 +3,7 @@ import { Card, CardBody, CardHeader, Col, Label, Row } from 'reactstrap';
 import ApiClient from '../../../ApiClient';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Loading from "../../Components/Loading";
 
 
 class RetrieveOrder extends Component {
@@ -16,6 +17,7 @@ class RetrieveOrder extends Component {
     const { match: { params } } = this.props;
 
     this.state = {
+      isLoading: true,
       orderId: params.order_id,
       order: {},
     };
@@ -33,7 +35,9 @@ class RetrieveOrder extends Component {
     ApiClient.get('@store/orders/' + this.state.orderId)
       .then(res => {
 
-        const { success, order, message } = res;
+        const { success, order } = res;
+
+        console.log(order);
 
         if (success) {
 
@@ -43,11 +47,13 @@ class RetrieveOrder extends Component {
 
         } else {
 
-          toast.error(message, {
+          toast.error("Something went wrong at Quickdine server :(", {
             position: toast.POSITION.TOP_CENTER,
           });
 
         }
+
+        this.setState({ isLoading: false });
 
       })
       .catch(() => {
@@ -56,59 +62,77 @@ class RetrieveOrder extends Component {
           position: toast.POSITION.TOP_CENTER,
         });
 
+        this.setState({ isLoading: false });
+
       });
 
   }
 
   render() {
 
-    const { number, tableNumber, customerName, totalPrice } = this.state.order;
+    const { number, table, customer, total_price } = this.state.order;
 
     return (
       <div className="animated fadeIn">
-        <Card>
-          <ToastContainer />
-          <CardHeader>
-            Order Detail
+        {
+          this.state.isLoading
+            ? <Loading />
+            : <Card>
+              <ToastContainer />
+              <CardHeader>
+                Order Detail
           </CardHeader>
-          <CardBody>
-            <Row>
-              <Col md="2">
-                <strong>Order Number</strong>
-              </Col>
-              <Col xs="12" md="9">
-                <Label>#{number}</Label>
-              </Col>
-            </Row>
+              <CardBody>
+                <Row>
+                  <Col md="2">
+                    <strong>Order Number</strong>
+                  </Col>
+                  <Col xs="12" md="9">
+                    <Label>#{number}</Label>
+                  </Col>
+                </Row>
 
-            <Row>
-              <Col md="2">
-                <strong>Table Number</strong>
-              </Col>
-              <Col xs="12" md="9">
-                <Label>{tableNumber}</Label>
-              </Col>
-            </Row>
+                <Row>
+                  <Col md="2">
+                    <strong>Table Number</strong>
+                  </Col>
+                  <Col xs="12" md="9">
+                    <Label>
+                      {
+                        table == null
+                          ? "Empty table"
+                          : table.number
+                      }
+                    </Label>
+                  </Col>
+                </Row>
 
-            <Row>
-              <Col md="2">
-                <strong>Customer Name</strong>
-              </Col>
-              <Col xs="12" md="9">
-                <Label>{customerName}</Label>
-              </Col>
-            </Row>
+                <Row>
+                  <Col md="2">
+                    <strong>Customer Name</strong>
+                  </Col>
+                  <Col xs="12" md="9">
+                    <Label>
+                      {
+                        customer == null
+                          ? "Guest"
+                          : customer.first_name + " " + customer.last_name
+                      }
+                    </Label>
+                  </Col>
+                </Row>
 
-            <Row>
-              <Col md="2">
-                <strong>Total Price</strong>
-              </Col>
-              <Col xs="12" md="9">
-                <Label>{totalPrice}</Label>
-              </Col>
-            </Row>
-          </CardBody>
-        </Card>
+                <Row>
+                  <Col md="2">
+                    <strong>Total Price</strong>
+                  </Col>
+                  <Col xs="12" md="9">
+                    <Label>RM {total_price}</Label>
+                  </Col>
+                </Row>
+              </CardBody>
+            </Card>
+        }
       </div>
     );
   }
