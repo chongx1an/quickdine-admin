@@ -902,8 +902,7 @@ export default props => {
                       <tr>
                         <td className="text-center">
                           <div className="avatar">
-                            <img src={'assets/img/avatars/1.jpg'} className="img-avatar" alt={`${customer.first_name} ${customer.last_name}`} />
-                            <span className="avatar-status badge-success"></span>
+                            <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" className="img-avatar" alt={`${customer.first_name} ${customer.last_name}`} />
                           </div>
                         </td>
                         <td>
