@@ -190,6 +190,7 @@ class Products extends Component {
             this.setState({
               products: temps
             });
+            this.setState({ addCollectionLoading: false })
           } else {
             this.setState({ addCollectionLoading: false })
 

@@ -128,7 +128,7 @@ export default props => {
           <Row style={{ alignItems: "center" }}>
             <Col>{table.is_occupied ? "Occupied" : "Available"}</Col>
             <Col>
-              <AppSwitch variant={'3d'} color={'danger'} checked={table.is_occupied} onClick={() => updateTable(table)} />
+              <AppSwitch variant={'3d'} color={'danger'} checked={!!table.is_occupied} onClick={() => updateTable(table)} />
             </Col>
           </Row>
         </CardFooter>
