@@ -23,7 +23,7 @@ class Orders extends Component {
 
     this.state = {
       orders: [],
-      isLoading: true,
+      isLoading: false,
       lastPage: 1,
       currentPage: 1
     };
@@ -33,12 +33,12 @@ class Orders extends Component {
     this.listOrders();
   }
 
-  listOrders() {
-    ApiClient.get("@store/orders")
+  listOrders(page = 1) {
+    this.setState({ isLoading: true });
+
+    ApiClient.get("@store/orders?page=" + page)
       .then(res => {
         const { success, orders } = res;
-
-        console.log(res);
 
         if (success) {
 
@@ -104,8 +104,8 @@ class Orders extends Component {
         </tr>
       ));
 
-    const pages = lastPage > 1 && [...Array(lastPage).keys()].map((page) => (
-      <PaginationItem active={currentPage == page + 1} onClick={() => this.listCustomers(page + 1)}>
+    const pages = lastPage > 1 && [...Array(lastPage).keys()].map((page, index) => (
+      <PaginationItem key={index} active={currentPage == page + 1} onClick={() => this.listOrders(page + 1)}>
         <PaginationLink tag="button">{page + 1}</PaginationLink>
       </PaginationItem>
     ));
@@ -150,11 +150,11 @@ class Orders extends Component {
                 {(orders.length > 0 && lastPage > 1) && (
                   <Pagination>
                     <PaginationItem disabled={currentPage == 1}>
-                      <PaginationLink previous tag="button" onClick={() => this.listCustomers(currentPage - 1)}></PaginationLink>
+                      <PaginationLink previous tag="button" onClick={() => this.listOrders(currentPage - 1)}></PaginationLink>
                     </PaginationItem>
                     {paginationMarkup}
                     <PaginationItem disabled={currentPage == lastPage}>
-                      <PaginationLink next tag="button" onClick={() => this.listCustomers(currentPage + 1)}></PaginationLink>
+                      <PaginationLink next tag="button" onClick={() => this.listOrders(currentPage + 1)}></PaginationLink>
                     </PaginationItem>
                   </Pagination>
                 )}
