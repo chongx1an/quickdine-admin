@@ -830,7 +830,7 @@ export default props => {
                       collection1 &&
                       <div className="progress-group">
                         <div className="progress-group-header">
-                          <i className="cil-fastfood progress-group-icon"></i>
+
                           <span className="title">Collection {collection1.name}</span>
                           <span className="ml-auto font-weight-bold">{collection1.product_count} product(s)<span className="text-muted small"> ({collection1.product_percent}%)</span></span>
                         </div>
@@ -843,7 +843,7 @@ export default props => {
                       collection2 &&
                       <div className="progress-group">
                         <div className="progress-group-header">
-                          <i className="cil-fastfood progress-group-icon"></i>
+
                           <span className="title">Collection {collection2.name}</span>
                           <span className="ml-auto font-weight-bold">{collection2.product_count} product(s)<span className="text-muted small"> ({collection2.product_percent}%)</span></span>
                         </div>
@@ -856,7 +856,7 @@ export default props => {
                       collection3 &&
                       <div className="progress-group">
                         <div className="progress-group-header">
-                          <i className="cil-fastfood progress-group-icon"></i>
+
                           <span className="title">Collection {collection3.name}</span>
                           <span className="ml-auto font-weight-bold">{collection3.product_count} product(s)<span className="text-muted small"> ({collection3.product_percent}%)</span></span>
                         </div>
@@ -869,7 +869,7 @@ export default props => {
                       collection4 &&
                       <div className="progress-group">
                         <div className="progress-group-header">
-                          <i className="cil-fastfood progress-group-icon"></i>
+
                           <span className="title">Collection {collection4.name}</span>
                           <span className="ml-auto font-weight-bold">{collection4.product_count} product(s)<span className="text-muted small"> ({collection4.product_percent}%)</span></span>
                         </div>
@@ -878,10 +878,6 @@ export default props => {
                         </div>
                       </div>
                     }
-                    <div className="divider text-center">
-                      <Button color="link" size="sm" className="text-muted" data-toggle="tooltip" data-placement="top"
-                        title="" data-original-title="show more"><i className="icon-options"></i></Button>
-                    </div>
                   </ul>
                 </Col>
               </Row>
