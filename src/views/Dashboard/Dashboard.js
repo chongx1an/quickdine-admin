@@ -108,6 +108,9 @@ const cardChartOpts2 = {
     enabled: false,
     custom: CustomTooltips
   },
+  title: {
+    display: false,
+  },
   maintainAspectRatio: false,
   legend: {
     display: false,
@@ -115,11 +118,13 @@ const cardChartOpts2 = {
   scales: {
     xAxes: [
       {
+        display: false,
         gridLines: {
           color: 'transparent',
           zeroLineColor: 'transparent',
         },
         ticks: {
+          display: false,
           fontSize: 2,
           fontColor: 'transparent',
         },
@@ -462,8 +467,9 @@ export default props => {
 
   // Order
   const [totalOrderCount, setTotalOrderCount] = useState(1);
-  const [inProgressOrderCount, setInProgressOrderCount] = useState(0);
-  const [completedOrderCount, setCompletedOrderCount] = useState(0);
+  const [orderCounts, setOrderCounts] = useState([]);
+  const [unpaidOrderCount, setUnpaidOrderCount] = useState(0);
+  const [paidOrderCount, setPaidOrderCount] = useState(0);
 
   // Product
   const [totalProductCount, setTotalProductCount] = useState(1);
@@ -476,18 +482,61 @@ export default props => {
 
   // Sales
   const [totalSales, setTotalSales] = useState(0);
+  const [sales, setSales] = useState(0);
 
   // Tables
   const [totalTableCount, setTotalTableCount] = useState(1);
   const [occupiedTableCount, setOccupiedTableCount] = useState(0);
   const [availableTableCount, setAvailableTableCount] = useState(0);
 
+  // Customer
+  const [totalCustomerCount, setTotalCustomerCountt] = useState(1);
+  const [customers, setCustomers] = useState([]);
+  const [customerSignUpCounts, setCustomerSignUpCounts] = useState([]);
+  const [recurringCustomerCounts, setRecurringCustomerCounts] = useState([]);
+
+  const [weekDays, setWeekDays] = useState([]);
+
+  const makeSparkLineChart = (data, label, color) => {
+
+    const chartData = {
+      labels: weekDays,
+      datasets: [
+        {
+          backgroundColor: 'transparent',
+          borderColor: color ? color : '#c2cfd6',
+          data: data,
+          label: label,
+        },
+      ],
+    };
+    return () => chartData;
+  };
+
+
   useEffect(() => {
+    calculateWeekdays();
     getOrderAnalytics();
     getProductAndCollectionAnalytics();
     getSalesAnalytics();
     getTableAnalytics();
+    getCustomerAnalytics();
   }, []);
+
+  const calculateWeekdays = () => {
+    var days = []
+
+    var curr = new Date; // get current date
+    var first = curr.getDate() + 1;
+
+    for (var i = 0; i < 7; i++) {
+      var next = new Date(curr.getTime());
+      next.setDate(first + i);
+      days.push(next.toString().substring(0, 3));
+    }
+
+    setWeekDays(days)
+  }
 
   const getOrderAnalytics = () => {
 
@@ -497,8 +546,9 @@ export default props => {
         const { success, order } = res;
 
         setTotalOrderCount(order.total_order_count)
-        setInProgressOrderCount(order.in_progress_order_count)
-        setCompletedOrderCount(order.completed_order_count)
+        setOrderCounts(order.order_counts)
+        setUnpaidOrderCount(order.unpaid_order_count)
+        setPaidOrderCount(order.paid_order_count)
       })
       .catch(console.log);
 
@@ -541,8 +591,10 @@ export default props => {
 
     ApiClient.get('@store/analytics/sales')
       .then(res => {
-        const { success, sale } = res;
-        setTotalSales(parseFloat(sale.total_sales));
+
+        const { success, sales } = res;
+        setTotalSales(parseFloat(sales.total_sales))
+        setSales(sales.sales)
       })
       .catch(console.log);
 
@@ -561,13 +613,31 @@ export default props => {
 
   }
 
+  const getCustomerAnalytics = () => {
+
+    ApiClient.get('@store/analytics/customer')
+      .then(res => {
+        const { success, customer } = res;
+        setTotalCustomerCountt(customer.total_customer_count)
+        setCustomers(customer.customers.map((customer) => {
+          var order_amounts = customer.orders.map(o => parseFloat(o.total_price)).reduce((a, b) => a + b, 0);
+          customer.order_amounts = order_amounts
+          return customer
+        }))
+        setCustomerSignUpCounts(customer.customer_signup_counts)
+        setRecurringCustomerCounts(customer.recurring_customer_counts)
+      })
+      .catch(console.log);
+
+  }
+
   return (
     <div className="animated fadeIn">
       <Row>
         <Col xs="12" sm="6" lg="3">
           <Card className="text-white bg-info">
             <CardBody className="pb-0">
-              <ButtonGroup className="float-right">
+              {/* <ButtonGroup className="float-right">
                 <ButtonDropdown id='card1' isOpen={isOpenCard1} toggle={() => { setIsOpenCard1(!isOpenCard1); }}>
                   <DropdownToggle caret className="p-0" color="transparent">
                     <i className="icon-settings"></i>
@@ -579,9 +649,9 @@ export default props => {
                     <DropdownItem>Something else here</DropdownItem>
                   </DropdownMenu>
                 </ButtonDropdown>
-              </ButtonGroup>
+              </ButtonGroup> */}
               <div className="text-value">{totalOrderCount}</div>
-              <div>Today Orders</div>
+              <div>Total Orders</div>
             </CardBody>
             <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
               <Line data={cardChartData2} options={cardChartOpts2} height={70} />
@@ -604,7 +674,7 @@ export default props => {
         <Col xs="12" sm="6" lg="3">
           <Card className="text-white bg-warning">
             <CardBody className="pb-0">
-              <ButtonGroup className="float-right">
+              {/* <ButtonGroup className="float-right">
                 <Dropdown id='card3' isOpen={isOpenCard3} toggle={() => { setIsOpenCard3(!isOpenCard3); }}>
                   <DropdownToggle caret className="p-0" color="transparent">
                     <i className="icon-settings"></i>
@@ -615,7 +685,7 @@ export default props => {
                     <DropdownItem>Something else here</DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
-              </ButtonGroup>
+              </ButtonGroup> */}
               <div className="text-value">RM {totalSales.toFixed(2)}</div>
               <div>Total Sales</div>
             </CardBody>
@@ -628,7 +698,7 @@ export default props => {
         <Col xs="12" sm="6" lg="3">
           <Card className="text-white bg-danger">
             <CardBody className="pb-0">
-              <ButtonGroup className="float-right">
+              {/* <ButtonGroup className="float-right">
                 <ButtonDropdown id='card4' isOpen={isOpenCard4} toggle={() => { setIsOpenCard4(!isOpenCard4); }}>
                   <DropdownToggle caret className="p-0" color="transparent">
                     <i className="icon-settings"></i>
@@ -639,7 +709,7 @@ export default props => {
                     <DropdownItem>Something else here</DropdownItem>
                   </DropdownMenu>
                 </ButtonDropdown>
-              </ButtonGroup>
+              </ButtonGroup> */}
               <div className="text-value">{occupiedTableCount}/{totalTableCount}</div>
               <div>Table Occupied</div>
             </CardBody>
@@ -662,11 +732,11 @@ export default props => {
                   <Row>
                     <Col sm="6">
                       <div className="callout callout-info">
-                        <small className="text-muted">New customer</small>
+                        <small className="text-muted">Customer signed up today</small>
                         <br />
-                        <strong className="h4">9,123</strong>
+                        <strong className="h4">{customerSignUpCounts.lastItem}</strong>
                         <div className="chart-wrapper">
-                          <Line data={makeSparkLineData(0, brandPrimary)} options={sparklineChartOpts} width={100} height={30} />
+                          <Line data={makeSparkLineChart(customerSignUpCounts, "Customer signed up", brandPrimary)} options={sparklineChartOpts} width={100} height={30} />
                         </div>
                       </div>
                     </Col>
@@ -674,91 +744,33 @@ export default props => {
                       <div className="callout callout-danger">
                         <small className="text-muted">Recurring customers</small>
                         <br />
-                        <strong className="h4">22,643</strong>
+                        <strong className="h4">{recurringCustomerCounts.lastItem}</strong>
                         <div className="chart-wrapper">
-                          <Line data={makeSparkLineData(1, brandDanger)} options={sparklineChartOpts} width={100} height={30} />
+                          <Line data={makeSparkLineChart(recurringCustomerCounts, "Recurring customer", brandDanger)} options={sparklineChartOpts} width={100} height={30} />
                         </div>
                       </div>
                     </Col>
                   </Row>
                   <hr className="mt-0" />
-                  <div className="progress-group mb-4">
-                    <div className="progress-group-prepend">
-                      <span className="progress-group-text">
-                        Monday
-                      </span>
-                    </div>
-                    <div className="progress-group-bars">
-                      <Progress className="progress-xs" color="info" value="34" />
-                      <Progress className="progress-xs" color="danger" value="78" />
-                    </div>
-                  </div>
-                  <div className="progress-group mb-4">
-                    <div className="progress-group-prepend">
-                      <span className="progress-group-text">
-                        Tuesday
-                      </span>
-                    </div>
-                    <div className="progress-group-bars">
-                      <Progress className="progress-xs" color="info" value="56" />
-                      <Progress className="progress-xs" color="danger" value="94" />
-                    </div>
-                  </div>
-                  <div className="progress-group mb-4">
-                    <div className="progress-group-prepend">
-                      <span className="progress-group-text">
-                        Wednesday
-                      </span>
-                    </div>
-                    <div className="progress-group-bars">
-                      <Progress className="progress-xs" color="info" value="12" />
-                      <Progress className="progress-xs" color="danger" value="67" />
-                    </div>
-                  </div>
-                  <div className="progress-group mb-4">
-                    <div className="progress-group-prepend">
-                      <span className="progress-group-text">
-                        Thursday
-                      </span>
-                    </div>
-                    <div className="progress-group-bars">
-                      <Progress className="progress-xs" color="info" value="43" />
-                      <Progress className="progress-xs" color="danger" value="91" />
-                    </div>
-                  </div>
-                  <div className="progress-group mb-4">
-                    <div className="progress-group-prepend">
-                      <span className="progress-group-text">
-                        Friday
-                      </span>
-                    </div>
-                    <div className="progress-group-bars">
-                      <Progress className="progress-xs" color="info" value="22" />
-                      <Progress className="progress-xs" color="danger" value="73" />
-                    </div>
-                  </div>
-                  <div className="progress-group mb-4">
-                    <div className="progress-group-prepend">
-                      <span className="progress-group-text">
-                        Saturday
-                      </span>
-                    </div>
-                    <div className="progress-group-bars">
-                      <Progress className="progress-xs" color="info" value="53" />
-                      <Progress className="progress-xs" color="danger" value="82" />
-                    </div>
-                  </div>
-                  <div className="progress-group mb-4">
-                    <div className="progress-group-prepend">
-                      <span className="progress-group-text">
-                        Sunday
-                      </span>
-                    </div>
-                    <div className="progress-group-bars">
-                      <Progress className="progress-xs" color="info" value="9" />
-                      <Progress className="progress-xs" color="danger" value="69" />
-                    </div>
-                  </div>
+                  {
+                    customerSignUpCounts != [] &&
+                    [6, 5, 4, 3, 2, 1, 0].map((item, index) => (
+                      <Col key={index}>
+                        <div className="progress-group mb-4">
+                          <div className="progress-group-prepend">
+                            <span className="progress-group-text">
+                              {weekDays[item]}
+                            </span>
+                          </div>
+                          <div className="progress-group-bars">
+                            <Progress className="progress-xs" color="info" value={customerSignUpCounts[item]} />
+                            <Progress className="progress-xs" color="danger" value={recurringCustomerCounts[item]} />
+                          </div>
+                        </div>
+                      </Col>
+
+                    ))
+                  }
                   <div className="legend text-center">
                     <small>
                       <sup className="px-1"><Badge pill color="info">&nbsp;</Badge></sup>
@@ -773,21 +785,21 @@ export default props => {
                   <Row>
                     <Col sm="6">
                       <div className="callout callout-warning">
-                        <small className="text-muted">Number of orders</small>
+                        <small className="text-muted">Today orders</small>
                         <br />
-                        <strong className="h4">78,623</strong>
+                        <strong className="h4">{orderCounts.lastItem}</strong>
                         <div className="chart-wrapper">
-                          <Line data={makeSparkLineData(2, brandWarning)} options={sparklineChartOpts} width={100} height={30} />
+                          <Line data={makeSparkLineChart(orderCounts, 'Order', brandWarning)} options={sparklineChartOpts} width={100} height={30} />
                         </div>
                       </div>
                     </Col>
                     <Col sm="6">
                       <div className="callout callout-success">
-                        <small className="text-muted">Total sales</small>
+                        <small className="text-muted">Today sales</small>
                         <br />
-                        <strong className="h4">49,123</strong>
+                        <strong className="h4">RM {parseFloat(sales.lastItem != null ? sales.lastItem : "0").toFixed(2)}</strong>
                         <div className="chart-wrapper">
-                          <Line data={makeSparkLineData(3, brandSuccess)} options={sparklineChartOpts} width={100} height={30} />
+                          <Line data={makeSparkLineChart(sales, 'Sales', brandSuccess)} options={sparklineChartOpts} width={100} height={30} />
                         </div>
                       </div>
                     </Col>
@@ -797,21 +809,21 @@ export default props => {
                     <div className="progress-group">
                       <div className="progress-group-header">
                         <i className="cil-meh progress-group-icon"></i>
-                        <span className="title">In progress</span>
-                        <span className="ml-auto font-weight-bold">{(inProgressOrderCount / totalOrderCount.toFixed(2) * 100).toFixed(2)}%</span>
+                        <span className="title">Unpaid</span>
+                        <span className="ml-auto font-weight-bold">{(unpaidOrderCount / totalOrderCount.toFixed(2) * 100).toFixed(2)}%</span>
                       </div>
                       <div className="progress-group-bars">
-                        <Progress className="progress-xs" color="warning" value={(inProgressOrderCount / totalOrderCount.toFixed(2) * 100).toFixed(2)} />
+                        <Progress className="progress-xs" color="warning" value={(unpaidOrderCount / totalOrderCount.toFixed(2) * 100).toFixed(2)} />
                       </div>
                     </div>
                     <div className="progress-group mb-5">
                       <div className="progress-group-header">
                         <i className="cil-mood-good progress-group-icon"></i>
-                        <span className="title">Delivered</span>
-                        <span className="ml-auto font-weight-bold">{(completedOrderCount / totalOrderCount.toFixed(2) * 100).toFixed(2)}%</span>
+                        <span className="title">Paid</span>
+                        <span className="ml-auto font-weight-bold">{(paidOrderCount / totalOrderCount.toFixed(2) * 100).toFixed(2)}%</span>
                       </div>
                       <div className="progress-group-bars">
-                        <Progress className="progress-xs" color="warning" value={(completedOrderCount / totalOrderCount.toFixed(2) * 100).toFixed(2)} />
+                        <Progress className="progress-xs" color="warning" value={(paidOrderCount / totalOrderCount.toFixed(2) * 100).toFixed(2)} />
                       </div>
                     </div>
                     {
@@ -819,8 +831,8 @@ export default props => {
                       <div className="progress-group">
                         <div className="progress-group-header">
                           <i className="cil-fastfood progress-group-icon"></i>
-                          <span className="title">{collection1.name}</span>
-                          <span className="ml-auto font-weight-bold">{collection1.product_count}<span className="text-muted small"> ({collection1.product_percent}%)</span></span>
+                          <span className="title">Collection {collection1.name}</span>
+                          <span className="ml-auto font-weight-bold">{collection1.product_count} product(s)<span className="text-muted small"> ({collection1.product_percent}%)</span></span>
                         </div>
                         <div className="progress-group-bars">
                           <Progress className="progress-xs" color="success" value={collection1.product_percent} />
@@ -832,8 +844,8 @@ export default props => {
                       <div className="progress-group">
                         <div className="progress-group-header">
                           <i className="cil-fastfood progress-group-icon"></i>
-                          <span className="title">{collection2.name}</span>
-                          <span className="ml-auto font-weight-bold">{collection2.product_count}<span className="text-muted small"> ({collection2.product_percent}%)</span></span>
+                          <span className="title">Collection {collection2.name}</span>
+                          <span className="ml-auto font-weight-bold">{collection2.product_count} product(s)<span className="text-muted small"> ({collection2.product_percent}%)</span></span>
                         </div>
                         <div className="progress-group-bars">
                           <Progress className="progress-xs" color="success" value={collection2.product_percent} />
@@ -845,8 +857,8 @@ export default props => {
                       <div className="progress-group">
                         <div className="progress-group-header">
                           <i className="cil-fastfood progress-group-icon"></i>
-                          <span className="title">{collection3.name}</span>
-                          <span className="ml-auto font-weight-bold">{collection3.product_count}<span className="text-muted small"> ({collection3.product_percent}%)</span></span>
+                          <span className="title">Collection {collection3.name}</span>
+                          <span className="ml-auto font-weight-bold">{collection3.product_count} product(s)<span className="text-muted small"> ({collection3.product_percent}%)</span></span>
                         </div>
                         <div className="progress-group-bars">
                           <Progress className="progress-xs" color="success" value={collection3.product_percent} />
@@ -858,8 +870,8 @@ export default props => {
                       <div className="progress-group">
                         <div className="progress-group-header">
                           <i className="cil-fastfood progress-group-icon"></i>
-                          <span className="title">{collection4.name}</span>
-                          <span className="ml-auto font-weight-bold">{collection4.product_count}<span className="text-muted small"> ({collection4.product_percent}%)</span></span>
+                          <span className="title">Collection {collection4.name}</span>
+                          <span className="ml-auto font-weight-bold">{collection4.product_count} product(s)<span className="text-muted small"> ({collection4.product_percent}%)</span></span>
                         </div>
                         <div className="progress-group-bars">
                           <Progress className="progress-xs" color="success" value={collection4.product_percent} />
@@ -879,224 +891,45 @@ export default props => {
                   <tr>
                     <th className="text-center"><i className="icon-people"></i></th>
                     <th>Customers</th>
+                    <th className="text-center">Email</th>
                     <th className="text-center">Phone number</th>
                     <th>Amount</th>
-                    <th className="text-center">Payment Method</th>
-                    <th>Activity</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td className="text-center">
-                      <div className="avatar">
-                        <img src={'assets/img/avatars/1.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" />
-                        <span className="avatar-status badge-success"></span>
-                      </div>
-                    </td>
-                    <td>
-                      <div>Yiorgos Avraamu</div>
-                      <div className="small text-muted">
-                        <span>New</span> | Registered: Jan 1, 2015
-                    </div>
-                    </td>
-                    <td className="text-center">
-                      <i className="flag-icon flag-icon-us h4 mb-0" title="us" id="us"></i>
-                    </td>
-                    <td>
-                      <div className="clearfix">
-                        <div className="float-left">
-                          <strong>50%</strong>
-                        </div>
-                        <div className="float-right">
-                          <small className="text-muted">Jun 11, 2015 - Jul 10, 2015</small>
-                        </div>
-                      </div>
-                      <Progress className="progress-xs" color="success" value="50" />
-                    </td>
-                    <td className="text-center">
-                      <i className="fa fa-cc-mastercard" style={{ fontSize: 24 + 'px' }}></i>
-                    </td>
-                    <td>
-                      <div className="small text-muted">Last login</div>
-                      <strong>10 sec ago</strong>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="text-center">
-                      <div className="avatar">
-                        <img src={'assets/img/avatars/2.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" />
-                        <span className="avatar-status badge-danger"></span>
-                      </div>
-                    </td>
-                    <td>
-                      <div>Avram Tarasios</div>
-                      <div className="small text-muted">
+                  {
+                    customers.map((customer) => (
+                      <tr>
+                        <td className="text-center">
+                          <div className="avatar">
+                            <img src={'assets/img/avatars/1.jpg'} className="img-avatar" alt={`${customer.first_name} ${customer.last_name}`} />
+                            <span className="avatar-status badge-success"></span>
+                          </div>
+                        </td>
+                        <td>
+                          <div>{`${customer.first_name} ${customer.last_name}`}</div>
+                          <div className="small text-muted">
+                            Registered: {new Date(customer.created_at).toDateString()}
+                          </div>
+                        </td>
+                        <td className="text-center">
+                          <div>{customer.email}</div>
+                        </td>
+                        <td className="text-center">
+                          <div>{customer.phone}</div>
+                        </td>
+                        <td>
+                          <div className="clearfix">
+                            <div className="float-left">
+                              <strong>RM {customer.order_amounts}</strong>
+                            </div>
+                          </div>
+                          <Progress className="progress-xs" color="success" value={customer.order_amounts} />
+                        </td>
+                      </tr>
 
-                        <span>Recurring</span> | Registered: Jan 1, 2015
-                    </div>
-                    </td>
-                    <td className="text-center">
-                      <i className="flag-icon flag-icon-br h4 mb-0" title="br" id="br"></i>
-                    </td>
-                    <td>
-                      <div className="clearfix">
-                        <div className="float-left">
-                          <strong>10%</strong>
-                        </div>
-                        <div className="float-right">
-                          <small className="text-muted">Jun 11, 2015 - Jul 10, 2015</small>
-                        </div>
-                      </div>
-                      <Progress className="progress-xs" color="info" value="10" />
-                    </td>
-                    <td className="text-center">
-                      <i className="fa fa-cc-visa" style={{ fontSize: 24 + 'px' }}></i>
-                    </td>
-                    <td>
-                      <div className="small text-muted">Last login</div>
-                      <strong>5 minutes ago</strong>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="text-center">
-                      <div className="avatar">
-                        <img src={'assets/img/avatars/3.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" />
-                        <span className="avatar-status badge-warning"></span>
-                      </div>
-                    </td>
-                    <td>
-                      <div>Quintin Ed</div>
-                      <div className="small text-muted">
-                        <span>New</span> | Registered: Jan 1, 2015
-                    </div>
-                    </td>
-                    <td className="text-center">
-                      <i className="flag-icon flag-icon-in h4 mb-0" title="in" id="in"></i>
-                    </td>
-                    <td>
-                      <div className="clearfix">
-                        <div className="float-left">
-                          <strong>74%</strong>
-                        </div>
-                        <div className="float-right">
-                          <small className="text-muted">Jun 11, 2015 - Jul 10, 2015</small>
-                        </div>
-                      </div>
-                      <Progress className="progress-xs" color="warning" value="74" />
-                    </td>
-                    <td className="text-center">
-                      <i className="fa fa-cc-stripe" style={{ fontSize: 24 + 'px' }}></i>
-                    </td>
-                    <td>
-                      <div className="small text-muted">Last login</div>
-                      <strong>1 hour ago</strong>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="text-center">
-                      <div className="avatar">
-                        <img src={'assets/img/avatars/4.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" />
-                        <span className="avatar-status badge-secondary"></span>
-                      </div>
-                    </td>
-                    <td>
-                      <div>Enéas Kwadwo</div>
-                      <div className="small text-muted">
-                        <span>New</span> | Registered: Jan 1, 2015
-                    </div>
-                    </td>
-                    <td className="text-center">
-                      <i className="flag-icon flag-icon-fr h4 mb-0" title="fr" id="fr"></i>
-                    </td>
-                    <td>
-                      <div className="clearfix">
-                        <div className="float-left">
-                          <strong>98%</strong>
-                        </div>
-                        <div className="float-right">
-                          <small className="text-muted">Jun 11, 2015 - Jul 10, 2015</small>
-                        </div>
-                      </div>
-                      <Progress className="progress-xs" color="danger" value="98" />
-                    </td>
-                    <td className="text-center">
-                      <i className="fa fa-paypal" style={{ fontSize: 24 + 'px' }}></i>
-                    </td>
-                    <td>
-                      <div className="small text-muted">Last login</div>
-                      <strong>Last month</strong>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="text-center">
-                      <div className="avatar">
-                        <img src={'assets/img/avatars/5.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" />
-                        <span className="avatar-status badge-success"></span>
-                      </div>
-                    </td>
-                    <td>
-                      <div>Agapetus Tadeáš</div>
-                      <div className="small text-muted">
-                        <span>New</span> | Registered: Jan 1, 2015
-                    </div>
-                    </td>
-                    <td className="text-center">
-                      <i className="flag-icon flag-icon-es h4 mb-0" title="es" id="es"></i>
-                    </td>
-                    <td>
-                      <div className="clearfix">
-                        <div className="float-left">
-                          <strong>22%</strong>
-                        </div>
-                        <div className="float-right">
-                          <small className="text-muted">Jun 11, 2015 - Jul 10, 2015</small>
-                        </div>
-                      </div>
-                      <Progress className="progress-xs" color="info" value="22" />
-                    </td>
-                    <td className="text-center">
-                      <i className="fa fa-google-wallet" style={{ fontSize: 24 + 'px' }}></i>
-                    </td>
-                    <td>
-                      <div className="small text-muted">Last login</div>
-                      <strong>Last week</strong>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="text-center">
-                      <div className="avatar">
-                        <img src={'assets/img/avatars/6.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" />
-                        <span className="avatar-status badge-danger"></span>
-                      </div>
-                    </td>
-                    <td>
-                      <div>Friderik Dávid</div>
-                      <div className="small text-muted">
-                        <span>New</span> | Registered: Jan 1, 2015
-                    </div>
-                    </td>
-                    <td className="text-center">
-                      <i className="flag-icon flag-icon-pl h4 mb-0" title="pl" id="pl"></i>
-                    </td>
-                    <td>
-                      <div className="clearfix">
-                        <div className="float-left">
-                          <strong>43%</strong>
-                        </div>
-                        <div className="float-right">
-                          <small className="text-muted">Jun 11, 2015 - Jul 10, 2015</small>
-                        </div>
-                      </div>
-                      <Progress className="progress-xs" color="success" value="43" />
-                    </td>
-                    <td className="text-center">
-                      <i className="fa fa-cc-amex" style={{ fontSize: 24 + 'px' }}></i>
-                    </td>
-                    <td>
-                      <div className="small text-muted">Last login</div>
-                      <strong>Yesterday</strong>
-                    </td>
-                  </tr>
+                    ))
+                  }
                 </tbody>
               </Table>
             </CardBody>
