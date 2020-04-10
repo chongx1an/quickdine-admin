@@ -40,6 +40,8 @@ class RetrieveOrder extends Component {
 
         const { success, order } = res;
 
+        console.log(res);
+
         if (success) {
 
           this.setState({
@@ -112,7 +114,7 @@ class RetrieveOrder extends Component {
 
   render() {
 
-    const { number, table, customer, total_price, items, is_paid } = this.state.order;
+    const { number, table_number, customer_first_name, customer_last_name, total_price, items, is_paid } = this.state.order;
 
     const orderItemsMarkup = items && items.map((item, index) => (
 
@@ -154,9 +156,9 @@ class RetrieveOrder extends Component {
                     <Col xs="12" md="9">
                       <Label>
                         {
-                          table == null
+                          table_number == null
                             ? "Empty table"
-                            : table.number
+                            : table_number
                         }
                       </Label>
                     </Col>
@@ -169,9 +171,9 @@ class RetrieveOrder extends Component {
                     <Col xs="12" md="9">
                       <Label>
                         {
-                          customer == null
+                          customer_first_name && customer_last_name == null
                             ? "Guest"
-                            : customer.first_name + " " + customer.last_name
+                            : customer_first_name + " " + customer_last_name
                         }
                       </Label>
                     </Col>
@@ -195,7 +197,7 @@ class RetrieveOrder extends Component {
                       }
                     </Col>
                     <Col xs="12" md="9">
-                      <AppSwitch variant={'3d'} color={'primary'} checked={is_paid} onClick={this.toggle} />
+                      <AppSwitch variant={'3d'} color={'primary'} checked={is_paid == 1 ? true : false} onClick={this.toggle} />
                     </Col>
                   </Row>
                 </CardBody>
