@@ -813,7 +813,7 @@ export default props => {
                         <span className="ml-auto font-weight-bold">{(unpaidOrderCount / totalOrderCount.toFixed(2) * 100).toFixed(2)}%</span>
                       </div>
                       <div className="progress-group-bars">
-                        <Progress className="progress-xs" color="warning" value={(unpaidOrderCount / totalOrderCount.toFixed(2) * 100).toFixed(2)} />
+                        <Progress className="progress-xs" color="warning" value={(unpaidOrderCount / (totalOrderCount && 1).toFixed(2) * 100).toFixed(2)} />
                       </div>
                     </div>
                     <div className="progress-group mb-5">
@@ -823,7 +823,7 @@ export default props => {
                         <span className="ml-auto font-weight-bold">{(paidOrderCount / totalOrderCount.toFixed(2) * 100).toFixed(2)}%</span>
                       </div>
                       <div className="progress-group-bars">
-                        <Progress className="progress-xs" color="warning" value={(paidOrderCount / totalOrderCount.toFixed(2) * 100).toFixed(2)} />
+                        <Progress className="progress-xs" color="warning" value={(paidOrderCount / (totalOrderCount && 1).toFixed(2) * 100).toFixed(2)} />
                       </div>
                     </div>
                     {

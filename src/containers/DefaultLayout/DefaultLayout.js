@@ -34,6 +34,7 @@ class DefaultLayout extends Component {
     // this.props.history.push('/login')
     Cookies.remove("token");
     Cookies.remove("admin");
+    Cookies.remove("store_id");
     window.location.href = "/";
   }
 
