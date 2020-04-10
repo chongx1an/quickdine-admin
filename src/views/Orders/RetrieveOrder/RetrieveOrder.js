@@ -171,7 +171,7 @@ class RetrieveOrder extends Component {
                     <Col xs="12" md="9">
                       <Label>
                         {
-                          customer_first_name && customer_last_name == null
+                          customer_first_name == null && customer_last_name == null
                             ? "Guest"
                             : customer_first_name + " " + customer_last_name
                         }
