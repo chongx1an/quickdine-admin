@@ -105,9 +105,9 @@ class Orders extends Component {
       ));
 
     const pages = lastPage > 1 && [...Array(lastPage).keys()].map((page, index) => (
-      <PaginationItem key={index} active={currentPage == page + 1} onClick={() => this.listOrders(page + 1)}>
+      <PaginationItem key={index} active={currentPage == page + 1} onClick={() => currentPage == page + 1 ? null : this.listOrders(page + 1)}>
         <PaginationLink tag="button">{page + 1}</PaginationLink>
-      </PaginationItem>
+      </PaginationItem >
     ));
 
     const paginationMarkup = (

@@ -149,11 +149,11 @@ class TableOrders extends Component {
 
     const tableOrdersMarkup = this.state.table.orders && this.state.table.orders.map((order, index) => (
       <tr key={index}>
-        <td>{order.number}</td>
-        <td>{order.customer_name}</td>
+        <td>#{order.number}</td>
+        <td>{order.customer_name == null ? "Guest" : order.customer_name}</td>
         <td>{'RM ' + order.total_price}</td>
         <td>
-          <Badge color={order.is_paid ? 'success' : 'danger'}>{order.is_paid ? 'Paid' : 'Pending'}</Badge>
+          <Badge color={order.is_paid ? 'success' : 'danger'}>{order.is_paid ? 'Paid' : 'Unpaid'}</Badge>
         </td>
       </tr>
     ));
@@ -210,7 +210,7 @@ class TableOrders extends Component {
                   <Table responsive>
                     <thead>
                       <tr>
-                        <th>Number</th>
+                        <th>Order Number</th>
                         <th>Customer Name</th>
                         <th>Total Price</th>
                         <th>Status</th>

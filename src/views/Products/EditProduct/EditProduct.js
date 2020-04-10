@@ -174,6 +174,8 @@ export default props => {
       .then(res => {
         const { success, product, message } = res;
 
+        console.log(res);
+
         if (success) {
 
           setId(product.id);
@@ -185,7 +187,12 @@ export default props => {
           var variants = product.variant_types;
 
           variants = variants.map(variant => {
-            variant.type = { id: variant.id, name: variant.name };
+            variant.type = {
+              id: variant.id,
+              name: variant.name,
+              is_required: variant.is_required,
+              options_limit: variant.options_limit,
+            };
             delete variant.id;
             delete variant.name;
             variant.options = variant.variant_options;
@@ -216,6 +223,42 @@ export default props => {
 
       });
   };
+
+  const deleteProduct = () => {
+
+    setIsLoading(true);
+    var product_id = props.match.params.product_id;
+
+    ApiClient.del(`@store/products/${product_id}`)
+      .then(res => {
+        const { success } = res;
+
+        if (success) {
+
+          window.location.href = '/products'
+
+        } else {
+
+          toast.error("Something went wrong at Quickdine server :(", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+
+          setIsLoading(false);
+
+        }
+
+      })
+      .catch(() => {
+
+        toast.error("Something went wrong at Quickdine server :(", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+
+        setIsLoading(false);
+
+      });
+
+  }
 
   const addImage = file => {
     const reader = new FileReader()
@@ -389,11 +432,11 @@ export default props => {
             <Row style={{ alignItems: 'center', marginRight: '1vh', marginLeft: '1vh' }}>
               <p style={{ fontWeight: 'bold', marginRight: '1vh' }}>Options limit</p>
               <Input
-                value={variants[i].type.options_limit}
+                value={variant.type.options_limit}
                 type="number"
                 step="1"
                 min="0"
-                max={variants[i].options.length}
+                max={variant.options.length}
                 placeholder="0"
                 onChange={e => updateOptionsLimit(i, e)}
                 style={{ marginBottom: '2vh', width: '5%', marginRight: '3vh' }}
@@ -403,7 +446,7 @@ export default props => {
                 <AppSwitch
                   variant="3d"
                   color="success"
-                  checked={variants[i].type.is_required}
+                  checked={variant.type.is_required == 1 ? true : false}
                   onClick={() => updateIsRequired(i)}
                 />
               </div>
@@ -421,6 +464,25 @@ export default props => {
         isScreenLoading
           ? <Loading />
           : <div>
+            {
+              props.match.params.product_id === undefined
+                ? <></>
+                : <Row
+                  style={{
+                    justifyContent: "flex-end",
+                    marginBottom: "3vh",
+                    marginRight: "0.2vw"
+                  }}
+                >
+                  <LoadingButton
+                    isLoading={isLoading}
+                    color="danger"
+                    text="Delete product"
+                    onClick={deleteProduct}
+                    iconClassName="cui-trash"
+                  />
+                </Row>
+            }
             <Card>
               <CardHeader>
                 <strong>Product</strong>

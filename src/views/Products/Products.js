@@ -51,10 +51,12 @@ class Products extends Component {
     this.listCollections();
   }
 
-  listProducts() {
-    ApiClient.get("@store/products")
+  listProducts(page = 1) {
+    ApiClient.get("@store/products?page=" + page)
       .then(res => {
         const { success, products, message } = res;
+
+        console.log(res);
 
         if (success) {
 
@@ -62,6 +64,7 @@ class Products extends Component {
             product.isChecked = false
             return product
           })
+
           this.setState({
             products: temps,
             lastPage: products.last_page,
@@ -111,12 +114,14 @@ class Products extends Component {
             position: toast.POSITION.TOP_CENTER
           });
         }
+
         this.setState({ collectionDialogLoading: false });
       })
       .catch(error => {
         toast.error(error, {
           position: toast.POSITION.TOP_CENTER
         });
+
         this.setState({ collectionDialogLoading: false });
       });
   }
@@ -126,6 +131,7 @@ class Products extends Component {
       if (product.id === p.id) {
         p.isChecked = !p.isChecked
       }
+
       return p
     });
 
@@ -135,6 +141,7 @@ class Products extends Component {
     } else {
       this.setState({ showAddCollectionButton: false });
     }
+
     this.setState({
       products: temps,
     });
@@ -153,6 +160,7 @@ class Products extends Component {
       if (collection.id === c.id) {
         collection.isChecked = !c.isChecked
       }
+
       return c
     });
 
@@ -183,13 +191,16 @@ class Products extends Component {
 
           if (success) {
             this.closeCollectionsDialog()
+
             var temps = this.state.products.map(product => {
               product.isChecked = false
               return product
             })
+
             this.setState({
               products: temps
             });
+
             this.setState({ addCollectionLoading: false })
           } else {
             this.setState({ addCollectionLoading: false })
@@ -277,44 +288,22 @@ class Products extends Component {
         </Col>
       ));
 
-    // var paginationMarkup = [];
+    const pages = lastPage > 1 && [...Array(lastPage).keys()].map((page, index) => (
+      <PaginationItem key={index} active={currentPage == page + 1} onClick={() => currentPage == page + 1 ? null : this.listProducts(page + 1)}>
+        <PaginationLink tag="button">{page + 1}</PaginationLink>
+      </PaginationItem >
+    ));
 
-    // for (var i = 1; i <= (totalItems / 18) + 1; i++) {
-    //   paginationMarkup.push(
-    //     <PaginationItem active={i === currentPage ? true : false}>
-    //       <PaginationLink tag="button">{i}</PaginationLink>
-    //     </PaginationItem>
-    //   );
-    // }
-
-    var paginationMarkup =
-      (currentPage > 1 &&
-        ((
-          <PaginationItem>
-            <PaginationLink previous tag="button" />
-          </PaginationItem>
-        ),
-          (
-            <PaginationItem active={false}>
-              <PaginationLink tag="button">{currentPage - 1}</PaginationLink>
-            </PaginationItem>
-          )),
-        (
-          <PaginationItem active={true}>
-            <PaginationLink tag="button">{currentPage}</PaginationLink>
-          </PaginationItem>
-        ),
-        currentPage < lastPage &&
-        ((
-          <PaginationItem active={false}>
-            <PaginationLink tag="button">{currentPage + 1}</PaginationLink>
-          </PaginationItem>
-        ),
-          (
-            <PaginationItem>
-              <PaginationLink next tag="button" />
-            </PaginationItem>
-          )));
+    const paginationMarkup = (
+      pages &&
+      (
+        (currentPage - 3 >= 0 && currentPage + 2 <= lastPage)
+          ? pages.slice(currentPage - 3, currentPage + 2)
+          : currentPage > 5
+            ? pages.slice(lastPage - 5)
+            : pages.slice(0, 5)
+      )
+    );
 
     return (
       <div className="animated fadeIn">
@@ -376,13 +365,17 @@ class Products extends Component {
                 </div>
           }
         </Col>
-        {
-          products.length > 0 && (
-            <Pagination style={{ position: "absolute", bottom: 50, right: 20 }}>
-              {paginationMarkup}
-            </Pagination>
-          )
-        }
+        {(products.length > 0 && lastPage > 1) && (
+          <Pagination>
+            <PaginationItem disabled={currentPage == 1}>
+              <PaginationLink previous tag="button" onClick={() => this.listProducts(currentPage - 1)}></PaginationLink>
+            </PaginationItem>
+            {paginationMarkup}
+            <PaginationItem disabled={currentPage == lastPage}>
+              <PaginationLink next tag="button" onClick={() => this.listProducts(currentPage + 1)}></PaginationLink>
+            </PaginationItem>
+          </Pagination>
+        )}
       </div >
     );
   }

@@ -82,7 +82,7 @@ class Customers extends Component {
       });
 
     const pages = lastPage > 1 && [...Array(lastPage).keys()].map((page) => (
-      <PaginationItem active={currentPage == page + 1} onClick={() => this.listCustomers(page + 1)}>
+      <PaginationItem active={currentPage == page + 1} onClick={() => currentPage == page + 1 ? null : this.listCustomers(page + 1)}>
         <PaginationLink tag="button">{page + 1}</PaginationLink>
       </PaginationItem>
     ));
