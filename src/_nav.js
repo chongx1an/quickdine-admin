@@ -12,11 +12,10 @@ export default {
     },
     {
       name: 'Products',
-      url: '/products',
       icon: 'cil-fastfood',
       children: [
         {
-          name: 'Products',
+          name: 'All Products',
           url: '/products'
         },
         {
