@@ -18,6 +18,7 @@ export default props => {
   const [address, setAddress] = useState();
   const [email, setEmail] = useState();
   const [phone, setPhone] = useState();
+  const [imageUrl, setImageUrl] = useState();
   const [isScreenLoading, setIsScreenLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -37,6 +38,16 @@ export default props => {
     setPhone(e.target.value);
   }
 
+  const addImage = file => {
+    const reader = new FileReader()
+
+    reader.addEventListener('load', () => setImageUrl(reader.result), false)
+
+    if (file) {
+      reader.readAsDataURL(file)
+    }
+  }
+
   const getStoreSettings = () => {
     ApiClient.get('@store')
       .then(res => {
@@ -51,6 +62,7 @@ export default props => {
           setAddress(store.address ? store.address : '');
           setEmail(store.email ? store.email : '');
           setPhone(store.phone ? store.phone : '');
+          setImageUrl(store.image_url ? store.image_url : null);
 
         } else {
 
@@ -83,7 +95,8 @@ export default props => {
       description: description,
       address: address,
       email: email,
-      phone: phone
+      phone: phone,
+      image_url: imageUrl
     };
 
     ApiClient.put('@store', settings)
@@ -202,7 +215,40 @@ export default props => {
                     </Col>
                   </FormGroup>
 
+                  <FormGroup>
+                    <div>
+                      <Row md="3">
+                        <Col>
+                          <strong>Image</strong>
+                        </Col>
+                      </Row>
+                      <Row xs="12" md="9">
+                        <Col>
+                          {imageUrl == null ? <Input
+                            type="file"
+                            id="file"
+                            name="file"
+                            onChange={e => addImage(e.target.files[0])}
+                          /> : null}
+                        </Col>
+                      </Row>
+                    </div>
+                  </FormGroup>
                 </Form>
+                <Card>
+                  <CardBody>
+                    {imageUrl &&
+                      <div>
+                        <img
+
+                          src={imageUrl}
+                          style={{ maxHeight: "300px", maxWidth: "300px" }}
+                        />
+                        <i style={{ marginLeft: "20px", cursor: "pointer" }} onClick={e => setImageUrl(null)} className="icon-close"></i>
+                      </div>
+                    }
+                  </CardBody>
+                </Card>
               </CardBody>
               <CardFooter>
                 <LoadingButton

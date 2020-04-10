@@ -192,8 +192,9 @@ export default props => {
   const collectionProductsMarkup =
     collectionProducts &&
     collectionProducts.map((product, index) => (
-      <Row key={index}>
-        <p>{product.name}</p><p style={{ marginLeft: "20px", cursor: "pointer" }} onClick={e => deleteProduct(product)}>X</p>
+      <Row style={{ marginTop: "5px" }} key={index}>
+        <p>{product.name}</p>
+        <i style={{ marginTop: "5px", marginLeft: "10px", cursor: "pointer" }} onClick={e => deleteProduct(product)} className="icon-close"></i>
       </Row>
     ));
 
@@ -281,7 +282,7 @@ export default props => {
                     <div>
                       <Row md="3">
                         <Col>
-                          <strong>Images</strong>
+                          <strong>Image</strong>
                         </Col>
                       </Row>
                       <Row xs="12" md="9">
@@ -303,11 +304,14 @@ export default props => {
                 <Card>
                   <CardBody>
                     {imageUrl &&
-                      <img
-                        onClick={e => setImageUrl(null)}
-                        src={imageUrl}
-                        style={{ maxHeight: "100%", maxWidth: "100%" }}
-                      />}
+                      <div>
+                        <img
+                          src={imageUrl}
+                          style={{ maxHeight: "300px", maxWidth: "300px" }}
+                        />
+                        <i style={{ marginLeft: "20px", cursor: "pointer" }} onClick={e => setImageUrl(null)} className="icon-close"></i>
+                      </div>
+                    }
                   </CardBody>
                 </Card>
 
